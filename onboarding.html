@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Picky — Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@400;600&family=Fira+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ──────────────────────────────────────── */
+    :root {
+      /* Colors */
+      --color-bg-brand-primary:     #bc1ce7;
+      --color-bg-brand-secondary:   #eda9ff;
+      --color-bg-brand-tertiary:    #f8f2fa;
+      --color-bg-neutral-primary:   #ffffff;
+      --color-bg-neutral-secondary: #f4f2f5;
+      --color-bg-neutral-tertiary:  #ece8ed;
+      --color-text-neutral-primary:   #2c0238;
+      --color-text-neutral-secondary: #4b3651;
+      --color-text-neutral-tertiary:  #695f6c;
+      --color-text-brand-primary:     #a104cc;
+      --color-text-brand-inverse:     #f8f2fa;
+
+      /* Typography */
+      --font-heading: "Playpen Sans", cursive;
+      --font-body:    "Fira Sans", sans-serif;
+
+      /* Spacing scale */
+      --space-3xs:  2px;
+      --space-2xs:  4px;
+      --space-xs:   8px;
+      --space-s:   12px;
+      --space-m:   16px;
+      --space-l:   20px;
+      --space-xl:  24px;
+      --space-2xl: 32px;
+      --space-3xl: 40px;
+      --space-4xl: 64px;
+
+      /* Border radius */
+      --radius-xs:   4px;
+      --radius-s:    8px;
+      --radius-m:    8px;
+      --radius-l:   12px;
+      --radius-xl:  16px;
+      --radius-full: 999px;
+
+      /* Button tokens — Large */
+      --btn-lg-radius:    var(--radius-xl);
+      --btn-lg-padding-h: var(--space-xl);
+      --btn-lg-padding-v: var(--space-m);
+    }
+
+    /* ─── Reset ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--color-bg-neutral-tertiary);
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-body);
+    }
+
+    /* ─── Screen shell ───────────────────────────────────────── */
+    .screen {
+      width: 390px;
+      height: 844px;
+      background: var(--color-bg-neutral-primary);
+      border-radius: var(--space-3xl);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 32px 80px rgba(44, 2, 56, 0.18);
+    }
+
+    /* ─── Hero ───────────────────────────────────────────────── */
+    .hero {
+      flex: 0 0 380px;
+      position: relative;
+      background: var(--color-bg-brand-primary);
+      overflow: hidden;
+    }
+
+    /* Decorative circles */
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.09);
+    }
+    .hero::before {
+      width: 280px;
+      height: 280px;
+      right: -40px;
+      bottom: -40px;
+    }
+    .hero::after {
+      width: 120px;
+      height: 120px;
+      left: -30px;
+      top: 20px;
+    }
+
+    /* Small top-right accent circle */
+    .hero-circle-sm {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.12);
+      right: -10px;
+      top: -16px;
+    }
+
+    /* App tag */
+    .app-tag {
+      position: absolute;
+      top: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-2xs) var(--space-m);
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--color-text-brand-inverse);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    /* Emoji cluster */
+    .emoji-cluster {
+      position: absolute;
+      inset: 0;
+      /* Reserve top 68px for the tag */
+      padding-top: 68px;
+    }
+
+    .emoji {
+      position: absolute;
+      line-height: 1;
+      user-select: none;
+    }
+    .emoji-main  { font-size: 96px; left: 120px; top: 88px; }
+    .emoji-left  { font-size: 56px; left:  44px; top: 172px; }
+    .emoji-right { font-size: 56px; right:  36px; top: 148px; }
+    .emoji-tl    { font-size: 40px; left:  36px; top:  56px; }
+    .emoji-tr    { font-size: 40px; right:  44px; top:  44px; }
+    .emoji-bot   { font-size: 48px; left: 160px; top: 248px; }
+
+    /* ─── Content ────────────────────────────────────────────── */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-3xl) var(--space-2xl) var(--space-3xl);
+      gap: var(--space-xl);
+      background: var(--color-bg-neutral-primary);
+    }
+
+    /* ─── Text group ─────────────────────────────────────────── */
+    .text-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+    }
+
+    .headline {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 40px;
+      line-height: 1.2;
+      color: var(--color-text-neutral-primary);
+    }
+
+    .body-copy {
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 1.4;
+      color: var(--color-text-neutral-secondary);
+    }
+
+    /* ─── Primary CTA button ─────────────────────────────────── */
+    .btn-primary {
+      width: 100%;
+      padding: var(--btn-lg-padding-v) var(--btn-lg-padding-h);
+      border-radius: var(--btn-lg-radius);
+      background: var(--color-bg-brand-primary);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 1.4;
+      color: var(--color-text-brand-inverse);
+      text-align: center;
+      transition: filter 0.15s ease, transform 0.1s ease;
+    }
+    .btn-primary:hover  { filter: brightness(1.08); }
+    .btn-primary:active { transform: scale(0.98); filter: brightness(0.96); }
+
+    /* ─── Sign-in row ────────────────────────────────────────── */
+    .sign-in-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .sign-in-row span {
+      color: var(--color-text-neutral-tertiary);
+      font-weight: 400;
+    }
+
+    .sign-in-row a {
+      color: var(--color-text-brand-primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .sign-in-row a:hover { text-decoration: underline; }
+
+    /* ─── Step indicators ────────────────────────────────────── */
+    .step-dots {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .dot {
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--color-bg-neutral-tertiary);
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+    .dot        { width: 8px; }
+    .dot.active { width: 24px; background: var(--color-bg-brand-primary); }
+
+    /* ─── Responsive: fill viewport on real phones ───────────── */
+    @media (max-width: 430px) {
+      body { background: var(--color-bg-neutral-primary); align-items: stretch; }
+      .screen {
+        width: 100%;
+        height: 100dvh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+
+    <!-- Hero illustration -->
+    <div class="hero" aria-hidden="true">
+      <div class="hero-circle-sm"></div>
+      <div class="app-tag">picky</div>
+      <div class="emoji-cluster">
+        <span class="emoji emoji-tl">🌽</span>
+        <span class="emoji emoji-tr">🍓</span>
+        <span class="emoji emoji-main">🍕</span>
+        <span class="emoji emoji-left">🥦</span>
+        <span class="emoji emoji-right">🍜</span>
+        <span class="emoji emoji-bot">🍗</span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <div class="text-group">
+        <h1 class="headline">Dinnertime,<br>handled. 🙌</h1>
+        <p class="body-copy">
+          Meal planning for families with picky eaters.
+          Build menus around what your kids actually love —
+          no more dinnertime battles.
+        </p>
+      </div>
+
+      <button class="btn-primary" type="button">Get Started</button>
+
+      <div class="sign-in-row">
+        <span>Already have an account?</span>
+        <a href="#">Sign in</a>
+      </div>
+
+      <div class="step-dots" role="tablist" aria-label="Onboarding step 1 of 3">
+        <div class="dot active" role="tab" aria-selected="true"  aria-label="Step 1"></div>
+        <div class="dot"        role="tab" aria-selected="false" aria-label="Step 2"></div>
+        <div class="dot"        role="tab" aria-selected="false" aria-label="Step 3"></div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
