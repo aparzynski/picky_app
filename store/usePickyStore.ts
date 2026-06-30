@@ -72,7 +72,7 @@ export const usePickyStore = create<PickyState>(() => ({
     rating: 4.8,
     calories: 520,
     tags: ['Lots of leftovers', "Noah's favorite"],
-    imageUrl: '/mock/pasta.jpg',
+    imageUrl: '/mock/r1.jpg',
     ingredients: [
       { name: '1 lb penne pasta', state: 'in pantry' },
       { name: '2 cups heavy cream', state: 'in pantry' },
@@ -115,9 +115,9 @@ export const usePickyStore = create<PickyState>(() => ({
     { date: '2026-07-06', dayLabel: 'Mon', emojis: ['🍗'],  mealCount: 1, isToday: false },
   ],
   familyFavorites: [
-    { id: 'r2', name: 'Silky Butter Pasta',      description: "Lily's safe food.",     cookTime: 15, serves: 6, tags: ['Lily-Approved 💜'], imageUrl: '/mock/pasta.jpg'    },
-    { id: 'r3', name: 'Veggie Stir-Fry',     description: 'Mia-friendly, fully vegan.', cookTime: 25, serves: 6, tags: ['Vegan'],         imageUrl: '/mock/stirfry.jpg'  },
-    { id: 'r4', name: 'Meatloaf & Potatoes', description: "David's pick.",          cookTime: 55, serves: 6, tags: ['Hearty'],         imageUrl: '/mock/meatloaf.jpg' },
+    { id: 'r2', name: 'Silky Butter Pasta',      description: "Lily's safe food.",     cookTime: 15, serves: 6, tags: ['Lily-Approved 💜'], imageUrl: '/mock/r2.jpg'    },
+    { id: 'r3', name: 'Veggie Stir-Fry',     description: 'Mia-friendly, fully vegan.', cookTime: 25, serves: 6, tags: ['Vegan'],         imageUrl: '/mock/r3.jpg'  },
+    { id: 'r4', name: 'Meatloaf & Potatoes', description: "David's pick.",          cookTime: 55, serves: 6, tags: ['Hearty'],         imageUrl: '/mock/r4.jpg' },
   ],
   groceryItemCount: 14,
   recipesCount: 14,
@@ -144,7 +144,7 @@ export const usePickyStore = create<PickyState>(() => ({
       rating: 4.8,
       calories: 520,
       tags: ['Lots of leftovers', "Noah's favorite"],
-      imageUrl: '/mock/pasta.jpg',
+      imageUrl: '/mock/r1.jpg',
       ingredients: [
         { name: '1 lb penne pasta', state: 'in pantry' },
         { name: '2 cups heavy cream', state: 'in pantry' },
@@ -186,7 +186,7 @@ export const usePickyStore = create<PickyState>(() => ({
       serves: 6,
       calories: 320,
       tags: ['Lily-Approved 💜'],
-      imageUrl: '/mock/pasta.jpg',
+      imageUrl: '/mock/r2.jpg',
       ingredients: [
         { name: '1 lb pasta', state: 'in pantry' },
         { name: '4 tbsp butter', state: 'in pantry' },
@@ -208,7 +208,7 @@ export const usePickyStore = create<PickyState>(() => ({
       serves: 6,
       calories: 280,
       tags: ['Vegan'],
-      imageUrl: '/mock/stirfry.jpg',
+      imageUrl: '/mock/r3.jpg',
       ingredients: [
         { name: '2 cups broccoli florets', state: 'in pantry' },
         { name: '1 red bell pepper', state: 'missing item' },
@@ -233,7 +233,7 @@ export const usePickyStore = create<PickyState>(() => ({
       serves: 6,
       calories: 610,
       tags: ['Hearty'],
-      imageUrl: '/mock/meatloaf.jpg',
+      imageUrl: '/mock/r4.jpg',
       ingredients: [
         { name: '1.5 lb ground beef', state: 'missing item' },
         { name: '1 egg', state: 'in pantry' },
@@ -253,7 +253,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d1: {
-      id: 'd1', name: 'Mini Pizza Cups', cookTime: 30, serves: 4, imageUrl: '/mock/meatloaf.jpg',
+      id: 'd1', name: 'Mini Pizza Cups', cookTime: 30, serves: 4, imageUrl: '/mock/d1.jpg',
       description: 'Crispy mini pizzas loaded with sauce and melty cheese — ready in 30 minutes and always a crowd pleaser.',
       tags: ['🍕 Savory', 'Kid Favorite'],
       ingredients: [
@@ -274,7 +274,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d2: {
-      id: 'd2', name: 'Bright Lemon Spaghetti', cookTime: 20, serves: 4, imageUrl: '/mock/pasta.jpg',
+      id: 'd2', name: 'Bright Lemon Spaghetti', cookTime: 20, serves: 4, imageUrl: '/mock/d2.jpg',
       description: 'Bright, zesty, and weeknight-fast. Al dente spaghetti tossed in a silky lemon-garlic oil with a shower of parmesan.',
       tags: ['🌿 Vegetarian', 'Quick Weeknight'],
       ingredients: [
@@ -295,7 +295,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d3: {
-      id: 'd3', name: 'Mango Coconut Rice Bowl', cookTime: 10, serves: 2, imageUrl: '/mock/stirfry.jpg',
+      id: 'd3', name: 'Mango Coconut Rice Bowl', cookTime: 10, serves: 2, imageUrl: '/mock/d3.jpg',
       description: 'Creamy coconut milk poured over rice and piled with fresh mango. Tropical, dairy-free, and ready in 10 minutes.',
       tags: ['🥥 Tropical', 'Dairy-Free', 'No Cook'],
       ingredients: [
@@ -315,7 +315,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d4: {
-      id: 'd4', name: 'Honey Teriyaki Salmon', cookTime: 25, serves: 4, imageUrl: '/mock/stirfry.jpg',
+      id: 'd4', name: 'Honey Teriyaki Salmon', cookTime: 25, serves: 4, imageUrl: '/mock/d4.jpg',
       description: 'Pan-seared salmon fillets glazed in a sweet-savory teriyaki sauce. Weeknight-friendly and ready in under 30 minutes.',
       tags: ['🐟 Seafood', 'Healthy', 'Weeknight'],
       ingredients: [
@@ -337,7 +337,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d5: {
-      id: 'd5', name: 'Cast Iron Ribeye', cookTime: 45, serves: 2, imageUrl: '/mock/meatloaf.jpg',
+      id: 'd5', name: 'Cast Iron Ribeye', cookTime: 45, serves: 2, imageUrl: '/mock/d5.jpg',
       description: 'Thick-cut ribeye seared in a screaming-hot cast iron and basted in garlic butter. A special-occasion classic.',
       tags: ['🥩 Beef', 'Special Occasion', 'High Protein'],
       ingredients: [
@@ -357,7 +357,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d6: {
-      id: 'd6', name: 'Slow-Baked BBQ Ribs', cookTime: 120, serves: 4, imageUrl: '/mock/meatloaf.jpg',
+      id: 'd6', name: 'Slow-Baked BBQ Ribs', cookTime: 120, serves: 4, imageUrl: '/mock/d6.jpg',
       description: 'Low-and-slow oven-baked ribs with a homemade dry rub, finished with sticky BBQ glaze. Worth every minute.',
       tags: ['🔥 BBQ', 'Weekend Project', 'Crowd Pleaser'],
       ingredients: [
@@ -379,7 +379,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d7: {
-      id: 'd7', name: 'Crispy Smash Potatoes', cookTime: 35, serves: 4, imageUrl: '/mock/meatloaf.jpg',
+      id: 'd7', name: 'Crispy Smash Potatoes', cookTime: 35, serves: 4, imageUrl: '/mock/d7.jpg',
       description: 'Boiled baby potatoes smashed flat and roasted until crispy, topped with crumbled bacon and chives.',
       tags: ['🥔 Comfort', 'Crowd Pleaser'],
       ingredients: [
@@ -402,7 +402,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d8: {
-      id: 'd8', name: 'Fully Loaded Baked Potato', cookTime: 50, serves: 4, imageUrl: '/mock/meatloaf.jpg',
+      id: 'd8', name: 'Fully Loaded Baked Potato', cookTime: 50, serves: 4, imageUrl: '/mock/d8.jpg',
       description: 'Fluffy russet potatoes baked until their skins are crisp, then piled high with all the toppings.',
       tags: ['🥔 Hearty', 'Comfort Food'],
       ingredients: [
@@ -424,7 +424,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d9: {
-      id: 'd9', name: 'Everything Avocado Toast', cookTime: 5, serves: 1, imageUrl: '/mock/pasta.jpg',
+      id: 'd9', name: 'Everything Avocado Toast', cookTime: 5, serves: 1, imageUrl: '/mock/d9.jpg',
       description: 'Creamy mashed avocado on crispy sourdough, seasoned with everything bagel and a pinch of chili flakes.',
       tags: ['🥑 Healthy', 'Quick Breakfast', 'Vegetarian'],
       ingredients: [
@@ -445,7 +445,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d10: {
-      id: 'd10', name: 'Fresh Garden Caprese', cookTime: 10, serves: 4, imageUrl: '/mock/pasta.jpg',
+      id: 'd10', name: 'Fresh Garden Caprese', cookTime: 10, serves: 4, imageUrl: '/mock/d10.jpg',
       description: 'Layers of fresh mozzarella, ripe tomatoes, and basil leaves drizzled with olive oil and balsamic glaze.',
       tags: ['🌿 Vegetarian', 'No Cook', 'Summer'],
       ingredients: [
@@ -465,7 +465,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d11: {
-      id: 'd11', name: 'Garlic Shrimp Stir-Fry', cookTime: 15, serves: 4, imageUrl: '/mock/stirfry.jpg',
+      id: 'd11', name: 'Garlic Shrimp Stir-Fry', cookTime: 15, serves: 4, imageUrl: '/mock/d11.jpg',
       description: 'Tender shrimp and crisp vegetables tossed in a savory garlic-soy sauce over steamed rice.',
       tags: ['🦐 Seafood', 'Quick Weeknight', 'High Protein'],
       ingredients: [
@@ -487,7 +487,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d12: {
-      id: 'd12', name: 'Mediterranean Omelet', cookTime: 10, serves: 1, imageUrl: '/mock/pasta.jpg',
+      id: 'd12', name: 'Mediterranean Omelet', cookTime: 10, serves: 1, imageUrl: '/mock/d12.jpg',
       description: 'Fluffy eggs stuffed with crumbled feta, kalamata olives, and wilted spinach. High protein, low carb.',
       tags: ['🍳 Protein', 'Low Carb', 'Breakfast'],
       ingredients: [
@@ -508,7 +508,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d13: {
-      id: 'd13', name: 'One-Pan Roasted Salmon', cookTime: 25, serves: 4, imageUrl: '/mock/stirfry.jpg',
+      id: 'd13', name: 'One-Pan Roasted Salmon', cookTime: 25, serves: 4, imageUrl: '/mock/d13.jpg',
       description: 'Salmon fillets roasted alongside asparagus and cherry tomatoes on one pan — minimal cleanup, maximum flavor.',
       tags: ['🍳 One Pan', 'Healthy', 'Weeknight'],
       ingredients: [
@@ -530,7 +530,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d14: {
-      id: 'd14', name: 'One-Pot Tomato Linguine', cookTime: 20, serves: 4, imageUrl: '/mock/pasta.jpg',
+      id: 'd14', name: 'One-Pot Tomato Linguine', cookTime: 20, serves: 4, imageUrl: '/mock/d14.jpg',
       description: 'Linguine, cherry tomatoes, garlic, and broth all cooked together in one pot until the starch creates a silky sauce.',
       tags: ['🥘 One Pot', 'Quick Weeknight', 'Vegetarian'],
       ingredients: [
@@ -551,7 +551,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d15: {
-      id: 'd15', name: 'Berry Overnight Oats', cookTime: 5, serves: 1, imageUrl: '/mock/pasta.jpg',
+      id: 'd15', name: 'Berry Overnight Oats', cookTime: 5, serves: 1, imageUrl: '/mock/d15.jpg',
       description: 'Five minutes of prep the night before gives you a creamy, ready-to-eat breakfast with zero morning effort.',
       tags: ['🥄 No Cook', 'Meal Prep', 'Breakfast'],
       ingredients: [
@@ -571,7 +571,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d16: {
-      id: 'd16', name: 'Quinoa Power Bowl', cookTime: 15, serves: 2, imageUrl: '/mock/stirfry.jpg',
+      id: 'd16', name: 'Quinoa Power Bowl', cookTime: 15, serves: 2, imageUrl: '/mock/d16.jpg',
       description: 'Quinoa, roasted chickpeas, and crisp vegetables drizzled with a lemony tahini dressing. Great for meal prep.',
       tags: ['🥗 Prep Ahead', 'Vegan', 'High Fiber'],
       ingredients: [
@@ -592,7 +592,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d17: {
-      id: 'd17', name: 'Brown Butter Egg Noodles', cookTime: 10, serves: 4, imageUrl: '/mock/pasta.jpg',
+      id: 'd17', name: 'Brown Butter Egg Noodles', cookTime: 10, serves: 4, imageUrl: '/mock/d17.jpg',
       description: 'Simple egg noodles tossed in melted butter with a hit of parmesan. The ultimate comfort food that everyone loves.',
       tags: ['🍝 Stovetop', 'Kid Favorite', 'Quick'],
       ingredients: [
@@ -611,7 +611,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d18: {
-      id: 'd18', name: 'Golden Grilled Cheese', cookTime: 10, serves: 1, imageUrl: '/mock/meatloaf.jpg',
+      id: 'd18', name: 'Golden Grilled Cheese', cookTime: 10, serves: 1, imageUrl: '/mock/d18.jpg',
       description: 'Golden-brown buttery bread with perfectly melted cheese inside. Simple, satisfying, and impossible to mess up.',
       tags: ['🧀 Stovetop', 'Kid Favorite', 'Quick'],
       ingredients: [
@@ -629,7 +629,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d19: {
-      id: 'd19', name: 'Crispy Baked Nuggets', cookTime: 20, serves: 4, imageUrl: '/mock/meatloaf.jpg',
+      id: 'd19', name: 'Crispy Baked Nuggets', cookTime: 20, serves: 4, imageUrl: '/mock/d19.jpg',
       description: 'Oven-baked nuggets with a crispy breadcrumb coating and juicy chicken inside. Healthier than takeout, loved by all.',
       tags: ['🔥 Oven', 'Kid Favorite', 'High Protein'],
       ingredients: [
@@ -651,7 +651,7 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     d20: {
-      id: 'd20', name: 'Fluffy Saturday Pancakes', cookTime: 15, serves: 4, imageUrl: '/mock/pasta.jpg',
+      id: 'd20', name: 'Fluffy Saturday Pancakes', cookTime: 15, serves: 4, imageUrl: '/mock/d20.jpg',
       description: 'Light, fluffy classic pancakes made with pantry staples. Perfect weekend morning fuel with butter and maple syrup.',
       tags: ['🥞 Stovetop', 'Kid Favorite', 'Breakfast'],
       ingredients: [
@@ -682,7 +682,7 @@ export const usePickyStore = create<PickyState>(() => ({
       rating: 4.8,
       calories: 420,
       tags: ['🍝 Lots of leftovers', "👦🏼 Noah's favorite"],
-      imageUrl: '/mock/pasta.jpg',
+      imageUrl: '/mock/r5.jpg',
       ingredients: [
         { name: '1 lb pasta', state: 'in pantry' },
         { name: '2 cups cherry tomatoes', state: 'in pantry' },
