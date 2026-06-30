@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+@layer base {
+  /* Hide scrollbars while keeping scroll functional */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ─── Picky Design System CSS Variables ─────────────────────────────────────
+   Slash-notation matches Figma variable names exactly.
+   `\/` in a CSS ident = `/` — so --background\/brand\/primary resolves to
+   the custom property named --background/brand/primary.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Background */
+  --background\/neutral\/primary: white;
+  --background\/neutral\/secondary: #f4f2f5;
+  --background\/neutral\/tertiary: #e8e4e9;
+  --background\/neutral\/disabled: #e4dfe5;
+  --background\/brand\/primary: #a104cc;
+  --background\/brand\/secondary: #eda9ff;
+  --background\/brand\/tertiary: #f8f2fa;
+  --background\/brand\/quarternary: #7c019d;
+  --background\/brand\/quinary: #f5d1ff;
+  --background\/semantic\/error\/bold: #bf0000;
+  --background\/transparent\/neutral\/primary: rgba(255, 255, 255, 0.75);
+  --background\/transparent\/neutral\/secondary: rgba(244, 242, 245, 0.75);
+  --background\/transparent\/neutral\/disabled: rgba(228, 223, 229, 0.75);
+  --background\/transparent\/neutral\/quarternary: rgba(236, 232, 237, 0.75);
+  --background\/transparent\/neutral-inverse\/primary: rgba(44, 2, 56, 0.75);
+  --background\/transparent\/neutral-inverse\/secondary: rgba(75, 54, 81, 0.75);
+  --text\/brand\/inverse-secondary: #f5d1ff;
+
+  /* Text */
+  --text\/neutral\/primary: #2c0238;
+  --text\/neutral\/secondary: #4b3651;
+  --text\/neutral\/tertiary: #695f6c;
+  --text\/neutral\/disabled: #948b96;
+  --text\/neutral-inverse\/primary: #f4f2f5;
+  --text\/brand\/primary: #8c01b3;
+  --text\/brand\/secondary: #a104cc;
+  --text\/brand\/tertiary: #BC1CE7;
+  --text\/brand\/quarternary: #d435ff;
+  --text\/brand\/inverse: #f8f2fa;
+
+  /* Icon */
+  --icon\/brand\/primary: #8c01b3;
+  
+  --icon\/neutral\/primary: #2c0238;
+
+  /* Border */
+  --border\/neutral\/primary: #ece8ed;
+  --border\/neutral\/secondary: #b5a8b8;
+  --border\/brand\/primary: #7c019d;
+  --border\/brand\/inverse: #eda9ff;
+
+  /* Radius */
+  --s: 8px;
+  --m: 12px;
+  --l: 16px;
+  --xl: 20px;
+  --full: 999px;
+  --numbers\/full: 999px;
+
+  /* Spacing */
+  --numbers\/3xs: 2px;
+  --numbers\/2xs: 4px;
+  --numbers\/xs: 8px;
+  --numbers\/s: 12px;
+  --numbers\/m: 16px;
+  --numbers\/l: 20px;
+  --numbers\/xl: 24px;
+
+  /* Typography */
+  --font-family\/font-sans-serif: var(--font-fira-sans), 'Fira Sans', sans-serif;
+  --font-family\/font-handwritten: var(--font-playpen-sans), 'Playpen Sans', cursive;
+  --weight\/regular: 400;
+  --weight\/semibold: 600;
+  --weight\/bold: 700;
+
+  /* Button tokens */
+  --button\/button-h-padding: 20px;
+  --button\/button-v-padding: 8px;
+  --button\/button-spacing: 8px;
+  --button\/button-radius: 8px;
+  --button\/button-full-padding: 8px;
+
+  /* Gradient */
+  --colors\/gradient\/inverse\/m: rgba(75, 54, 81, 0);
+  --colors\/gradient\/inverse\/full: #2c0238;
+}
+
+/* ─── Phase A: Token → Tailwind utilities ────────────────────────────────────
+   @utility bypasses the comma-in-var() tokenizer bug in Tailwind v4 arbitrary
+   values. Each class emits the var() reference directly — no fallback needed
+   because the variables are always defined in :root above.
+   These classes support all Tailwind variants: hover:, focus-visible:, active:,
+   disabled:, etc.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Background fills */
+@utility bg-brand-primary       { background-color: var(--background\/brand\/primary); }
+@utility bg-brand-secondary     { background-color: var(--background\/brand\/secondary); }
+@utility bg-brand-tertiary      { background-color: var(--background\/brand\/tertiary); }
+@utility bg-brand-quarternary   { background-color: var(--background\/brand\/quarternary); }
+@utility bg-brand-quinary       { background-color: var(--background\/brand\/quinary); }
+@utility bg-neutral-primary     { background-color: var(--background\/neutral\/primary); }
+@utility bg-neutral-secondary   { background-color: var(--background\/neutral\/secondary); }
+@utility bg-neutral-disabled    { background-color: var(--background\/neutral\/disabled); }
+@utility bg-error-bold          { background-color: var(--background\/semantic\/error\/bold); }
+@utility bg-overlay-white            { background-color: var(--background\/transparent\/neutral\/primary); }
+@utility bg-overlay-neutral-q        { background-color: var(--background\/transparent\/neutral\/quarternary); }
+@utility bg-overlay-neutral-disabled { background-color: var(--background\/transparent\/neutral\/disabled); }
+@utility bg-overlay-neutral-primary { background-color: var(--background\/transparent\/neutral\/primary); }
+@utility bg-overlay-neutral-secondary { background-color: var(--background\/transparent\/neutral\/secondary); }
+
+/* Text colors */
+@utility text-brand-primary      { color: var(--text\/brand\/primary); }
+@utility text-brand-secondary    { color: var(--text\/brand\/secondary); }
+@utility text-brand-tertiary { color: var(--text\/brand\/tertiary); }
+@utility text-brand-quarternary  { color: var(--text\/brand\/quarternary); }
+@utility text-brand-inverse      { color: var(--text\/brand\/inverse); }
+@utility text-neutral-primary   { color: var(--text\/neutral\/primary); }
+@utility text-neutral-secondary { color: var(--text\/neutral\/secondary); }
+@utility text-neutral-tertiary  { color: var(--text\/neutral\/tertiary); }
+@utility text-neutral-disabled  { color: var(--text\/neutral\/disabled); }
+@utility text-neutral-inverse   { color: var(--text\/neutral-inverse\/primary); }
+
+/* Icon colors */
+@utility text-icon-brand-primary { color: var(--icon\/brand\/primary); }
+
+/* Icon color as background-color (for CSS mask coloring) */
+@utility bg-icon-brand-primary  { background-color: var(--icon\/brand\/primary); }
+@utility bg-icon-neutral        { background-color: var(--icon\/neutral\/primary); }
+@utility bg-icon-neutral-tertiary { background-color: var(--text\/neutral\/tertiary); }
+@utility bg-icon-neutral-inverse  { background-color: var(--text\/brand\/inverse); }
+
+/* Transparent background fills — plain @layer so HMR picks them up without restart */
+@layer utilities {
+  .bg-transparent-neutral-primary     { background-color: rgba(255, 255, 255, 0.75); }
+  .bg-transparent-neutral-quarternary { background-color: rgba(236, 232, 237, 0.75); }
+  .bg-overlay-neutral-secondary       { background-color: var(--background\/transparent\/neutral\/secondary); }
+
+  @media (hover: hover) {
+    .hover\:bg-overlay-neutral-secondary:hover { background-color: var(--background\/transparent\/neutral\/secondary); }
+  }
+  .focus-visible\:bg-overlay-neutral-secondary:focus-visible { background-color: var(--background\/transparent\/neutral\/secondary); }
+}
+
+/* Over Image button tokens — explicit variants so Turbopack scan isn't needed */
+@layer utilities {
+  .bg-overlay-inverse-primary   { background-color: var(--background\/transparent\/neutral-inverse\/primary); }
+  .bg-overlay-inverse-secondary { background-color: var(--background\/transparent\/neutral-inverse\/secondary); }
+  .text-brand-inverse-secondary { color: var(--text\/brand\/inverse-secondary); }
+
+  @media (hover: hover) {
+    .hover\:bg-overlay-inverse-secondary:hover { background-color: var(--background\/transparent\/neutral-inverse\/secondary); }
+    .hover\:text-brand-inverse-secondary:hover { color: var(--text\/brand\/inverse-secondary); }
+  }
+  .focus-visible\:bg-overlay-inverse-secondary:focus-visible { background-color: var(--background\/transparent\/neutral-inverse\/secondary); }
+  .focus-visible\:text-brand-inverse-secondary:focus-visible { color: var(--text\/brand\/inverse-secondary); }
+  .active\:bg-overlay-inverse-primary:active               { background-color: var(--background\/transparent\/neutral-inverse\/primary); }
+}
+
+/* Border colors */
+@utility border-neutral-primary { border-color: var(--border\/neutral\/primary); }
+@utility border-neutral-secondary { border-color: var(--border\/neutral\/secondary); }
+@utility border-brand-primary   { border-color: var(--border\/brand\/primary); }
+@utility border-brand-inverse   { border-color: var(--border\/brand\/inverse); }
+
+/* Typography utilities — avoids PostCSS parsing issues with \/  inside var() in arbitrary classes */
+@utility font-picky-sans        { font-family: var(--font-family\/font-sans-serif); }
+@utility font-picky-hand        { font-family: var(--font-family\/font-handwritten); }
+
+@theme inline {
+  --font-sans: var(--font-fira-sans);
+}
+
+/* ─── App shell ──────────────────────────────────────────────────────────── */
+:root { --app-scale: 1; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  color: #2c0238;
+  font-family: var(--font-family\/font-sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-frame {
+  width: 390px;
+  min-height: 100dvh;
+  background: white;
+  flex-shrink: 0;
+  transform-origin: top center;
+  transform: scale(var(--app-scale));
+  margin-bottom: calc((var(--app-scale) - 1) * 100dvh);
+}
