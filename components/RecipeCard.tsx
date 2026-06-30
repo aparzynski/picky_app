@@ -42,11 +42,11 @@ export function RecipeCard({
       {/* Image — links to recipe when id provided */}
       {id ? (
         <Link href={`/recipe/${id}`} className="relative h-32 w-full shrink-0 block">
-          <Image src={imageUrl} alt={name} fill className="object-cover rounded-t-[var(--m,12px)]" />
+          <Image src={imageUrl} alt={name} fill sizes="(max-width: 768px) 50vw, 220px" className="object-cover rounded-t-[var(--m,12px)]" />
         </Link>
       ) : (
         <div className="relative h-32 w-full shrink-0">
-          <Image src={imageUrl} alt={name} fill className="object-cover rounded-t-[var(--m,12px)]" />
+          <Image src={imageUrl} alt={name} fill sizes="(max-width: 768px) 50vw, 220px" className="object-cover rounded-t-[var(--m,12px)]" />
         </div>
       )}
 
@@ -67,7 +67,7 @@ export function RecipeCard({
         <div className="flex flex-wrap gap-x-1 gap-y-1 items-center w-full">
           <div className="flex items-center gap-0.5">
             <div className="relative size-3 shrink-0">
-              <Image src="/assets/icon-clock.svg" alt="" fill className="object-contain" />
+              <Image src="/assets/icon-clock.svg" alt="" fill sizes="12px" className="object-contain" />
             </div>
             <span className="font-picky-sans font-normal text-[12px] leading-[1.4] text-neutral-tertiary">
               {cookTime} min
