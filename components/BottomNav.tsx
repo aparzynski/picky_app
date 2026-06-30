@@ -47,8 +47,8 @@ export function BottomNav({ activeTab = "home", className }: BottomNavProps) {
     <div
       className={`fixed bottom-0 left-0 right-0 flex h-[93px] items-start border-t border-neutral-primary bg-neutral-primary pb-4 ${className ?? ""}`}
     >
-      <NavButton icon={<HomeIcon />} label="Home" isActive={activeTab === "home"} />
-      <NavButton icon={<PlannerIcon />} label="Planner" isActive={activeTab === "planner"} />
+      <NavButton icon={<HomeIcon />} label="Home" isActive={activeTab === "home"} href="/" />
+      <NavButton icon={<PlannerIcon />} label="Planner" isActive={activeTab === "planner"} href="#" />
 
       {/* Ask Earl — center FAB column; label pinned to bottom matching NavButton baseline */}
      <div className="relative flex flex-1 flex-col h-full items-center justify-center min-w-[60px] gap-1">
@@ -85,8 +85,8 @@ export function BottomNav({ activeTab = "home", className }: BottomNavProps) {
         </span>
       </div>
 
-      <NavButton icon={<DiscoverIcon />} label="Discover" isActive={activeTab === "discover"} />
-      <NavButton icon={<FamilyIcon />} label="My Family" isActive={activeTab === "family"} />
+      <NavButton icon={<DiscoverIcon />} label="Discover" isActive={activeTab === "discover"} href="/discover" />
+      <NavButton icon={<FamilyIcon />} label="My Family" isActive={activeTab === "family"} href="#" />
     </div>
   );
 }
@@ -95,13 +95,16 @@ function NavButton({
   icon,
   label,
   isActive,
+  href = "#",
 }: {
   icon: ReactNode;
   label: string;
   isActive: boolean;
+  href?: string;
 }) {
   return (
     <a
+      href={href}
       className={`flex flex-1 flex-col items-center justify-center gap-1 min-w-[60px] h-full p-2 cursor-pointer transition-colors hover:bg-brand-tertiary hover:rounded-[4px] hover:text-brand-primary ${
         isActive ? "text-brand-primary" : "text-neutral-tertiary"
       }`}

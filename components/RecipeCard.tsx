@@ -1,9 +1,14 @@
+'use client';
+
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Tag } from "./Tag";
 import { Button } from "./Button";
 import { TransparentOverlayButton } from "./TransparentOverlayButton";
 
 type RecipeCardProps = {
+  id?: string;
   imageUrl: string;
   name: string;
   cookTime: number;
@@ -21,6 +26,7 @@ const ChevronIcon = (
 );
 
 export function RecipeCard({
+  id,
   imageUrl,
   name,
   cookTime,
@@ -28,21 +34,34 @@ export function RecipeCard({
   className,
   onViewMore,
 }: RecipeCardProps) {
+  const router = useRouter();
+  const outerClass = `relative min-w-[170px] rounded-[var(--m,12px)] bg-neutral-primary shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] flex flex-col ${className ?? ""}`;
+
   return (
-    <div
-      className={`relative min-w-[170px] rounded-[var(--m,12px)] bg-neutral-primary shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] flex flex-col ${className ?? ""}`}
-    >
-      {/* Recipe image */}
-      <div className="relative h-32 w-full shrink-0">
-        <Image src={imageUrl} alt={name} fill className="object-cover rounded-t-[var(--m,12px)]" />
-      </div>
+    <div className={outerClass}>
+      {/* Image — links to recipe when id provided */}
+      {id ? (
+        <Link href={`/recipe/${id}`} className="relative h-32 w-full shrink-0 block">
+          <Image src={imageUrl} alt={name} fill className="object-cover rounded-t-[var(--m,12px)]" />
+        </Link>
+      ) : (
+        <div className="relative h-32 w-full shrink-0">
+          <Image src={imageUrl} alt={name} fill className="object-cover rounded-t-[var(--m,12px)]" />
+        </div>
+      )}
 
       {/* Recipe info */}
       <div className="flex flex-col gap-2 p-3">
-        {/* Name */}
-        <p className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-neutral-primary whitespace-nowrap">
-          {name}
-        </p>
+        {/* Name — links to recipe when id provided */}
+        {id ? (
+          <Link href={`/recipe/${id}`} className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-neutral-primary whitespace">
+            {name}
+          </Link>
+        ) : (
+          <p className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-neutral-primary whitespace">
+            {name}
+          </p>
+        )}
 
         {/* Cook time + tags */}
         <div className="flex flex-wrap gap-x-1 gap-y-1 items-center w-full">
@@ -59,20 +78,20 @@ export function RecipeCard({
           ))}
         </div>
 
-        {/* View Recipe button — Secondary/Small/Pill=False/icon=Right */}
+        {/* View Recipe button */}
         <Button
           variant="secondary"
           size="sm"
           pill={false}
           iconRight={ChevronIcon}
-          onClick={onViewMore}
+          onClick={id ? () => router.push(`/recipe/${id}`) : onViewMore}
           className="w-full mt-auto"
         >
           View Recipe
         </Button>
       </div>
 
-      {/* Favorite overlay — Transparent overlay button / state=default / type=favorite / size=medium */}
+      {/* Favorite overlay */}
       <TransparentOverlayButton
         size="medium"
         className="absolute top-[11px] right-[10px]"

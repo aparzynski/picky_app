@@ -1,6 +1,8 @@
-type TransparentOverlayButtonSize = "medium" | "large";
+export type TransparentOverlayButtonType = 'favorite' | 'add' | 'minus' | 'back' | 'edit';
+type TransparentOverlayButtonSize = 'medium' | 'large';
 
 type TransparentOverlayButtonProps = {
+  type?: TransparentOverlayButtonType;
   size?: TransparentOverlayButtonSize;
   selected?: boolean;
   disabled?: boolean;
@@ -9,7 +11,7 @@ type TransparentOverlayButtonProps = {
 };
 
 const BOOKMARK_PATH =
-  "M8.66663 3.33329V12.6666L4.66663 9.99996L0.666626 12.6666V3.33329C0.666626 2.62605 0.947577 1.94777 1.44767 1.44767C1.94777 0.947577 2.62605 0.666626 3.33329 0.666626H5.99996C6.7072 0.666626 7.38548 0.947577 7.88558 1.44767C8.38567 1.94777 8.66663 2.62605 8.66663 3.33329Z";
+  'M8.66663 3.33329V12.6666L4.66663 9.99996L0.666626 12.6666V3.33329C0.666626 2.62605 0.947577 1.94777 1.44767 1.44767C1.94777 0.947577 2.62605 0.666626 3.33329 0.666626H5.99996C6.7072 0.666626 7.38548 0.947577 7.88558 1.44767C8.38567 1.94777 8.66663 2.62605 8.66663 3.33329Z';
 
 function BookmarkIcon({ selected, large }: { selected: boolean; large: boolean }) {
   const w = large ? 15 : 10;
@@ -25,29 +27,79 @@ function BookmarkIcon({ selected, large }: { selected: boolean; large: boolean }
   );
 }
 
+function AddIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function MinusIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function BackIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <path d="M19 12H5M5 12l6 6M5 12l6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function EditIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const iconColorByType: Record<TransparentOverlayButtonType, string> = {
+  favorite: 'text-icon-brand-primary',
+  add:      'text-icon-brand-primary',
+  minus:    'text-icon-brand-primary',
+  back:     'text-neutral-primary',
+  edit:     'text-neutral-primary',
+};
+
 export function TransparentOverlayButton({
-  size = "medium",
+  type = 'favorite',
+  size = 'medium',
   selected = false,
   disabled = false,
   onClick,
   className,
 }: TransparentOverlayButtonProps) {
-  const iconSlot = size === "medium" ? "size-4" : "size-6";
+  const iconSlot = size === 'medium' ? 'size-4' : 'size-6';
+  const defaultColor = iconColorByType[type];
+
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-     className={[
-        "flex items-center justify-center rounded-full p-2 cursor-pointer transition-colors outline-none",
-        "text-icon-brand-primary bg-overlay-neutral-primary",
-        "hover:bg-overlay-neutral-secondary",
-        "focus-visible:bg-overlay-neutral-secondary focus-visible:border focus-visible:border-brand-primary",
-        "disabled:bg-overlay-neutral-disabled disabled:text-neutral-disabled disabled:cursor-not-allowed",
-        className ?? "",
-      ].join(" ")}
+      className={[
+        'flex items-center justify-center rounded-full p-2 cursor-pointer transition-colors outline-none',
+        defaultColor,
+        'bg-overlay-neutral-primary',
+        'hover:bg-overlay-neutral-secondary',
+        'focus-visible:bg-overlay-neutral-secondary focus-visible:border focus-visible:border-brand-primary',
+        'disabled:bg-overlay-neutral-disabled disabled:text-neutral-disabled disabled:cursor-not-allowed',
+        className ?? '',
+      ].join(' ')}
     >
       <div className={`shrink-0 ${iconSlot} flex items-center justify-center`}>
-        <BookmarkIcon selected={selected} large={size === "large"} />
+        {type === 'favorite' && <BookmarkIcon selected={selected} large={size === 'large'} />}
+        {type === 'add'      && <AddIcon />}
+        {type === 'minus'    && <MinusIcon />}
+        {type === 'back'     && <BackIcon />}
+        {type === 'edit'     && <EditIcon />}
       </div>
     </button>
   );

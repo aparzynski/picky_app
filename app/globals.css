@@ -90,6 +90,15 @@
   --button\/button-radius: 8px;
   --button\/button-full-padding: 8px;
 
+  /* Brand 2 — yellow family (Recipe Accordion yellow variant) */
+  --background\/brand-2\/tertiary: #f7f6eb;
+  --border\/brand-2\/primary: #d4c00f;
+  --text\/brand-2\/primary: #665c00;
+
+  /* Semantic text colors */
+  --text\/semantic\/success\/primary: #0e9900;
+  --text\/semantic\/error\/primary: #bf0000;
+
   /* Gradient */
   --colors\/gradient\/inverse\/m: rgba(75, 54, 81, 0);
   --colors\/gradient\/inverse\/full: #2c0238;
@@ -111,6 +120,7 @@
 @utility bg-brand-quinary       { background-color: var(--background\/brand\/quinary); }
 @utility bg-neutral-primary     { background-color: var(--background\/neutral\/primary); }
 @utility bg-neutral-secondary   { background-color: var(--background\/neutral\/secondary); }
+@utility bg-neutral-tertiary    { background-color: var(--background\/neutral\/tertiary); }
 @utility bg-neutral-disabled    { background-color: var(--background\/neutral\/disabled); }
 @utility bg-error-bold          { background-color: var(--background\/semantic\/error\/bold); }
 @utility bg-overlay-white            { background-color: var(--background\/transparent\/neutral\/primary); }
@@ -166,6 +176,15 @@
   .focus-visible\:text-brand-inverse-secondary:focus-visible { color: var(--text\/brand\/inverse-secondary); }
   .active\:bg-overlay-inverse-primary:active               { background-color: var(--background\/transparent\/neutral-inverse\/primary); }
 }
+
+/* Brand 2 (Yellow) utilities */
+@utility bg-brand-2-tertiary    { background-color: var(--background\/brand-2\/tertiary); }
+@utility border-brand-2-primary { border-color: var(--border\/brand-2\/primary); }
+@utility text-brand-2-primary   { color: var(--text\/brand-2\/primary); }
+
+/* Semantic text utilities */
+@utility text-success-primary   { color: var(--text\/semantic\/success\/primary); }
+@utility text-error-primary     { color: var(--text\/semantic\/error\/primary); }
 
 /* Border colors */
 @utility border-neutral-primary { border-color: var(--border\/neutral\/primary); }

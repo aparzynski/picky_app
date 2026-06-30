@@ -1,5 +1,5 @@
-type ButtonVariant = "primary" | "secondary" | "over-image";
-type ButtonSize = "sm" | "md";
+type ButtonVariant = 'primary' | 'secondary' | 'over-image';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 type ButtonProps = {
   variant?: ButtonVariant;
@@ -24,10 +24,11 @@ type ButtonProps = {
  *  Secondary Focused  → bg-neutral-secondary, border-2 brand
  *  Secondary Selected → bg-brand-secondary (#eda9ff), border brand
  *  Secondary Disabled → bg-neutral-disabled, text-neutral-disabled
+ *  Size=lg (Figma Large) → py-3 px-5 text-[18px] — used for primary CTAs like "Add to this Week"
  */
 export function Button({
-  variant = "secondary",
-  size = "md",
+  variant = 'secondary',
+  size = 'md',
   pill = true,
   selected = false,
   disabled = false,
@@ -37,41 +38,44 @@ export function Button({
   className,
   children,
 }: ButtonProps) {
-  const radius = pill ? "rounded-full" : "rounded-[8px]";
-  const px = size === "sm" ? "px-4" : "px-5";
+  const radius = pill ? 'rounded-full' : 'rounded-[8px]';
+  const px = size === 'sm' ? 'px-4' : 'px-5';
+  const py = size === 'lg' ? 'py-3' : 'py-2';
   const textCls =
-    size === "sm"
-      ? "text-[12px] leading-[1.4] tracking-[0.24px]"
-      : "text-[14px] leading-[1.5]";
-  const gap = size === "sm" ? "gap-1" : "gap-2";
+    size === 'sm'
+      ? 'text-[12px] leading-[1.4] tracking-[0.24px]'
+      : size === 'lg'
+      ? 'text-[18px] leading-[1.4]'
+      : 'text-[14px] leading-[1.5]';
+  const gap = size === 'sm' ? 'gap-1' : 'gap-2';
 
   let stateClasses: string;
 
   if (disabled) {
     stateClasses =
-      variant === "primary"
-        ? "bg-neutral-disabled text-neutral-disabled cursor-not-allowed"
-        : "bg-neutral-disabled border border-neutral-primary text-neutral-disabled cursor-not-allowed";
-  } else if (selected && variant === "secondary") {
-    stateClasses = "bg-brand-secondary border border-brand-primary text-brand-primary";
-  } else if (variant === "primary") {
+      variant === 'primary'
+        ? 'bg-neutral-disabled text-neutral-disabled cursor-not-allowed'
+        : 'bg-neutral-disabled border border-neutral-primary text-neutral-disabled cursor-not-allowed';
+  } else if (selected && variant === 'secondary') {
+    stateClasses = 'bg-brand-secondary border border-brand-primary text-brand-primary';
+  } else if (variant === 'primary') {
     stateClasses =
-      "bg-brand-primary text-brand-inverse cursor-pointer " +
-      "hover:bg-brand-secondary hover:text-brand-primary " +
-      "focus-visible:bg-brand-secondary focus-visible:border-2 focus-visible:border-brand-primary focus-visible:text-brand-primary " +
-      "active:bg-brand-quarternary";
-  } else if (variant === "over-image") {
+      'bg-brand-primary text-brand-inverse cursor-pointer ' +
+      'hover:bg-brand-secondary hover:text-brand-primary ' +
+      'focus-visible:bg-brand-secondary focus-visible:border-2 focus-visible:border-brand-primary focus-visible:text-brand-primary ' +
+      'active:bg-brand-quarternary';
+  } else if (variant === 'over-image') {
     stateClasses =
-      "bg-overlay-inverse-primary border border-brand-inverse text-neutral-inverse cursor-pointer " +
-      "hover:bg-overlay-inverse-secondary hover:text-brand-inverse-secondary " +
-      "focus-visible:bg-overlay-inverse-secondary focus-visible:border-2 focus-visible:border-brand-inverse focus-visible:text-brand-inverse-secondary " +
-      "active:bg-overlay-inverse-primary";
+      'bg-overlay-inverse-primary border border-brand-inverse text-neutral-inverse cursor-pointer ' +
+      'hover:bg-overlay-inverse-secondary hover:text-brand-inverse-secondary ' +
+      'focus-visible:bg-overlay-inverse-secondary focus-visible:border-2 focus-visible:border-brand-inverse focus-visible:text-brand-inverse-secondary ' +
+      'active:bg-overlay-inverse-primary';
   } else {
     stateClasses =
-      "bg-neutral-primary border border-brand-primary text-brand-primary cursor-pointer " +
-      "hover:bg-neutral-secondary " +
-      "focus-visible:bg-neutral-secondary focus-visible:border-2 focus-visible:border-brand-primary " +
-      "active:bg-neutral-secondary";
+      'bg-neutral-primary border border-brand-primary text-brand-primary cursor-pointer ' +
+      'hover:bg-neutral-secondary ' +
+      'focus-visible:bg-neutral-secondary focus-visible:border-2 focus-visible:border-brand-primary ' +
+      'active:bg-neutral-secondary';
   }
 
   return (
@@ -79,16 +83,16 @@ export function Button({
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       className={[
-        "flex items-center justify-center outline-none transition-colors",
+        'flex items-center justify-center outline-none transition-colors',
         radius,
         px,
-        "py-2",
+        py,
         gap,
         textCls,
-        "font-picky-sans font-semibold whitespace-nowrap",
+        'font-picky-sans font-semibold whitespace-nowrap',
         stateClasses,
-        className ?? "",
-      ].join(" ")}
+        className ?? '',
+      ].join(' ')}
     >
       {iconLeft}
       {children && <span>{children}</span>}

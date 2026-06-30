@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { usePickyStore } from "@/store/usePickyStore";
 import { Logo } from "@/components/Logo";
 import { NotificationFab } from "@/components/NotificationFab";
@@ -13,6 +14,7 @@ import { ViewAllButton } from "@/components/ViewAllButton";
 import { EarlSaysCard } from "@/components/EarlSaysCard";
 
 export default function Home() {
+  const router = useRouter();
   const {
     userName,
     tonightsMeal,
@@ -46,6 +48,7 @@ export default function Home() {
           title={tonightsMeal.name}
           tags={tonightsMeal.tags}
           isTonight={isTonight}
+          onViewRecipe={() => router.push(`/recipe/${tonightsMeal.id}`)}
         />
 
         {/* Greeting */}
@@ -112,6 +115,7 @@ export default function Home() {
               {familyFavorites.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
+                  id={recipe.id}
                   imageUrl={recipe.imageUrl}
                   name={recipe.name}
                   cookTime={recipe.cookTime}
