@@ -48,11 +48,11 @@ export function BottomNav({ activeTab = "home", className }: BottomNavProps) {
       className={`fixed bottom-0 left-0 right-0 flex h-[93px] items-start border-t border-neutral-primary bg-neutral-primary pb-4 ${className ?? ""}`}
     >
       <NavButton icon={<HomeIcon />} label="Home" isActive={activeTab === "home"} href="/" />
-      <NavButton icon={<PlannerIcon />} label="Planner" isActive={activeTab === "planner"} href="#" />
+      <NavButton icon={<PlannerIcon />} label="Planner" isActive={activeTab === "planner"} href="/planner" />
 
       {/* Ask Earl — center FAB column; label pinned to bottom matching NavButton baseline */}
      <div className="relative flex flex-1 flex-col h-full items-center justify-center min-w-[60px] gap-1">
-        <a href="#" className="absolute left-1/2 -translate-x-1/2 -top-5 flex items-center justify-center size-[52.813px] rounded-full bg-brand-primary drop-shadow-[0px_20px_25px_rgba(44,2,56,0.09),0px_4px_7px_rgba(44,2,56,0.15)] cursor-pointer p-2">
+        <a href="/earl" className="absolute left-1/2 -translate-x-1/2 -top-5 flex items-center justify-center size-[52.813px] rounded-full bg-brand-primary drop-shadow-[0px_20px_25px_rgba(44,2,56,0.09),0px_4px_7px_rgba(44,2,56,0.15)] cursor-pointer p-2">
           {/* 6-layer Earl Logo — exact Figma layer structure, 36×40px container */}
           <div className="h-[40px] relative shrink-0 w-[36px]">
             <div className="absolute inset-[2.49%_44.71%_15.81%_2.69%]">
@@ -86,7 +86,7 @@ export function BottomNav({ activeTab = "home", className }: BottomNavProps) {
       </div>
 
       <NavButton icon={<DiscoverIcon />} label="Discover" isActive={activeTab === "discover"} href="/discover" />
-      <NavButton icon={<FamilyIcon />} label="My Family" isActive={activeTab === "family"} href="#" />
+      <NavButton icon={<FamilyIcon />} label="My Family" isActive={activeTab === "family"} href="/family" />
     </div>
   );
 }

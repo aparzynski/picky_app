@@ -15,6 +15,11 @@ type RecipeCardProps = {
   tags: string[];
   className?: string;
   onViewMore?: () => void;
+  // Chat embed props — used when size='medium'
+  size?: 'small' | 'medium';
+  serves?: number;
+  rating?: number;
+  calories?: number;
 };
 
 const ChevronIcon = (
@@ -33,6 +38,10 @@ export function RecipeCard({
   tags,
   className,
   onViewMore,
+  size,
+  serves,
+  rating,
+  calories,
 }: RecipeCardProps) {
   const router = useRouter();
   const outerClass = `relative min-w-[170px] rounded-[var(--m,12px)] bg-neutral-primary shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] flex flex-col ${className ?? ""}`;
@@ -77,6 +86,27 @@ export function RecipeCard({
             <Tag key={tag} type="inverse2" label={tag} />
           ))}
         </div>
+
+        {/* Expanded meta row — shown when size='medium' and at least one meta value provided */}
+        {size === 'medium' && (serves !== undefined || rating !== undefined || calories !== undefined) && (
+          <div className="flex items-center gap-3 pt-1">
+            {serves !== undefined && (
+              <span className="font-picky-sans font-normal text-[12px] leading-[1.4] text-neutral-tertiary">
+                {serves} servings
+              </span>
+            )}
+            {rating !== undefined && (
+              <span className="font-picky-sans font-normal text-[12px] leading-[1.4] text-neutral-tertiary">
+                ★ {rating.toFixed(1)}
+              </span>
+            )}
+            {calories !== undefined && (
+              <span className="font-picky-sans font-normal text-[12px] leading-[1.4] text-neutral-tertiary">
+                {calories} kcal
+              </span>
+            )}
+          </div>
+        )}
 
         {/* View Recipe button */}
         <Button

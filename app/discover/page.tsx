@@ -76,7 +76,7 @@ export default function DiscoverPage() {
       )}
 
       {/* Scrollable body */}
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-24">
+      <div className="flex-1 min-h-0 overflow-y-auto bg-neutral-secondary overflow-x-hidden pb-24">
 
         {/* Discover categories (658:15791–658:15795) */}
         {discoverCategories.map((category) => (

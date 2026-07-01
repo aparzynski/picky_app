@@ -1,5 +1,19 @@
 import { create } from 'zustand'
 
+export type FamilyMember = {
+  id: string
+  name: string
+  role: 'Parent' | 'Teen' | 'Kid' | 'Baby'
+  age: string
+  initials: string
+  avatarColor: 'purple' | 'blue' | 'orange' | 'green'
+  dislikes: string[]
+  preferences: string[]
+  goals: string[]
+  favoriteRecipeIds: string[]
+  savedRecipeIds: string[]
+}
+
 export type Ingredient = {
   name: string
   state: 'in pantry' | 'missing item' | 'added to grocery list'
@@ -53,6 +67,8 @@ type PickyState = {
   isTonight: boolean
   weekTiles: DayTile[]
   familyFavorites: Recipe[]
+  familyFavoriteIds: string[]
+  familyMembers: FamilyMember[]
   groceryItemCount: number
   recipesCount: number
   expiredItemCount: number
@@ -118,6 +134,87 @@ export const usePickyStore = create<PickyState>(() => ({
     { id: 'r2', name: 'Silky Butter Pasta',      description: "Lily's safe food.",     cookTime: 15, serves: 6, tags: ['Lily-Approved 💜'], imageUrl: '/mock/r2.jpg'    },
     { id: 'r3', name: 'Veggie Stir-Fry',     description: 'Mia-friendly, fully vegan.', cookTime: 25, serves: 6, tags: ['Vegan'],         imageUrl: '/mock/r3.jpg'  },
     { id: 'r4', name: 'Meatloaf & Potatoes', description: "David's pick.",          cookTime: 55, serves: 6, tags: ['Hearty'],         imageUrl: '/mock/r4.jpg' },
+  ],
+  familyFavoriteIds: ['r2', 'd18', 'd19', 'd1', 'r3', 'd20'],
+  familyMembers: [
+    {
+      id: 'sarah',
+      name: 'Sarah (You)',
+      role: 'Parent',
+      age: '38',
+      initials: 'S',
+      avatarColor: 'purple',
+      dislikes: ['🚫 Onions'],
+      preferences: ['❤️ Sushi'],
+      goals: ['🥗 Balanced Diet', '💪 High Protein'],
+      favoriteRecipeIds: ['r1', 'r5', 'd2', 'd4'],
+      savedRecipeIds: ['d9', 'd10', 'd13', 'd16'],
+    },
+    {
+      id: 'david',
+      name: 'David',
+      role: 'Parent',
+      age: '41',
+      initials: 'D',
+      avatarColor: 'blue',
+      dislikes: [],
+      preferences: [],
+      goals: ['💪 High Protein', '🥩 Meat Lover'],
+      favoriteRecipeIds: ['r4', 'd5', 'd6', 'd8'],
+      savedRecipeIds: ['d7', 'd11', 'd4', 'd13'],
+    },
+    {
+      id: 'mia',
+      name: 'Mia',
+      role: 'Teen',
+      age: '14',
+      initials: 'M',
+      avatarColor: 'orange',
+      dislikes: [],
+      preferences: ['🥗 Vegan'],
+      goals: ['🌱 Plant-Based', '🥗 More Veggies'],
+      favoriteRecipeIds: ['r3', 'd16', 'd10', 'd3'],
+      savedRecipeIds: ['d2', 'd9', 'd15', 'd14'],
+    },
+    {
+      id: 'noah',
+      name: 'Noah',
+      role: 'Kid',
+      age: '6',
+      initials: 'N',
+      avatarColor: 'green',
+      dislikes: ['🚫 Peanuts'],
+      preferences: ['❤️ Ketchup'],
+      goals: ['🌟 Try new foods', '🥦 Eat more veggies'],
+      favoriteRecipeIds: ['r5', 'd1', 'd17', 'd19'],
+      savedRecipeIds: ['d18', 'd20', 'r2', 'd7'],
+    },
+    {
+      id: 'lily',
+      name: 'Lily',
+      role: 'Kid',
+      age: '3',
+      initials: 'L',
+      avatarColor: 'orange',
+      dislikes: ['🥦 Broccoli', '🧅 Onions'],
+      preferences: ['❤️ Plain Pasta', '🧀 Cheese', '🌾 Soft foods', '🚫 Nut-Free', '🌾 Gluten-Free', '🌶️ No spicy', '🥛 Dairy-Free', '🍬 Low sugar', '🫘 No beans'],
+      goals: ['🌟 Try new foods', '🥗 More vegetables'],
+      favoriteRecipeIds: ['d18', 'd19', 'd20', 'lily1', 'lily2', 'lily3'],
+      savedRecipeIds: ['d17', 'lily4', 'lily5', 'lily6', 'lily7', 'lily8'],
+    },
+    {
+      id: 'ethan',
+      name: 'Ethan',
+      role: 'Baby',
+      age: '4 months',
+      initials: 'E',
+      avatarColor: 'purple',
+      dislikes: [],
+      preferences: ['🍼 Breast-fed'],
+      goals: [],
+      favoriteRecipeIds: [],
+      savedRecipeIds: [],
+    },
   ],
   groceryItemCount: 14,
   recipesCount: 14,
@@ -672,6 +769,46 @@ export const usePickyStore = create<PickyState>(() => ({
         'Flip and cook 1–2 more minutes until golden.',
         'Serve with butter and maple syrup.',
       ],
+    },
+    lily1: {
+      id: 'lily1', name: 'Baked Potato Wedges', cookTime: 35, serves: 4, imageUrl: '/mock/lily1.jpg',
+      description: 'Crispy golden potato wedges baked until tender inside and crunchy outside. A simple, crowd-pleasing side dish.',
+      tags: ['🥔 Kid Favorite', '🔥 Oven', 'Simple'],
+    },
+    lily2: {
+      id: 'lily2', name: 'Cheese Quesadilla Triangles', cookTime: 10, serves: 2, imageUrl: '/mock/lily2.jpg',
+      description: 'Golden crispy quesadillas filled with melted cheese, cut into fun triangles kids love to dip.',
+      tags: ['🧀 Kid Favorite', 'Quick', 'Stovetop'],
+    },
+    lily3: {
+      id: 'lily3', name: 'Golden Honey Toast', cookTime: 5, serves: 1, imageUrl: '/mock/lily3.jpg',
+      description: 'Thick-cut toast drizzled with golden honey — a sweet and satisfying snack that feels like a treat.',
+      tags: ['🍯 Sweet', 'Quick', 'Breakfast'],
+    },
+    lily4: {
+      id: 'lily4', name: 'Creamy Mac and Cheese', cookTime: 20, serves: 4, imageUrl: '/mock/lily4.jpg',
+      description: 'Extra creamy stovetop mac and cheese made with real cheddar. The ultimate kid comfort food.',
+      tags: ['🧀 Kid Favorite', 'Comfort', 'Stovetop'],
+    },
+    lily5: {
+      id: 'lily5', name: 'Star Pasta in Golden Broth', cookTime: 15, serves: 2, imageUrl: '/mock/lily5.jpg',
+      description: 'Tiny star-shaped pasta floating in a mild golden chicken broth — gentle and comforting for little ones.',
+      tags: ['⭐ Kid Favorite', 'Gentle', 'Soup'],
+    },
+    lily6: {
+      id: 'lily6', name: 'Golden Cheesy Breadsticks', cookTime: 15, serves: 4, imageUrl: '/mock/lily6.jpg',
+      description: 'Soft breadsticks baked with a cheesy top and golden crust — perfect for dipping or snacking.',
+      tags: ['🧀 Kid Favorite', 'Snack', 'Baked'],
+    },
+    lily7: {
+      id: 'lily7', name: 'Mini Pizza Bites', cookTime: 15, serves: 4, imageUrl: '/mock/lily7.jpg',
+      description: 'Bite-sized pizza rounds with tomato sauce and melted mozzarella — made extra plain for picky eaters.',
+      tags: ['🍕 Kid Favorite', 'Quick', 'Oven'],
+    },
+    lily8: {
+      id: 'lily8', name: 'Banana Oatmeal', cookTime: 10, serves: 1, imageUrl: '/mock/lily8.jpg',
+      description: 'Warm creamy oatmeal naturally sweetened with mashed ripe banana. Gentle, filling, and baby-friendly.',
+      tags: ['🍌 Kid Friendly', 'Breakfast', 'Gentle'],
     },
     r5: {
       id: 'r5',

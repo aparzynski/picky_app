@@ -7,6 +7,7 @@ const firaSans = Fira_Sans({
   variable: "--font-fira-sans",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 const playpenSans = Playpen_Sans({

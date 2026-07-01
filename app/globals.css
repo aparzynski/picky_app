@@ -200,6 +200,16 @@
   --font-sans: var(--font-fira-sans);
 }
 
+/* Avatar primitive color utilities */
+@utility bg-purple-10  { background-color: #f8f2fa; }
+@utility text-purple-80 { color: #7c019d; }
+@utility bg-blue-10    { background-color: #ebf0f5; }
+@utility text-blue-80  { color: #0152a5; }
+@utility bg-orange-10  { background-color: #f7f1e9; }
+@utility text-orange-70 { color: #c4700a; }
+@utility bg-green-10   { background-color: #f1faf0; }
+@utility text-green-80  { color: #0e9900; }
+
 /* ─── App shell ──────────────────────────────────────────────────────────── */
 :root { --app-scale: 1; }
 
