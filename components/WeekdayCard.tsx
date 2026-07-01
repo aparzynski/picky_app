@@ -5,6 +5,7 @@ type WeekdayCardProps = {
   emojis?: string[];
   mealCount: number;
   currentDay?: boolean;
+  onClick?: () => void;
   className?: string;
 };
 
@@ -13,6 +14,7 @@ export function WeekdayCard({
   emojis = [],
   mealCount,
   currentDay = false,
+  onClick,
   className,
 }: WeekdayCardProps) {
   const isEmpty = mealCount === 0;
@@ -20,6 +22,7 @@ export function WeekdayCard({
   if (isEmpty) {
     return (
       <div
+        onClick={onClick}
         className={`relative flex flex-col items-center justify-between min-w-[72px] self-stretch shrink-0 rounded-[var(--l,16px)] border-2 border-dashed border-neutral-primary px-[6px] py-[14px] cursor-pointer ${className ?? ""}`}
       >
         <span className="font-picky-sans font-bold text-[13px] leading-[1.5] text-neutral-disabled">
@@ -40,6 +43,7 @@ export function WeekdayCard({
   if (currentDay) {
     return (
       <div
+        onClick={onClick}
         className={`relative flex flex-col items-center justify-between min-w-[72px] self-stretch shrink-0 rounded-[var(--l,16px)] border border-brand-primary bg-brand-primary drop-shadow-[0px_4px_7px_rgba(44,2,56,0.15)] px-[5px] py-[13px] cursor-pointer ${className ?? ""}`}
       >
         <div className="flex flex-col items-start pb-2">
@@ -64,6 +68,7 @@ export function WeekdayCard({
 
   return (
     <div
+      onClick={onClick}
       className={`relative flex flex-col items-center justify-between min-w-[72px] self-stretch shrink-0 rounded-[var(--l,16px)] border border-neutral-primary bg-neutral-secondary px-[3px] py-[13px] cursor-pointer ${className ?? ""}`}
     >
       <div className="flex flex-col items-start pb-2">

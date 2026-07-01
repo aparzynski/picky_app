@@ -64,7 +64,7 @@ export default function Home() {
             <h3 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
               This Week
             </h3>
-            <ViewAllButton />
+            <ViewAllButton onClick={() => router.push('/planner')} />
           </div>
           {/* TilesWrapper: pt-8 pb-16 wraps the inner tiles row (py-12) — matches Figma nesting */}
          <div className="pt-2 pb-4 overflow-hidden w-full pr-5">
@@ -76,6 +76,7 @@ export default function Home() {
                   emojis={tile.emojis}
                   mealCount={tile.mealCount}
                   currentDay={tile.isToday}
+                  onClick={() => router.push(`/planner/${tile.dayLabel.toLowerCase()}`)}
                 />
               ))}
             </div>
