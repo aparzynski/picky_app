@@ -6,6 +6,9 @@ const KNOWN_RECIPE_IDS = [
   'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10',
   'd11', 'd12', 'd13', 'd14', 'd15', 'd16', 'd17', 'd18', 'd19', 'd20',
   'lily1', 'lily2', 'lily3', 'lily4', 'lily5', 'lily6', 'lily7', 'lily8',
+  'banana-pancakes', 'hidden-veggie-mac',
+  'pw1', 'pw2', 'pw3', 'pw4', 'pw5', 'pw6', 'pw7', 'pw8', 'pw9',
+  'pw10', 'pw11', 'pw12', 'pw13', 'pw14', 'pw15', 'pw16', 'pw17',
 ];
 
 const SYSTEM_PROMPT = `You are Earl, the Martin family's warm and knowledgeable meal planning assistant built into the Picky app.

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { usePickyStore } from '@/store/usePickyStore';
 import { StatusBar } from '@/components/StatusBar';
 import { BottomNav } from '@/components/BottomNav';
@@ -11,6 +11,21 @@ import { RecipeAccordion } from '@/components/RecipeAccordion';
 import { RecipeIngredient } from '@/components/RecipeIngredient';
 import { Tab } from '@/components/Tab';
 import { TransparentOverlayButton } from '@/components/TransparentOverlayButton';
+const FAMILY_INFO: Record<string, { name: string; initials: string }> = {
+  S: { name: 'Sarah', initials: 'S' },
+  D: { name: 'David', initials: 'D' },
+  M: { name: 'Mia',   initials: 'M' },
+  N: { name: 'Noah',  initials: 'N' },
+  L: { name: 'Lily',  initials: 'L' },
+};
+
+const EATING_AVATAR_STYLES: Record<string, { bg: string; text: string }> = {
+  S: { bg: 'bg-purple-10',      text: 'text-purple-80' },
+  D: { bg: 'bg-blue-10',        text: 'text-blue-80' },
+  M: { bg: 'bg-orange-10',      text: 'text-orange-70' },
+  N: { bg: 'bg-green-10',       text: 'text-green-80' },
+  L: { bg: 'bg-brand-secondary', text: 'text-purple-80' },
+};
 
 function ShoppingCartIcon() {
   return (
@@ -29,8 +44,16 @@ function ShoppingCartIcon() {
 export default function RecipePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { recipes } = usePickyStore();
   const recipe = recipes[id];
+
+  const isSwapMode = searchParams.get('mode') === 'swap';
+  const day = searchParams.get('day') ?? '';
+  const familyIds = (searchParams.get('family') ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => s in FAMILY_INFO);
 
   const [serves, setServes] = useState(recipe?.serves ?? 4);
   const [saved, setSaved] = useState(false);
@@ -85,9 +108,37 @@ export default function RecipePage() {
             {recipe.description}
           </p>
 
-          {/* Add to this Week — Button Type=Primary Size=Large (full width) */}
-          <Button variant="primary" size="lg" className="w-full">
-            Add to this Week
+          {/* Planned day + who's eating — only shown in swap mode with family context */}
+          {isSwapMode && familyIds.length > 0 && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center bg-brand-quinary px-3 py-1 rounded-full shrink-0">
+                <span className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary">
+                  🗓️ {day ? `Planned for ${day}` : 'Planned for this Week'}
+                </span>
+              </div>
+              <div className="flex items-center">
+                {familyIds.map((fid, i) => {
+                  const style = EATING_AVATAR_STYLES[fid];
+                  if (!style) return null;
+                  const isLast = i === familyIds.length - 1;
+                  return (
+                    <div
+                      key={fid}
+                      className={`${style.bg} border border-brand-primary flex items-center justify-center overflow-clip rounded-full shrink-0 size-6 ${isLast ? '' : '-mr-2.5'}`}
+                    >
+                      <span className={`font-picky-hand font-bold text-[10px] leading-[1.4] tracking-[0.1px] ${style.text}`}>
+                        {fid}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Primary CTA — "Swap Meal" when opened from planner, "Add to this Week" otherwise */}
+          <Button variant={isSwapMode ? 'secondary' : 'primary'} size="lg" className="w-full">
+            {isSwapMode ? 'Swap Meal' : 'Add to this Week'}
           </Button>
 
           {/* Recipe Accordions (Figma 675:7439) */}

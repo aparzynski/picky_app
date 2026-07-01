@@ -17,6 +17,8 @@ type Meal = {
   emoji: string;
   cookTime: number;
   hasMeal: boolean;
+  recipeId?: string;
+  family?: string[];
 };
 
 type PlannerDay = {
@@ -40,12 +42,14 @@ const FAMILY: { initials: string; color: AvatarColor }[] = [
   { initials: 'L', color: 'orange' },
 ];
 
+const FAMILY_BY_INITIAL = Object.fromEntries(FAMILY.map((f) => [f.initials, f]));
+
 function noMeal(type: MealType): Meal {
   return { type, name: '', emoji: '', cookTime: 0, hasMeal: false };
 }
 
-function hasMeal(type: MealType, name: string, emoji: string, cookTime: number): Meal {
-  return { type, name, emoji, cookTime, hasMeal: true };
+function hasMeal(type: MealType, name: string, emoji: string, cookTime: number, recipeId?: string, family?: string[]): Meal {
+  return { type, name, emoji, cookTime, hasMeal: true, recipeId, family };
 }
 
 const PAST_DAYS: PlannerDay[] = [
@@ -56,9 +60,9 @@ const PAST_DAYS: PlannerDay[] = [
     isPast: true,
     isToday: false,
     meals: [
-      hasMeal('BREAKFAST', 'Berry Overnight Oats', '🍓', 5),
-      hasMeal('LUNCH', 'Fresh Garden Caprese', '🍅', 10),
-      hasMeal('DINNER', 'Honey Teriyaki Salmon', '🐟', 25),
+      hasMeal('BREAKFAST', 'Strawberry Chia Pudding', '🍓', 5,  'pw1', ['S','D','M','N','L']),
+      hasMeal('LUNCH',     'Turkey & Avocado Wrap',   '🥑', 10, 'pw2', ['S','M']),
+      hasMeal('DINNER',    'Lemon Herb Sheet Pan Chicken', '🍋', 35, 'pw3', ['S','D','N','L']),
     ],
   },
 ];
@@ -71,9 +75,9 @@ const WEEKDAY_DAYS: PlannerDay[] = [
     isPast: false,
     isToday: true,
     meals: [
-      noMeal('BREAKFAST'),
-      hasMeal('LUNCH', 'Hidden Veggie Mac & Cheese', '🧀', 25),
-      hasMeal('DINNER', 'Creamy Tuscan Pasta', '🍝', 35),
+      hasMeal('BREAKFAST', 'Blueberry Smoothie Bowl',       '🫐', 10, 'pw4', ['S','D','N','L']),
+      hasMeal('LUNCH',     'Tomato Soup & Grilled Cheese',  '🍅', 20, 'pw5', ['S','N','L']),
+      hasMeal('DINNER',    'Creamy Tuscan Pasta',            '🍝', 35, 'r1',  ['S','D','M','N','L']),
     ],
   },
   {
@@ -83,9 +87,9 @@ const WEEKDAY_DAYS: PlannerDay[] = [
     isPast: false,
     isToday: false,
     meals: [
-      noMeal('BREAKFAST'),
-      noMeal('LUNCH'),
-      hasMeal('DINNER', 'Crispy Baked Nuggets', '🍗', 20),
+      hasMeal('BREAKFAST', 'Cheesy Egg Muffins',            '🧀', 25,  'pw7', ['S','D']),
+      hasMeal('LUNCH',     'Rainbow Sushi Bowl',            '🍱', 15,  'pw8', ['S','M']),
+      hasMeal('DINNER',    'Honey Garlic Salmon Bowls',     '🐟', 30,  'pw6', ['S','D','N','L']),
     ],
   },
   {
@@ -94,7 +98,11 @@ const WEEKDAY_DAYS: PlannerDay[] = [
     date: 'Jul 2',
     isPast: false,
     isToday: false,
-    meals: [noMeal('BREAKFAST'), noMeal('LUNCH'), noMeal('DINNER')],
+    meals: [
+      hasMeal('BREAKFAST', 'Coconut Granola Parfait',         '🥥', 5,  'pw10', ['S','D','M','N','L']),
+      hasMeal('LUNCH',     'Turkey Club Sandwich',            '🥪', 10, 'pw11', ['S','D']),
+      hasMeal('DINNER',    'Slow Cooker Pulled Pork Tacos',  '🌮', 360, 'pw9', ['S','D','N','L']),
+    ],
   },
   {
     id: 'fri',
@@ -102,7 +110,11 @@ const WEEKDAY_DAYS: PlannerDay[] = [
     date: 'Jul 3',
     isPast: false,
     isToday: false,
-    meals: [noMeal('BREAKFAST'), noMeal('LUNCH'), noMeal('DINNER')],
+    meals: [
+      hasMeal('BREAKFAST', 'Cinnamon French Toast Sticks', '🍞', 25, 'pw13', ['S','D','M','N','L']),
+      hasMeal('LUNCH',     'Sesame Noodle Salad',          '🍜', 15, 'pw14', ['S','M']),
+      hasMeal('DINNER',    'Pan-Seared Tilapia & Asparagus', '🐟', 25, 'pw12', ['S','D','M','N','L']),
+    ],
   },
 ];
 
@@ -113,7 +125,11 @@ const WEEKEND_DAYS: PlannerDay[] = [
     date: 'Jul 4',
     isPast: false,
     isToday: false,
-    meals: [noMeal('BREAKFAST'), noMeal('LUNCH'), noMeal('DINNER')],
+    meals: [
+      noMeal('BREAKFAST'),
+      noMeal('LUNCH'),
+      hasMeal('DINNER', '4th of July Backyard Burgers', '🍔', 30, 'pw16', ['S','D','M','N','L']),
+    ],
   },
   {
     id: 'sun',
@@ -121,7 +137,11 @@ const WEEKEND_DAYS: PlannerDay[] = [
     date: 'Jul 5',
     isPast: false,
     isToday: false,
-    meals: [noMeal('BREAKFAST'), noMeal('LUNCH'), noMeal('DINNER')],
+    meals: [
+      noMeal('BREAKFAST'),
+      noMeal('LUNCH'),
+      hasMeal('DINNER', 'Sunday Roast Chicken', '🍗', 90, 'pw17', ['S','D','M','N','L']),
+    ],
   },
 ];
 
@@ -138,16 +158,17 @@ function EditIcon() {
   );
 }
 
-function TrashIcon() {
+function SwapIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M2.5 5h15M6.667 5V3.333a1.667 1.667 0 0 1 1.666-1.666h3.334a1.667 1.667 0 0 1 1.666 1.666V5m2.5 0v11.667a1.667 1.667 0 0 1-1.666 1.666H5.833a1.667 1.667 0 0 1-1.666-1.666V5h11.667Z"
+      <path d="M2.5 7.5h12.5M12.5 5l2.5 2.5-2.5 2.5M17.5 12.5H5M7.5 10l-2.5 2.5 2.5 2.5"
         stroke="currentColor" strokeWidth="1.667" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function MealRow({ meal, isPast, isLast }: { meal: Meal; isPast: boolean; isLast: boolean }) {
+function MealRow({ meal, isPast, isLast, dayName }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string }) {
+  const router = useRouter();
   const borderClass = isLast
     ? ''
     : isPast
@@ -156,6 +177,9 @@ function MealRow({ meal, isPast, isLast }: { meal: Meal; isPast: boolean; isLast
 
   if (meal.hasMeal) {
     const cardBg = isPast ? 'bg-neutral-secondary' : 'bg-brand-tertiary';
+    const members = meal.family
+      ? meal.family.map((id) => FAMILY_BY_INITIAL[id]).filter(Boolean)
+      : FAMILY;
     return (
       <div className={`flex flex-col gap-2 pt-1 pb-2 ${borderClass}`}>
         <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
@@ -164,15 +188,28 @@ function MealRow({ meal, isPast, isLast }: { meal: Meal; isPast: boolean; isLast
         <div className={`flex items-center rounded-[8px] px-3 py-3 gap-3 ${cardBg}`}>
           <span className="text-[24px] leading-8 shrink-0">{meal.emoji}</span>
           <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <span className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate">
-              {meal.name}
-            </span>
+            {meal.recipeId ? (
+              <button
+                onClick={() => {
+                  const ids = (meal.family ?? FAMILY.map((f) => f.initials)).join(',');
+                  const swapParam = isPast ? '' : '&mode=swap';
+                  router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}${swapParam}`);
+                }}
+                className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate text-left"
+              >
+                {meal.name}
+              </button>
+            ) : (
+              <span className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate">
+                {meal.name}
+              </span>
+            )}
             <div className="flex items-center gap-2">
               <span className="text-[12px] font-normal font-picky-sans text-neutral-tertiary leading-[1.4]">
                 ⏱️ {meal.cookTime} min
               </span>
               <div className="flex items-center">
-                {FAMILY.map((a, i) => (
+                {members.map((a, i) => (
                   <Avatar
                     key={i}
                     initials={a.initials}
@@ -186,7 +223,7 @@ function MealRow({ meal, isPast, isLast }: { meal: Meal; isPast: boolean; isLast
           </div>
           <div className="flex items-center gap-3 shrink-0 text-neutral-tertiary">
             <button aria-label="Edit meal"><EditIcon /></button>
-            <button aria-label="Remove meal"><TrashIcon /></button>
+            <button aria-label="Swap meal"><SwapIcon /></button>
           </div>
         </div>
       </div>
@@ -203,17 +240,7 @@ function MealRow({ meal, isPast, isLast }: { meal: Meal; isPast: boolean; isLast
         <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
           {meal.type}
         </span>
-        <div className="flex items-center">
-          {FAMILY.map((a, i) => (
-            <Avatar
-              key={i}
-              initials={a.initials}
-              color={a.color}
-              size={24}
-              className={`border border-brand-primary ${i > 0 ? '-ml-[10px]' : ''}`}
-            />
-          ))}
-        </div>
+        
       </div>
       <span className={`text-[12px] font-semibold font-picky-sans ${noMealColor} tracking-[0.02em] leading-[1.4] text-right max-w-[40%]`}>
         {noMealLabel}
@@ -223,19 +250,23 @@ function MealRow({ meal, isPast, isLast }: { meal: Meal; isPast: boolean; isLast
 }
 
 function WeekdayCardEl({ day }: { day: PlannerDay }) {
+  const router = useRouter();
   const cardBg = day.isPast ? 'bg-neutral-tertiary' : 'bg-neutral-primary';
   return (
     <div className={`${cardBg} rounded-[16px] px-4 py-3 flex flex-col`}>
       {/* Header */}
       <div className="flex items-center justify-between h-6">
-        <div className="flex items-center gap-2">
+        <button
+          onClick={() => router.push(`/planner/${day.id}`)}
+          className="flex items-center gap-2"
+        >
           <span className="text-[16px] font-semibold font-picky-sans text-neutral-primary leading-[1.5]">
             {day.name}
           </span>
           <span className="text-[12px] font-normal font-picky-sans text-neutral-tertiary leading-[1.4]">
             {day.date}
           </span>
-        </div>
+        </button>
         {day.isToday && (
           <span className="bg-brand-primary text-brand-inverse text-[12px] font-normal font-picky-sans leading-[1.4] rounded-full px-2 py-0.5">
             Today
@@ -250,6 +281,7 @@ function WeekdayCardEl({ day }: { day: PlannerDay }) {
             meal={meal}
             isPast={day.isPast}
             isLast={i === day.meals.length - 1}
+            dayName={day.name}
           />
         ))}
       </div>
@@ -338,16 +370,18 @@ export default function PlannerPage() {
 
           <button
             className="flex items-center justify-center size-9 rounded-full text-neutral-secondary"
-            aria-label="Add"
+            aria-label="More options"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.667" strokeLinecap="round" />
+              <circle cx="10" cy="4" r="1.25" fill="currentColor" />
+              <circle cx="10" cy="10" r="1.25" fill="currentColor" />
+              <circle cx="10" cy="16" r="1.25" fill="currentColor" />
             </svg>
           </button>
         </div>
 
         {/* Row 2: date range nav */}
-        <div className="flex items-center gap-2 h-[45px] px-4 border-b border-neutral-primary">
+        <div className="flex items-center justify-center gap-2 h-[45px] px-4 border-b border-neutral-primary">
           <button className="text-neutral-secondary" aria-label="Previous week">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round" />
@@ -362,6 +396,8 @@ export default function PlannerPage() {
             </svg>
           </button>
         </div>
+
+        
       </div>
 
       {/* Scrollable body */}
