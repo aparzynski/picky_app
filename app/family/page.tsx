@@ -139,6 +139,7 @@ export default function FamilyPage() {
                 name={recipe.name}
                 cookTime={recipe.cookTime}
                 tags={recipe.tags}
+                saved
               />
             ))}
           </div>
