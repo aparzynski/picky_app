@@ -42,7 +42,7 @@ function FamilyIcon() {
   );
 }
 
-export function BottomNav({ activeTab = "home", className }: BottomNavProps) {
+export function BottomNav({ activeTab, className }: BottomNavProps) {
   return (
     <div
       className={`fixed bottom-0 left-0 right-0 flex h-[93px] items-start border-t border-neutral-primary bg-neutral-primary pb-4 ${className ?? ""}`}
