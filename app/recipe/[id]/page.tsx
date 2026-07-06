@@ -221,10 +221,21 @@ export default function RecipePage() {
 
             {activeTab === 'instructions' && (
               <div className="flex flex-col gap-5">
-                {recipe.instructions?.map((step, i) => {
-                  const stepCount = recipe.instructions?.length ?? 1;
-                  const stepTime = Math.max(1, Math.round(recipe.cookTime / stepCount));
-                  return (
+                {(() => {
+                  const steps = recipe.instructions ?? [];
+                  const n = steps.length;
+                  const stepTimes: number[] = (() => {
+                    if (n === 0) return [];
+                    if (n === 1) return [recipe.cookTime];
+                    const mid = (n - 1) / 2;
+                    const weights = steps.map((_, i) => 1 + (1 - Math.abs(i - mid) / mid));
+                    const totalWeight = weights.reduce((s, w) => s + w, 0);
+                    const rounded = weights.map(w => Math.max(1, Math.round((w / totalWeight) * recipe.cookTime)));
+                    const diff = recipe.cookTime - rounded.reduce((s, t) => s + t, 0);
+                    if (diff !== 0) rounded[rounded.indexOf(Math.max(...rounded))] += diff;
+                    return rounded;
+                  })();
+                  return steps.map((step, i) => (
                     <div key={i} className="flex gap-4 items-start">
                       {/* Step number — purple circle */}
                       <div className="bg-brand-primary flex items-center justify-center rounded-full shrink-0 size-6">
@@ -243,13 +254,13 @@ export default function RecipePage() {
                             <path d="M8 5.333V8l1.667 1.667" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                           <span className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary">
-                            {stepTime} min
+                            {stepTimes[i]} min
                           </span>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
+                  ));
+                })()}
               </div>
             )}
           </div>
