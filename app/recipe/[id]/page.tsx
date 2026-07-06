@@ -45,7 +45,7 @@ export default function RecipePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { recipes, savedRecipeIds } = usePickyStore();
+  const { recipes, savedRecipeIds, familyFavoriteIds } = usePickyStore();
   const recipe = recipes[id];
 
   const isSwapMode = searchParams.get('mode') === 'swap';
@@ -57,7 +57,7 @@ export default function RecipePage() {
     .filter((s) => s in FAMILY_INFO);
 
   const [serves, setServes] = useState(recipe?.serves ?? 4);
-  const [saved, setSaved] = useState(() => savedRecipeIds.includes(id));
+  const [saved, setSaved] = useState(() => savedRecipeIds.includes(id) || familyFavoriteIds.includes(id));
   const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
   const [accordionsExpanded, setAccordionsExpanded] = useState<Record<number, boolean>>({});
 
