@@ -199,7 +199,7 @@ function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPas
   const noMealColor = isPast ? 'text-neutral-disabled' : 'text-brand-primary';
 
   return (
-    <div className={`flex items-center justify-between pt-2 pb-4 ${borderClass}`}>
+    <div className={`flex items-center justify-between pt-2 pb-6 ${borderClass}`}>
       <div className="flex items-center gap-3">
         <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
           {meal.type}
@@ -373,7 +373,7 @@ export default function PlannerPage() {
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto bg-neutral-disabled"
       >
-        <div className="flex flex-col gap-2 px-4 pt-4 pb-[60px]">
+        <div className="flex flex-col gap-2 px-4 pt-4 pb-[100px]">
 
           {/* Past days (scrolled above the fold on first load) */}
           <div className="flex flex-col gap-3">
