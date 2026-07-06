@@ -76,6 +76,7 @@ type PickyState = {
   expiredItemCount: number
   earlNudge: EarlNudge
   discoverCategories: DiscoverCategoryData[]
+  savedRecipeIds: string[]
   recipes: Record<string, Recipe>
 }
 
@@ -235,6 +236,7 @@ export const usePickyStore = create<PickyState>(() => ({
     { id: 'cat-4', title: 'Less Dishes',         recipeIds: ['d13', 'd14', 'd15', 'd16'] },
     { id: 'cat-5', title: 'Saved Recipes',       recipeIds: ['d17', 'd18', 'd19', 'd20'] },
   ],
+  savedRecipeIds: ['d17', 'd18', 'd19', 'd20'],
   recipes: {
     r1: {
       id: 'r1',

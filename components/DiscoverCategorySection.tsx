@@ -5,10 +5,11 @@ import { ViewAllButton } from "./ViewAllButton";
 type DiscoverCategorySectionProps = {
   title: string;
   recipes: Recipe[];
+  savedRecipeIds?: string[];
   onViewMore?: () => void;
 };
 
-export function DiscoverCategorySection({ title, recipes, onViewMore }: DiscoverCategorySectionProps) {
+export function DiscoverCategorySection({ title, recipes, savedRecipeIds = [], onViewMore }: DiscoverCategorySectionProps) {
   return (
     <div className="flex flex-col pt-6 px-4">
       <div className="flex items-baseline justify-between w-full">
@@ -27,6 +28,7 @@ export function DiscoverCategorySection({ title, recipes, onViewMore }: Discover
             name={recipe.name}
             cookTime={recipe.cookTime}
             tags={recipe.tags}
+            saved={savedRecipeIds.includes(recipe.id)}
           />
         ))}
       </div>

@@ -24,7 +24,7 @@ function FilterIcon() {
 }
 
 export default function DiscoverPage() {
-  const { discoverCategories, recipes } = usePickyStore();
+  const { discoverCategories, recipes, savedRecipeIds } = usePickyStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -84,6 +84,7 @@ export default function DiscoverPage() {
             key={category.id}
             title={category.title}
             recipes={category.recipeIds.map((id) => recipes[id]).filter(Boolean)}
+            savedRecipeIds={savedRecipeIds}
           />
         ))}
 

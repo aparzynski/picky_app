@@ -13,6 +13,7 @@ type RecipeCardProps = {
   name: string;
   cookTime: number;
   tags: string[];
+  saved?: boolean;
   className?: string;
   onViewMore?: () => void;
   // Chat embed props — used when size='medium'
@@ -36,6 +37,7 @@ export function RecipeCard({
   name,
   cookTime,
   tags,
+  saved = false,
   className,
   onViewMore,
   size,
@@ -124,6 +126,7 @@ export function RecipeCard({
       {/* Favorite overlay */}
       <TransparentOverlayButton
         size="medium"
+        selected={saved}
         className="absolute top-[11px] right-[10px]"
       />
     </div>
