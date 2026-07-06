@@ -32,8 +32,6 @@ type PlannerDay = {
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
-const WEEK_HEADER = 'Jun 29 – Jul 5';
-
 const FAMILY: { initials: string; color: AvatarColor }[] = [
   { initials: 'S', color: 'purple' },
   { initials: 'D', color: 'blue' },
@@ -52,98 +50,63 @@ function hasMeal(type: MealType, name: string, emoji: string, cookTime: number, 
   return { type, name, emoji, cookTime, hasMeal: true, recipeId, family };
 }
 
-const PAST_DAYS: PlannerDay[] = [
-  {
-    id: 'mon',
-    name: 'Monday',
-    date: 'Jun 29',
-    isPast: true,
-    isToday: false,
-    meals: [
-      hasMeal('BREAKFAST', 'Strawberry Chia Pudding', '🍓', 5,  'pw1', ['S','D','M','N','L']),
-      hasMeal('LUNCH',     'Turkey & Avocado Wrap',   '🥑', 10, 'pw2', ['S','M']),
-      hasMeal('DINNER',    'Lemon Herb Sheet Pan Chicken', '🍋', 35, 'pw3', ['S','D','N','L']),
-    ],
-  },
-];
+// Meals by Mon-based day index (0=Mon … 6=Sun). Tonight's dinner (r1) is
+// injected dynamically onto whichever index matches today.
+const MEALS_BY_DAY_IDX: Record<number, Meal[]> = {
+  0: [hasMeal('BREAKFAST','Strawberry Chia Pudding','🍓',5,'pw1',['S','D','M','N','L']), hasMeal('LUNCH','Turkey & Avocado Wrap','🥑',10,'pw2',['S','M']), hasMeal('DINNER','Lemon Herb Sheet Pan Chicken','🍋',35,'pw3',['S','D','N','L'])],
+  1: [hasMeal('BREAKFAST','Blueberry Smoothie Bowl','🫐',10,'pw4',['S','D','N','L']), hasMeal('LUNCH','Tomato Soup & Grilled Cheese','🍅',20,'pw5',['S','N','L']), hasMeal('DINNER','Creamy Tuscan Pasta','🍝',35,'r1',['S','D','M','N','L'])],
+  2: [hasMeal('BREAKFAST','Cheesy Egg Muffins','🧀',25,'pw7',['S','D']), hasMeal('LUNCH','Rainbow Sushi Bowl','🍱',15,'pw8',['S','M']), hasMeal('DINNER','Honey Garlic Salmon Bowls','🐟',30,'pw6',['S','D','N','L'])],
+  3: [hasMeal('BREAKFAST','Coconut Granola Parfait','🥥',5,'pw10',['S','D','M','N','L']), hasMeal('LUNCH','Turkey Club Sandwich','🥪',10,'pw11',['S','D']), hasMeal('DINNER','Slow Cooker Pulled Pork Tacos','🌮',360,'pw9',['S','D','N','L'])],
+  4: [hasMeal('BREAKFAST','Cinnamon French Toast Sticks','🍞',25,'pw13',['S','D','M','N','L']), hasMeal('LUNCH','Sesame Noodle Salad','🍜',15,'pw14',['S','M']), hasMeal('DINNER','Pan-Seared Tilapia & Asparagus','🐟',25,'pw12',['S','D','M','N','L'])],
+  5: [noMeal('BREAKFAST'), noMeal('LUNCH'), hasMeal('DINNER','4th of July Backyard Burgers','🍔',30,'pw16',['S','D','M','N','L'])],
+  6: [noMeal('BREAKFAST'), noMeal('LUNCH'), hasMeal('DINNER','Sunday Roast Chicken','🍗',90,'pw17',['S','D','M','N','L'])],
+};
 
-const WEEKDAY_DAYS: PlannerDay[] = [
-  {
-    id: 'tue',
-    name: 'Tuesday',
-    date: 'Jun 30',
-    isPast: false,
-    isToday: true,
-    meals: [
-      hasMeal('BREAKFAST', 'Blueberry Smoothie Bowl',       '🫐', 10, 'pw4', ['S','D','N','L']),
-      hasMeal('LUNCH',     'Tomato Soup & Grilled Cheese',  '🍅', 20, 'pw5', ['S','N','L']),
-      hasMeal('DINNER',    'Creamy Tuscan Pasta',            '🍝', 35, 'r1',  ['S','D','M','N','L']),
-    ],
-  },
-  {
-    id: 'wed',
-    name: 'Wednesday',
-    date: 'Jul 1',
-    isPast: false,
-    isToday: false,
-    meals: [
-      hasMeal('BREAKFAST', 'Cheesy Egg Muffins',            '🧀', 25,  'pw7', ['S','D']),
-      hasMeal('LUNCH',     'Rainbow Sushi Bowl',            '🍱', 15,  'pw8', ['S','M']),
-      hasMeal('DINNER',    'Honey Garlic Salmon Bowls',     '🐟', 30,  'pw6', ['S','D','N','L']),
-    ],
-  },
-  {
-    id: 'thu',
-    name: 'Thursday',
-    date: 'Jul 2',
-    isPast: false,
-    isToday: false,
-    meals: [
-      hasMeal('BREAKFAST', 'Coconut Granola Parfait',         '🥥', 5,  'pw10', ['S','D','M','N','L']),
-      hasMeal('LUNCH',     'Turkey Club Sandwich',            '🥪', 10, 'pw11', ['S','D']),
-      hasMeal('DINNER',    'Slow Cooker Pulled Pork Tacos',  '🌮', 360, 'pw9', ['S','D','N','L']),
-    ],
-  },
-  {
-    id: 'fri',
-    name: 'Friday',
-    date: 'Jul 3',
-    isPast: false,
-    isToday: false,
-    meals: [
-      hasMeal('BREAKFAST', 'Cinnamon French Toast Sticks', '🍞', 25, 'pw13', ['S','D','M','N','L']),
-      hasMeal('LUNCH',     'Sesame Noodle Salad',          '🍜', 15, 'pw14', ['S','M']),
-      hasMeal('DINNER',    'Pan-Seared Tilapia & Asparagus', '🐟', 25, 'pw12', ['S','D','M','N','L']),
-    ],
-  },
-];
+const DAY_IDS   = ['mon','tue','wed','thu','fri','sat','sun'] as const;
+const DAY_NAMES = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] as const;
 
-const WEEKEND_DAYS: PlannerDay[] = [
-  {
-    id: 'sat',
-    name: 'Saturday',
-    date: 'Jul 4',
-    isPast: false,
-    isToday: false,
-    meals: [
-      noMeal('BREAKFAST'),
-      noMeal('LUNCH'),
-      hasMeal('DINNER', '4th of July Backyard Burgers', '🍔', 30, 'pw16', ['S','D','M','N','L']),
-    ],
-  },
-  {
-    id: 'sun',
-    name: 'Sunday',
-    date: 'Jul 5',
-    isPast: false,
-    isToday: false,
-    meals: [
-      noMeal('BREAKFAST'),
-      noMeal('LUNCH'),
-      hasMeal('DINNER', 'Sunday Roast Chicken', '🍗', 90, 'pw17', ['S','D','M','N','L']),
-    ],
-  },
-];
+function buildWeek() {
+  const today = new Date();
+  const dow = today.getDay(); // 0=Sun … 6=Sat
+  const todayIdx = dow === 0 ? 6 : dow - 1; // Convert to Mon-based (0=Mon … 6=Sun)
+
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - todayIdx);
+  monday.setHours(0, 0, 0, 0);
+
+  const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  const dates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+
+  const weekHeader = `${fmt(dates[0])} – ${fmt(dates[6])}`;
+
+  const plannerDays: PlannerDay[] = dates.map((date, i) => {
+    const baseMeals = MEALS_BY_DAY_IDX[i] ?? [noMeal('BREAKFAST'), noMeal('LUNCH'), noMeal('DINNER')];
+    // Always put Creamy Tuscan Pasta as tonight's dinner
+    const meals = i === todayIdx
+      ? baseMeals.map((m) => m.type === 'DINNER' ? hasMeal('DINNER','Creamy Tuscan Pasta','🍝',35,'r1',['S','D','M','N','L']) : m)
+      : baseMeals;
+    return {
+      id: DAY_IDS[i],
+      name: DAY_NAMES[i],
+      date: fmt(date),
+      isPast: i < todayIdx,
+      isToday: i === todayIdx,
+      meals,
+    };
+  });
+
+  return {
+    weekHeader,
+    pastDays:    plannerDays.filter((_, i) => i < todayIdx),
+    weekdayDays: plannerDays.filter((_, i) => i >= todayIdx && i <= 4),
+    weekendDays: plannerDays.filter((_, i) => i >= 5),
+  };
+}
 
 const SESSION_KEY = 'planner_past_banner_dismissed';
 
@@ -167,7 +130,7 @@ function SwapIcon() {
   );
 }
 
-function MealRow({ meal, isPast, isLast, dayName }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string }) {
+function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string; isToday: boolean }) {
   const router = useRouter();
   const borderClass = isLast
     ? ''
@@ -193,7 +156,8 @@ function MealRow({ meal, isPast, isLast, dayName }: { meal: Meal; isPast: boolea
                 onClick={() => {
                   const ids = (meal.family ?? FAMILY.map((f) => f.initials)).join(',');
                   const swapParam = isPast ? '' : '&mode=swap';
-                  router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}${swapParam}`);
+                  const tonightParam = isToday && meal.type === 'DINNER' ? '&tonight=true' : '';
+                  router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}${swapParam}${tonightParam}`);
                 }}
                 className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate text-left"
               >
@@ -282,6 +246,7 @@ function WeekdayCardEl({ day }: { day: PlannerDay }) {
             isPast={day.isPast}
             isLast={i === day.meals.length - 1}
             dayName={day.name}
+            isToday={day.isToday}
           />
         ))}
       </div>
@@ -308,6 +273,8 @@ export default function PlannerPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
   const initialScrollTopRef = useRef<number | null>(null);
+
+  const { weekHeader, pastDays, weekdayDays, weekendDays } = buildWeek();
 
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
@@ -388,7 +355,7 @@ export default function PlannerPage() {
             </svg>
           </button>
           <span className="text-[14px] font-semibold font-picky-sans text-neutral-secondary leading-[1.5]">
-            {WEEK_HEADER}
+            {weekHeader}
           </span>
           <button className="text-neutral-secondary" aria-label="Next week">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -410,7 +377,7 @@ export default function PlannerPage() {
 
           {/* Past days (scrolled above the fold on first load) */}
           <div className="flex flex-col gap-3">
-            {PAST_DAYS.map((day) => (
+            {pastDays.map((day) => (
               <WeekdayCardEl key={day.id} day={day} />
             ))}
           </div>
@@ -427,9 +394,9 @@ export default function PlannerPage() {
             </div>
           )}
 
-          {/* Weekday cards (Mon–Fri) */}
+          {/* Weekday cards (Mon–Fri from today) */}
           <div className="flex flex-col gap-3">
-            {WEEKDAY_DAYS.map((day) => (
+            {weekdayDays.map((day) => (
               <WeekdayCardEl key={day.id} day={day} />
             ))}
           </div>
@@ -437,7 +404,7 @@ export default function PlannerPage() {
           {/* Weekend divider + weekend cards */}
           <WeekendDivider />
           <div className="flex flex-col gap-3">
-            {WEEKEND_DAYS.map((day) => (
+            {weekendDays.map((day) => (
               <WeekdayCardEl key={day.id} day={day} />
             ))}
           </div>

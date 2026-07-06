@@ -50,7 +50,7 @@ export default function Home() {
           title={tonightsMeal.name}
           tags={tonightsMeal.tags}
           isTonight={isTonight}
-          onViewRecipe={() => router.push(`/recipe/${tonightsMeal.id}?mode=swap&family=${tonightsMealFamily.join(',')}&day=${tonightsMealDay}`)}
+          onViewRecipe={() => router.push(`/recipe/${tonightsMeal.id}?mode=swap&family=${tonightsMealFamily.join(',')}&day=${tonightsMealDay}&tonight=true`)}
         />
 
         {/* Greeting */}

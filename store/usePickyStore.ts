@@ -82,7 +82,7 @@ type PickyState = {
 export const usePickyStore = create<PickyState>(() => ({
   userName: 'Sarah',
   tonightsMealFamily: ['S', 'D', 'M', 'N', 'L'],
-  tonightsMealDay: 'Tuesday',
+  tonightsMealDay: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()],
   tonightsMeal: {
     id: 'r1',
     name: 'Creamy Tuscan Pasta',

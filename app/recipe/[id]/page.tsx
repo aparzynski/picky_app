@@ -49,6 +49,7 @@ export default function RecipePage() {
   const recipe = recipes[id];
 
   const isSwapMode = searchParams.get('mode') === 'swap';
+  const isTonight = searchParams.get('tonight') === 'true';
   const day = searchParams.get('day') ?? '';
   const familyIds = (searchParams.get('family') ?? '')
     .split(',')
@@ -113,7 +114,7 @@ export default function RecipePage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center bg-brand-quinary px-3 py-1 rounded-full shrink-0">
                 <span className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary">
-                  🗓️ {day ? `Planned for ${day}` : 'Planned for this Week'}
+                  {isTonight ? '🌙 Tonight\'s Dinner' : day ? `🗓️ Planned for ${day}` : '🗓️ Planned for this Week'}
                 </span>
               </div>
               <div className="flex items-center">
