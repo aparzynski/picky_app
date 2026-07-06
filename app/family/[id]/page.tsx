@@ -171,7 +171,7 @@ export default function FamilyMemberPage() {
           <div className="flex flex-col pt-2">
             <div className="flex items-baseline justify-between px-4 pb-3">
               <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
-                Favorites
+                Earl&apos;s Picks
               </h2>
               <button className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary cursor-pointer hover:text-brand-secondary transition-colors whitespace-nowrap">
                 View All
@@ -212,6 +212,7 @@ export default function FamilyMemberPage() {
                   name={recipe.name}
                   cookTime={recipe.cookTime}
                   tags={recipe.tags}
+                  saved
                 />
               ))}
             </div>
