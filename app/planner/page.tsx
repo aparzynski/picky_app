@@ -159,7 +159,7 @@ function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPas
                   const tonightParam = isToday && meal.type === 'DINNER' ? '&tonight=true' : '';
                   router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}${swapParam}${tonightParam}`);
                 }}
-                className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate text-left"
+                className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate text-left cursor-pointer"
               >
                 {meal.name}
               </button>
