@@ -65,8 +65,8 @@ const iconColorByType: Record<TransparentOverlayButtonType, string> = {
   favorite: 'text-icon-brand-primary',
   add:      'text-icon-brand-primary',
   minus:    'text-icon-brand-primary',
-  back:     'text-neutral-primary',
-  edit:     'text-neutral-primary',
+  back:     'text-icon-brand-primary',
+  edit:     'text-icon-brand-primary',
 };
 
 export function TransparentOverlayButton({

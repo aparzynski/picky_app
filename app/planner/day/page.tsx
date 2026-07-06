@@ -306,7 +306,7 @@ export default function PlannerDayPage() {
         <div className="flex items-center justify-between h-[61px] px-4 border-b border-neutral-primary">
           <button
             onClick={() => router.back()}
-            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary"
+            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary cursor-pointer"
             aria-label="Back"
           >
             <ChevronLeftLg />
@@ -318,7 +318,7 @@ export default function PlannerDayPage() {
           </button>
 
           <button
-            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary"
+            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary cursor-pointer"
             aria-label="More options"
           >
             <KebabIcon />

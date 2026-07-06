@@ -186,8 +186,8 @@ function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPas
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0 text-neutral-tertiary">
-            <button aria-label="Edit meal"><EditIcon /></button>
-            <button aria-label="Swap meal"><SwapIcon /></button>
+            <button aria-label="Edit meal" className="cursor-pointer"><EditIcon /></button>
+            <button aria-label="Swap meal" className="cursor-pointer"><SwapIcon /></button>
           </div>
         </div>
       </div>
@@ -222,7 +222,7 @@ function WeekdayCardEl({ day }: { day: PlannerDay }) {
       <div className="flex items-center justify-between h-6">
         <button
           onClick={() => router.push(`/planner/${day.id}`)}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 cursor-pointer"
         >
           <span className="text-[16px] font-semibold font-picky-sans text-neutral-primary leading-[1.5]">
             {day.name}
@@ -318,7 +318,7 @@ export default function PlannerPage() {
         <div className="flex items-center justify-between h-[61px] px-4 border-b border-neutral-primary">
           <button
             onClick={() => router.back()}
-            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary"
+            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary cursor-pointer"
             aria-label="Back"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -336,7 +336,7 @@ export default function PlannerPage() {
           </div>
 
           <button
-            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary"
+            className="flex items-center justify-center size-9 rounded-full text-neutral-secondary cursor-pointer"
             aria-label="More options"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -349,7 +349,7 @@ export default function PlannerPage() {
 
         {/* Row 2: date range nav */}
         <div className="flex items-center justify-center gap-2 h-[45px] px-4 border-b border-neutral-primary">
-          <button className="text-neutral-secondary" aria-label="Previous week">
+          <button className="text-neutral-secondary cursor-pointer" aria-label="Previous week">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -357,7 +357,7 @@ export default function PlannerPage() {
           <span className="text-[14px] font-semibold font-picky-sans text-neutral-secondary leading-[1.5]">
             {weekHeader}
           </span>
-          <button className="text-neutral-secondary" aria-label="Next week">
+          <button className="text-neutral-secondary cursor-pointer" aria-label="Next week">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

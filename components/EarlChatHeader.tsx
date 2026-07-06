@@ -43,7 +43,7 @@ export function EarlChatHeader({ onBack, onSearch, onMenu }: EarlChatHeaderProps
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <button
           onClick={onBack}
-          className="flex items-center justify-center w-9 h-9 rounded-full text-neutral-primary shrink-0 hover:bg-neutral-secondary focus-visible:bg-neutral-secondary outline-none"
+          className="flex items-center justify-center w-9 h-9 rounded-full text-neutral-primary shrink-0 hover:bg-neutral-secondary focus-visible:bg-neutral-secondary outline-none cursor-pointer"
           aria-label="Go back"
         >
           <ChevronLeft />
@@ -66,14 +66,14 @@ export function EarlChatHeader({ onBack, onSearch, onMenu }: EarlChatHeaderProps
       <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={onSearch}
-          className="flex items-center justify-center w-9 h-9 rounded-full text-neutral-primary hover:bg-neutral-secondary focus-visible:bg-neutral-secondary outline-none"
+          className="flex items-center justify-center w-9 h-9 rounded-full text-neutral-primary hover:bg-neutral-secondary focus-visible:bg-neutral-secondary outline-none cursor-pointer"
           aria-label="Search"
         >
           <SearchIcon />
         </button>
         <button
           onClick={onMenu}
-          className="flex items-center justify-center w-9 h-9 rounded-full text-neutral-primary hover:bg-neutral-secondary focus-visible:bg-neutral-secondary outline-none"
+          className="flex items-center justify-center w-9 h-9 rounded-full text-neutral-primary hover:bg-neutral-secondary focus-visible:bg-neutral-secondary outline-none cursor-pointer"
           aria-label="Menu"
         >
           <MenuIcon />

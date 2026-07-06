@@ -57,7 +57,7 @@ export function EarlSaysCard({
       {/* Dismiss — Icon/Neutral/Primary color via text-neutral-primary → currentColor */}
       <button
         onClick={onDismiss}
-        className="absolute right-2 top-[7px] flex items-center justify-center p-2 rounded-full text-neutral-primary"
+        className="absolute right-2 top-[7px] flex items-center justify-center p-2 rounded-full text-neutral-primary cursor-pointer"
         aria-label="Dismiss"
       >
         <div className="size-5 shrink-0 flex items-center justify-center">

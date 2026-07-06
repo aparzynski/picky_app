@@ -26,7 +26,7 @@ export default function PlannerDayIdPage() {
       <div className="flex items-center justify-between h-[61px] px-4 border-b border-neutral-primary shrink-0">
         <button
           onClick={() => router.back()}
-          className="flex items-center justify-center size-9 rounded-full text-neutral-secondary"
+          className="flex items-center justify-center size-9 rounded-full text-neutral-secondary cursor-pointer"
           aria-label="Back"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
