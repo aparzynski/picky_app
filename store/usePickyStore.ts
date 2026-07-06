@@ -64,6 +64,8 @@ type DiscoverCategoryData = {
 type PickyState = {
   userName: string
   tonightsMeal: Recipe
+  tonightsMealFamily: string[]
+  tonightsMealDay: string
   isTonight: boolean
   weekTiles: DayTile[]
   familyFavorites: Recipe[]
@@ -79,6 +81,8 @@ type PickyState = {
 
 export const usePickyStore = create<PickyState>(() => ({
   userName: 'Sarah',
+  tonightsMealFamily: ['S', 'D', 'M', 'N', 'L'],
+  tonightsMealDay: 'Tuesday',
   tonightsMeal: {
     id: 'r1',
     name: 'Creamy Tuscan Pasta',
