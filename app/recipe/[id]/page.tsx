@@ -221,18 +221,35 @@ export default function RecipePage() {
 
             {activeTab === 'instructions' && (
               <div className="flex flex-col gap-5">
-                {recipe.instructions?.map((step, i) => (
-                  <div key={i} className="flex gap-3 items-start">
-                    {/* Step number — Body/Small/Strong (14px SemiBold) */}
-                    <span className="font-picky-sans font-semibold text-[14px] leading-[1.4] text-brand-primary min-w-[20px] text-center shrink-0">
-                      {i + 1}
-                    </span>
-                    {/* Step text — Body/Regular/Base (16px Regular) */}
-                    <p className="font-picky-sans font-normal text-[16px] leading-[1.4] text-neutral-primary">
-                      {step}
-                    </p>
-                  </div>
-                ))}
+                {recipe.instructions?.map((step, i) => {
+                  const stepCount = recipe.instructions?.length ?? 1;
+                  const stepTime = Math.max(1, Math.round(recipe.cookTime / stepCount));
+                  return (
+                    <div key={i} className="flex gap-4 items-start">
+                      {/* Step number — purple circle */}
+                      <div className="bg-brand-primary flex items-center justify-center rounded-full shrink-0 size-6">
+                        <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-neutral-inverse">
+                          {i + 1}
+                        </span>
+                      </div>
+                      {/* Step content */}
+                      <div className="flex flex-col gap-2 flex-1 min-w-0">
+                        <p className="font-picky-sans font-normal text-[14px] leading-[1.5] text-neutral-primary">
+                          {step}
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 text-brand-primary">
+                            <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round"/>
+                            <path d="M8 5.333V8l1.667 1.667" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          <span className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary">
+                            {stepTime} min
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
