@@ -373,7 +373,7 @@ export default function PlannerPage() {
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto bg-neutral-disabled"
       >
-        <div className="flex flex-col gap-2 px-4 pt-4 pb-4">
+        <div className="flex flex-col gap-2 px-4 pt-4 pb-[60px]">
 
           {/* Past days (scrolled above the fold on first load) */}
           <div className="flex flex-col gap-3">
