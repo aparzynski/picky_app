@@ -112,6 +112,10 @@
   /* Gradient */
   --colors\/gradient\/inverse\/m: rgba(75, 54, 81, 0);
   --colors\/gradient\/inverse\/full: #2c0238;
+
+  /* Semantic warning */
+  --background\/semantic\/warning\/subtle: #fae9d5;
+  --text\/semantic\/warning\/primary: #ab6005;
 }
 
 /* ─── Phase A: Token → Tailwind utilities ────────────────────────────────────
@@ -210,6 +214,8 @@
 /* Semantic text utilities */
 @utility text-success-primary   { color: var(--text\/semantic\/success\/primary); }
 @utility text-error-primary     { color: var(--text\/semantic\/error\/primary); }
+@utility bg-warning-subtle      { background-color: var(--background\/semantic\/warning\/subtle); }
+@utility text-warning-primary   { color: var(--text\/semantic\/warning\/primary); }
 
 /* Border colors */
 @utility border-neutral-primary { border-color: var(--border\/neutral\/primary); }

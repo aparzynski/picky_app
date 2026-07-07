@@ -1,4 +1,4 @@
-type ButtonVariant = 'primary' | 'secondary' | 'over-image';
+type ButtonVariant = 'primary' | 'secondary' | 'over-image' | 'no-bg';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 type ButtonProps = {
@@ -70,6 +70,12 @@ export function Button({
       'hover:bg-overlay-inverse-secondary hover:text-brand-inverse-secondary ' +
       'focus-visible:bg-overlay-inverse-secondary focus-visible:border-2 focus-visible:border-brand-inverse focus-visible:text-brand-inverse-secondary ' +
       'active:bg-overlay-inverse-primary';
+  } else if (variant === 'no-bg') {
+    stateClasses =
+      'text-brand-primary cursor-pointer ' +
+      'hover:text-brand-secondary ' +
+      'focus-visible:text-brand-secondary ' +
+      'active:text-brand-quarternary';
   } else {
     stateClasses =
       'bg-neutral-primary border border-brand-primary text-brand-primary cursor-pointer ' +

@@ -4,14 +4,24 @@ import { Button } from "./Button";
 type EarlSaysCardProps = {
   message: string;
   ctaLabel?: string;
+  secondaryCtaLabel?: string;
   variant?: "plan-day" | "setup-pantry" | "staple-reminder";
-  buttonCount?: "1" | "3";
+  buttonCount?: "1" | "2" | "3";
   suggestions?: string[];
   onCta?: () => void;
+  onSecondaryCta?: () => void;
   onSuggestion?: (item: string) => void;
   onDismiss?: () => void;
   className?: string;
 };
+
+function PlusIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 1V11M1 6H11" stroke="currentColor" strokeWidth="1.67" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 function CloseIcon() {
   return (
@@ -24,10 +34,12 @@ function CloseIcon() {
 export function EarlSaysCard({
   message,
   ctaLabel,
+  secondaryCtaLabel,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   variant,
   suggestions,
   onCta,
+  onSecondaryCta,
   onSuggestion,
   onDismiss,
   className,
@@ -55,20 +67,31 @@ export function EarlSaysCard({
           {suggestions && suggestions.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {suggestions.map((s) => (
-                <button
+                <Button
                   key={s}
+                  variant="secondary"
+                  size="sm"
+                  pill
+                  iconLeft={<PlusIcon />}
                   onClick={() => onSuggestion?.(s)}
-                  className="flex items-center gap-1 bg-neutral-primary border border-brand-primary rounded-full px-4 py-2 font-picky-sans font-semibold text-[12px] leading-[1.4] tracking-[0.24px] text-brand-primary cursor-pointer hover:bg-neutral-secondary transition-colors outline-none"
                 >
-                  <span>+</span>
-                  <span>{s}</span>
-                </button>
+                  {s}
+                </Button>
               ))}
             </div>
           ) : ctaLabel ? (
-            <Button variant="primary" size="md" pill onClick={onCta}>
-              {ctaLabel}
-            </Button>
+            <div className="flex flex-col gap-2 items-stretch w-full">
+              <Button variant="primary" size="lg" pill onClick={onCta} className="w-full justify-center">
+                {ctaLabel}
+              </Button>
+              {secondaryCtaLabel && (
+                <div className="flex justify-center">
+                  <Button variant="no-bg" size="md" onClick={onSecondaryCta}>
+                    {secondaryCtaLabel}
+                  </Button>
+                </div>
+              )}
+            </div>
           ) : null}
         </div>
       </div>

@@ -86,14 +86,31 @@ function AccordionHeader({
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function GroceryPage() {
-  const { groceryItems, toggleGroceryItem } = usePickyStore();
+  const { groceryItems, toggleGroceryItem, addGroceryItem } = usePickyStore();
 
   const [activeStore, setActiveStore] = useState<'all' | Store>('all');
   const [stillExpanded, setStillExpanded] = useState(true);
   const [purchasedExpanded, setPurchasedExpanded] = useState(true);
   const [earlDismissed, setEarlDismissed] = useState(false);
+  const [suggestions, setSuggestions] = useState(['Eggs', 'Bread', 'Butter']);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const SUGGESTION_MAP: Record<string, { category: GroceryItem['category']; quantity: string }> = {
+    Eggs:   { category: 'protein', quantity: '1 dozen' },
+    Bread:  { category: 'pantry',  quantity: '1 loaf'  },
+    Butter: { category: 'dairy',   quantity: '1 stick' },
+  }
+
+  function handleSuggestion(name: string) {
+    const cfg = SUGGESTION_MAP[name]
+    if (!cfg) return
+    addGroceryItem({ id: `g-earl-${name.toLowerCase()}`, name, quantity: cfg.quantity, category: cfg.category, store: 'Wegmans', recipes: [], purchased: false })
+    setSuggestions((prev) => prev.filter((s) => s !== name))
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    setToast(`${name} has been added to your grocery list.`)
+    toastTimer.current = setTimeout(() => setToast(null), 3500)
+  }
 
   function handleToggle(id: string) {
     const item = groceryItems.find((i) => i.id === id);
@@ -154,7 +171,7 @@ export default function GroceryPage() {
       </div>
 
       {/* Scrollable body */}
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-[140px]">
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-[170px]">
 
         {/* Summary + Earl — padded content area */}
         <div className="px-4 pt-4 flex flex-col gap-4">
@@ -174,18 +191,19 @@ export default function GroceryPage() {
           </div>
 
           {/* Earl Says Card — buttonCount=3 suggestions variant */}
-          {!earlDismissed && (
+          {!earlDismissed && suggestions.length > 0 && (
             <EarlSaysCard
               message="You usually buy these — want to add them?"
-              suggestions={['Eggs', 'Bread', 'Butter']}
+              suggestions={suggestions}
+              onSuggestion={handleSuggestion}
               onDismiss={() => setEarlDismissed(true)}
             />
           )}
         </div>
 
         {/* Store tabs — Figma: tabs (806:8887) */}
-        <div className="border-b border-[#ece8ed] mt-4">
-          <div className="flex items-center overflow-x-auto px-1">
+        <div className="border-b border-[#ece8ed] mt-4 overflow-hidden">
+          <div className="flex items-center overflow-x-auto overflow-y-clip pl-4">
             <Tab
               label="All"
               selected={activeStore === 'all'}

@@ -112,6 +112,7 @@ export default function Home() {
             iconSrc="/assets/icon-kitchen.svg"
             title="My Kitchen"
             subtitle={`${expiredItemCount} Expired Items`}
+            href="/my-kitchen"
           />
         </div>
 
