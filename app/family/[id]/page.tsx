@@ -7,6 +7,7 @@ import { Avatar } from "@/components/Avatar";
 import { Tag } from "@/components/Tag";
 import { Button } from "@/components/Button";
 import { RecipeCard } from "@/components/RecipeCard";
+import { ViewAllButton } from "@/components/ViewAllButton";
 import { BottomNav } from "@/components/BottomNav";
 
 function BackArrowIcon() {
@@ -173,11 +174,9 @@ export default function FamilyMemberPage() {
               <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
                 Earl&apos;s Picks
               </h2>
-              <button className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary cursor-pointer hover:text-brand-secondary transition-colors whitespace-nowrap">
-                View All
-              </button>
+              <ViewAllButton />
             </div>
-            <div className="grid grid-cols-2 gap-4 px-4 pb-4">
+            <div className="grid grid-cols-2 gap-4 items-start px-4 pb-4">
               {favoriteRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
@@ -199,11 +198,9 @@ export default function FamilyMemberPage() {
               <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
                 Saved
               </h2>
-              <button className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary cursor-pointer hover:text-brand-secondary transition-colors whitespace-nowrap">
-                View All
-              </button>
+              <ViewAllButton />
             </div>
-            <div className="grid grid-cols-2 gap-4 px-4 pb-6">
+            <div className="grid grid-cols-2 gap-4 items-start px-4 pb-6">
               {savedRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}

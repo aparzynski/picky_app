@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { usePickyStore } from "@/store/usePickyStore";
+import { getTodayIdx } from "@/lib/plannerData";
 import { Logo } from "@/components/Logo";
 import { NotificationFab } from "@/components/NotificationFab";
 import { StatusBar } from "@/components/StatusBar";
@@ -12,9 +14,12 @@ import { RecipeCard } from "@/components/RecipeCard";
 import { BottomNav } from "@/components/BottomNav";
 import { ViewAllButton } from "@/components/ViewAllButton";
 import { EarlSaysCard } from "@/components/EarlSaysCard";
+import { SwapMealModal } from "@/components/SwapMealModal";
 
 export default function Home() {
   const router = useRouter();
+  const [earlDismissed, setEarlDismissed] = useState(false);
+  const [swapModalOpen, setSwapModalOpen] = useState(false);
   const {
     userName,
     tonightsMeal,
@@ -28,6 +33,9 @@ export default function Home() {
     recipesCount,
     expiredItemCount,
   } = usePickyStore();
+
+  const todayTileIdx = getTodayIdx();
+  const orderedTiles = weekTiles.slice(todayTileIdx);
 
   return (
     <div className="relative flex flex-col h-dvh bg-neutral-primary overflow-hidden">
@@ -51,6 +59,7 @@ export default function Home() {
           tags={tonightsMeal.tags}
           isTonight={isTonight}
           onViewRecipe={() => router.push(`/recipe/${tonightsMeal.id}?mode=swap&family=${tonightsMealFamily.join(',')}&day=${tonightsMealDay}&tonight=true`)}
+          onSwapMeal={() => setSwapModalOpen(true)}
         />
 
         {/* Greeting */}
@@ -71,7 +80,7 @@ export default function Home() {
           {/* TilesWrapper: pt-8 pb-16 wraps the inner tiles row (py-12) — matches Figma nesting */}
          <div className="pt-2 pb-4 overflow-hidden w-full pr-5">
 <div className="flex gap-3 items-stretch overflow-x-auto overflow-y-clip pl-5 py-3">
-              {weekTiles.map((tile) => (
+              {orderedTiles.map((tile) => (
                 <WeekdayCard
                   key={tile.date}
                   dayLabel={tile.dayLabel}
@@ -91,6 +100,7 @@ export default function Home() {
             iconSrc="/assets/icon-grocery.svg"
             title="Grocery List"
             subtitle={`${groceryItemCount} items`}
+            href="/grocery"
           />
           <QuickActionCard
             iconSrc="/assets/icon-recipes.svg"
@@ -123,24 +133,37 @@ export default function Home() {
                   name={recipe.name}
                   cookTime={recipe.cookTime}
                   tags={recipe.tags}
+                  saved
                 />
               ))}
             </div>
           </div>
         </div>
 {/* Earl Says */}
-<div className="px-5 pb-6">
-  <EarlSaysCard
-    message={earlNudge.message}
-    ctaLabel={earlNudge.ctaLabel}
-    variant={earlNudge.variant}
-  />
-</div>
+{!earlDismissed && (
+  <div className="px-5 pb-6">
+    <EarlSaysCard
+      message={earlNudge.message}
+      ctaLabel={earlNudge.ctaLabel}
+      variant={earlNudge.variant}
+      onDismiss={() => setEarlDismissed(true)}
+    />
+  </div>
+)}
       </div>
 
       {/* Bottom nav */}
       <BottomNav activeTab="home" />
 
+      {swapModalOpen && (
+        <SwapMealModal
+          dayName={tonightsMealDay}
+          mealType="DINNER"
+          familyIds={tonightsMealFamily}
+          currentRecipeId={tonightsMeal.id}
+          onClose={() => setSwapModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

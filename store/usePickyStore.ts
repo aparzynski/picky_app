@@ -1,4 +1,18 @@
 import { create } from 'zustand'
+import {
+  buildWeekTiles, buildInitialPlannerMeals, getTodayIdx,
+  type DayTile, type PlannerMeal, type MealType,
+} from '@/lib/plannerData'
+
+export type GroceryItem = {
+  id: string
+  name: string
+  quantity: string
+  category: 'produce' | 'protein' | 'dairy' | 'pantry'
+  store: 'Walmart' | 'Wegmans' | 'Costco'
+  recipes: { name: string; id: string }[]
+  purchased: boolean
+}
 
 export type FamilyMember = {
   id: string
@@ -41,13 +55,6 @@ export type Recipe = {
   instructions?: string[]
 }
 
-type DayTile = {
-  date: string
-  dayLabel: string
-  emojis?: string[]
-  mealCount: number
-  isToday: boolean
-}
 
 type EarlNudge = {
   variant: 'plan-day' | 'setup-pantry' | 'staple-reminder'
@@ -68,9 +75,13 @@ type PickyState = {
   tonightsMealDay: string
   isTonight: boolean
   weekTiles: DayTile[]
+  plannerMeals: Record<number, PlannerMeal[]>
+  swapPlannerMeal: (dayIdx: number, mealType: MealType, newMeal: PlannerMeal) => void
   familyFavorites: Recipe[]
   familyFavoriteIds: string[]
   familyMembers: FamilyMember[]
+  groceryItems: GroceryItem[]
+  toggleGroceryItem: (id: string) => void
   groceryItemCount: number
   recipesCount: number
   expiredItemCount: number
@@ -78,9 +89,13 @@ type PickyState = {
   discoverCategories: DiscoverCategoryData[]
   savedRecipeIds: string[]
   recipes: Record<string, Recipe>
+  recipeRatings: Record<string, number>
+  setRecipeRating: (id: string, stars: number) => void
 }
 
-export const usePickyStore = create<PickyState>(() => ({
+const _initialPlannerMeals = buildInitialPlannerMeals();
+
+export const usePickyStore = create<PickyState>((set) => ({
   userName: 'Sarah',
   tonightsMealFamily: ['S', 'D', 'M', 'N', 'L'],
   tonightsMealDay: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()],
@@ -128,13 +143,29 @@ export const usePickyStore = create<PickyState>(() => ({
     ],
   },
   isTonight: true,
-  weekTiles: [
-    { date: '2026-07-02', dayLabel: 'Thu', emojis: ['🧀'], mealCount: 1, isToday: true },
-    { date: '2026-07-03', dayLabel: 'Fri', emojis: [],     mealCount: 0, isToday: false },
-    { date: '2026-07-04', dayLabel: 'Sat', emojis: ['🍕', '🥗', '🥗'], mealCount: 3, isToday: false },
-    { date: '2026-07-05', dayLabel: 'Sun', emojis: ['🍕', '🥗'],       mealCount: 2, isToday: false },
-    { date: '2026-07-06', dayLabel: 'Mon', emojis: ['🍗'],  mealCount: 1, isToday: false },
-  ],
+  plannerMeals: _initialPlannerMeals,
+  weekTiles: buildWeekTiles(_initialPlannerMeals),
+  swapPlannerMeal: (dayIdx, mealType, newMeal) =>
+    set((state) => {
+      const updated = {
+        ...state.plannerMeals,
+        [dayIdx]: state.plannerMeals[dayIdx].map((m) =>
+          m.type === mealType ? newMeal : m
+        ),
+      };
+      const isSwappingTonight = dayIdx === getTodayIdx() && mealType === 'DINNER';
+      const swappedRecipe = newMeal.recipeId ? state.recipes[newMeal.recipeId] : undefined;
+      return {
+        plannerMeals: updated,
+        weekTiles: buildWeekTiles(updated),
+        ...(isSwappingTonight && swappedRecipe
+          ? {
+              tonightsMeal: swappedRecipe,
+              tonightsMealFamily: newMeal.family ?? state.tonightsMealFamily,
+            }
+          : {}),
+      };
+    }),
   familyFavorites: [
     { id: 'r2', name: 'Silky Butter Pasta',      description: "Lily's safe food.",     cookTime: 15, serves: 6, tags: ['Lily-Approved 💜'], imageUrl: '/mock/r2.jpg'    },
     { id: 'r3', name: 'Veggie Stir-Fry',     description: 'Mia-friendly, fully vegan.', cookTime: 25, serves: 6, tags: ['Vegan'],         imageUrl: '/mock/r3.jpg'  },
@@ -201,7 +232,7 @@ export const usePickyStore = create<PickyState>(() => ({
       age: '3',
       initials: 'L',
       avatarColor: 'orange',
-      dislikes: ['🥦 Broccoli', '🧅 Onions'],
+      dislikes: ['🚫 Broccoli', '🚫 Onions'],
       preferences: ['❤️ Plain Pasta', '🧀 Cheese', '🌾 Soft foods', '🚫 Nut-Free', '🌾 Gluten-Free', '🌶️ No spicy', '🥛 Dairy-Free', '🍬 Low sugar', '🫘 No beans'],
       goals: ['🌟 Try new foods', '🥗 More vegetables'],
       favoriteRecipeIds: ['d18', 'd19', 'd20', 'lily1', 'lily2', 'lily3'],
@@ -221,6 +252,30 @@ export const usePickyStore = create<PickyState>(() => ({
       savedRecipeIds: [],
     },
   ],
+  groceryItems: [
+    // Produce — Wegmans
+    { id: 'g1',  name: 'Zucchini',          quantity: '2',        category: 'produce', store: 'Wegmans', recipes: [{ name: 'Tuscan Pasta',    id: 'r1'   }],                                              purchased: false },
+    { id: 'g2',  name: 'Cherry tomatoes',   quantity: '1 cup',    category: 'produce', store: 'Wegmans', recipes: [{ name: 'Tuscan Pasta',    id: 'r1'   }, { name: 'Taco Night',      id: 'pw15' }],    purchased: false },
+    { id: 'g3',  name: 'Baby Spinach',      quantity: '2 cups',   category: 'produce', store: 'Costco',  recipes: [{ name: 'Tuscan Pasta',    id: 'r1'   }],                                              purchased: true  },
+    // Protein
+    { id: 'g4',  name: 'Chicken Thighs',    quantity: '2 lbs',    category: 'protein', store: 'Walmart', recipes: [{ name: 'Chicken Stir Fry', id: 'd11'  }],                                             purchased: false },
+    { id: 'g5',  name: 'Ground Beef',       quantity: '1 lb',     category: 'protein', store: 'Walmart', recipes: [{ name: 'Taco Night',      id: 'pw15' }],                                              purchased: false },
+    { id: 'g6',  name: 'Salmon Fillet',     quantity: '2 lbs',    category: 'protein', store: 'Costco',  recipes: [{ name: 'Baked Salmon',    id: 'd13'  }],                                              purchased: true  },
+    // Dairy
+    { id: 'g7',  name: 'Parmesan',          quantity: '½ cup',    category: 'dairy',   store: 'Wegmans', recipes: [{ name: 'Tuscan Pasta',    id: 'r1'   }],                                              purchased: false },
+    { id: 'g8',  name: 'Cheddar',           quantity: '1 cup',    category: 'dairy',   store: 'Walmart', recipes: [{ name: 'Taco Night',      id: 'pw15' }],                                              purchased: false },
+    { id: 'g9',  name: 'Heavy Cream',       quantity: '2 cups',   category: 'dairy',   store: 'Costco',  recipes: [{ name: 'Tuscan Pasta',    id: 'r1'   }],                                              purchased: true  },
+    // Pantry
+    { id: 'g10', name: 'Sundried Tomatoes', quantity: '1 cup',    category: 'pantry',  store: 'Wegmans', recipes: [{ name: 'Tuscan Pasta',    id: 'r1'   }],                                              purchased: false },
+    { id: 'g11', name: 'Tortillas',         quantity: '8 pack',   category: 'pantry',  store: 'Walmart', recipes: [{ name: 'Taco Night',      id: 'pw15' }],                                              purchased: false },
+    { id: 'g12', name: 'Olive Oil',         quantity: '1 bottle', category: 'pantry',  store: 'Costco',  recipes: [{ name: 'Tuscan Pasta',    id: 'r1'   }, { name: 'Chicken Stir Fry', id: 'd11' }],    purchased: true  },
+  ],
+  toggleGroceryItem: (id) =>
+    set((state) => ({
+      groceryItems: state.groceryItems.map((item) =>
+        item.id === id ? { ...item, purchased: !item.purchased } : item
+      ),
+    })),
   groceryItemCount: 14,
   recipesCount: 14,
   expiredItemCount: 4,
@@ -237,6 +292,9 @@ export const usePickyStore = create<PickyState>(() => ({
     { id: 'cat-5', title: 'Saved Recipes',       recipeIds: ['d17', 'd18', 'd19', 'd20'] },
   ],
   savedRecipeIds: ['d17', 'd18', 'd19', 'd20'],
+  recipeRatings: {},
+  setRecipeRating: (id, stars) =>
+    set((state) => ({ recipeRatings: { ...state.recipeRatings, [id]: stars } })),
   recipes: {
     r1: {
       id: 'r1',
@@ -1160,8 +1218,8 @@ export const usePickyStore = create<PickyState>(() => ({
       ],
     },
     pw16: {
-      id: 'pw16', name: '4th of July Backyard Burgers', cookTime: 30, serves: 6, imageUrl: '/mock/d7.jpg',
-      description: 'Juicy smash burgers with American cheese, crisp lettuce, and special sauce — the perfect summer cookout centerpiece.',
+      id: 'pw16', name: "David's Birthday Burgers", cookTime: 30, serves: 6, imageUrl: '/mock/d7.jpg',
+      description: "Juicy smash burgers with American cheese, crisp lettuce, and special sauce — David's birthday tradition.",
       tags: ['🍔 BBQ', 'Summer', 'Crowd Pleaser'],
       ingredients: [
         { name: '2 lb 80/20 ground beef', state: 'missing item' },
@@ -1183,6 +1241,46 @@ export const usePickyStore = create<PickyState>(() => ({
         'Place each beef ball on the griddle and immediately smash flat with a spatula. Cook 2–3 minutes until a crust forms.',
         'Flip and immediately top with American cheese. Cook 1–2 minutes until melted.',
         'Toast buns cut-side down until golden. Spread special sauce on both halves. Add patty, lettuce, tomato, and pickles.',
+      ],
+    },
+    pw18: {
+      id: 'pw18', name: 'Veggie Scrambled Eggs', cookTime: 10, serves: 2, imageUrl: '/mock/d12.jpg',
+      description: 'Fluffy eggs scrambled with sautéed bell pepper, spinach, and feta — a protein-packed start to the day.',
+      tags: ['🥚 Breakfast', 'Vegetarian', 'High Protein'],
+      ingredients: [
+        { name: '4 large eggs', state: 'in pantry' },
+        { name: '1 cup baby spinach', state: 'missing item' },
+        { name: '½ red bell pepper, diced', state: 'missing item' },
+        { name: '2 tbsp crumbled feta', state: 'missing item' },
+        { name: '1 tbsp butter', state: 'in pantry' },
+        { name: 'salt and pepper', state: 'in pantry' },
+      ],
+      instructions: [
+        'Whisk eggs with a pinch of salt and pepper.',
+        'Melt butter in a non-stick skillet over medium heat. Add bell pepper and cook 2 minutes.',
+        'Add spinach and stir until just wilted.',
+        'Pour in eggs and gently fold with a spatula until softly set.',
+        'Sprinkle with feta and serve immediately.',
+      ],
+    },
+    pw19: {
+      id: 'pw19', name: 'BLT Wrap', cookTime: 10, serves: 2, imageUrl: '/mock/d9.jpg',
+      description: 'Crispy bacon, ripe tomato, and crunchy romaine wrapped in a soft flour tortilla with a swipe of herb mayo.',
+      tags: ['🥓 Sandwich', 'Quick Lunch', 'High Protein'],
+      ingredients: [
+        { name: '2 large flour tortillas', state: 'in pantry' },
+        { name: '6 strips bacon, cooked crispy', state: 'missing item' },
+        { name: '2 tomatoes, sliced', state: 'missing item' },
+        { name: '2 cups romaine lettuce, shredded', state: 'in pantry' },
+        { name: '2 tbsp mayo', state: 'in pantry' },
+        { name: '1 tsp fresh dill (optional)', state: 'in pantry' },
+        { name: 'salt and pepper', state: 'in pantry' },
+      ],
+      instructions: [
+        'Lay tortillas flat. Mix mayo with dill and spread on each tortilla.',
+        'Layer romaine, tomato slices, and crispy bacon.',
+        'Season with salt and pepper.',
+        'Fold the sides in and roll tightly. Slice in half and serve.',
       ],
     },
     pw17: {

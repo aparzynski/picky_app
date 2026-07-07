@@ -3,10 +3,12 @@ import { Button } from "./Button";
 
 type EarlSaysCardProps = {
   message: string;
-  ctaLabel: string;
+  ctaLabel?: string;
   variant?: "plan-day" | "setup-pantry" | "staple-reminder";
-  buttonCount?: "1";
+  buttonCount?: "1" | "3";
+  suggestions?: string[];
   onCta?: () => void;
+  onSuggestion?: (item: string) => void;
   onDismiss?: () => void;
   className?: string;
 };
@@ -24,7 +26,9 @@ export function EarlSaysCard({
   ctaLabel,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   variant,
+  suggestions,
   onCta,
+  onSuggestion,
   onDismiss,
   className,
 }: EarlSaysCardProps) {
@@ -48,9 +52,24 @@ export function EarlSaysCard({
           <p className="font-picky-sans font-normal text-[14px] leading-[1.5] text-neutral-primary">
             {message}
           </p>
-          <Button variant="primary" size="md" pill onClick={onCta}>
-            {ctaLabel}
-          </Button>
+          {suggestions && suggestions.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {suggestions.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => onSuggestion?.(s)}
+                  className="flex items-center gap-1 bg-neutral-primary border border-brand-primary rounded-full px-4 py-2 font-picky-sans font-semibold text-[12px] leading-[1.4] tracking-[0.24px] text-brand-primary cursor-pointer hover:bg-neutral-secondary transition-colors outline-none"
+                >
+                  <span>+</span>
+                  <span>{s}</span>
+                </button>
+              ))}
+            </div>
+          ) : ctaLabel ? (
+            <Button variant="primary" size="md" pill onClick={onCta}>
+              {ctaLabel}
+            </Button>
+          ) : null}
         </div>
       </div>
 

@@ -3,6 +3,7 @@ type QuickActionCardProps = {
   title: string;
   subtitle: string;
   iconSize?: number;
+  href?: string;
   className?: string;
 };
 
@@ -11,10 +12,12 @@ export function QuickActionCard({
   title,
   subtitle,
   iconSize = 20,
+  href,
   className,
 }: QuickActionCardProps) {
   return (
     <a
+      href={href}
       className={`flex flex-1 flex-col items-center gap-2 rounded-[var(--xl,20px)] p-4 min-w-0 cursor-pointer self-stretch bg-brand-tertiary ${className ?? ""}`}
     >
       <div className="flex items-center justify-center size-10 rounded-full shrink-0 bg-brand-quinary">

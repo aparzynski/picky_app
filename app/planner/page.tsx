@@ -5,30 +5,16 @@ import { useRouter } from 'next/navigation';
 import { StatusBar } from '@/components/StatusBar';
 import { BottomNav } from '@/components/BottomNav';
 import { Avatar } from '@/components/Avatar';
+import { buildWeek, getTodayIdx, DAY_IDS, type MealType, type PlannerMeal, type PlannerDay } from '@/lib/plannerData';
+import { usePickyStore } from '@/store/usePickyStore';
+import { SwapMealModal } from '@/components/SwapMealModal';
+import { PlannerViewDropdown } from '@/components/PlannerViewDropdown';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type MealType = 'BREAKFAST' | 'LUNCH' | 'DINNER';
 type AvatarColor = 'purple' | 'blue' | 'orange' | 'green';
 
-type Meal = {
-  type: MealType;
-  name: string;
-  emoji: string;
-  cookTime: number;
-  hasMeal: boolean;
-  recipeId?: string;
-  family?: string[];
-};
-
-type PlannerDay = {
-  id: string;
-  name: string;
-  date: string;
-  isPast: boolean;
-  isToday: boolean;
-  meals: Meal[];
-};
+type Meal = PlannerMeal;
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -41,72 +27,6 @@ const FAMILY: { initials: string; color: AvatarColor }[] = [
 ];
 
 const FAMILY_BY_INITIAL = Object.fromEntries(FAMILY.map((f) => [f.initials, f]));
-
-function noMeal(type: MealType): Meal {
-  return { type, name: '', emoji: '', cookTime: 0, hasMeal: false };
-}
-
-function hasMeal(type: MealType, name: string, emoji: string, cookTime: number, recipeId?: string, family?: string[]): Meal {
-  return { type, name, emoji, cookTime, hasMeal: true, recipeId, family };
-}
-
-// Meals by Mon-based day index (0=Mon … 6=Sun). Tonight's dinner (r1) is
-// injected dynamically onto whichever index matches today.
-const MEALS_BY_DAY_IDX: Record<number, Meal[]> = {
-  0: [hasMeal('BREAKFAST','Strawberry Chia Pudding','🍓',5,'pw1',['S','D','M','N','L']), hasMeal('LUNCH','Turkey & Avocado Wrap','🥑',10,'pw2',['S','M']), hasMeal('DINNER','Lemon Herb Sheet Pan Chicken','🍋',35,'pw3',['S','D','N','L'])],
-  1: [hasMeal('BREAKFAST','Blueberry Smoothie Bowl','🫐',10,'pw4',['S','D','N','L']), hasMeal('LUNCH','Tomato Soup & Grilled Cheese','🍅',20,'pw5',['S','N','L']), hasMeal('DINNER','Creamy Tuscan Pasta','🍝',35,'r1',['S','D','M','N','L'])],
-  2: [hasMeal('BREAKFAST','Cheesy Egg Muffins','🧀',25,'pw7',['S','D']), hasMeal('LUNCH','Rainbow Sushi Bowl','🍱',15,'pw8',['S','M']), hasMeal('DINNER','Honey Garlic Salmon Bowls','🐟',30,'pw6',['S','D','N','L'])],
-  3: [hasMeal('BREAKFAST','Coconut Granola Parfait','🥥',5,'pw10',['S','D','M','N','L']), hasMeal('LUNCH','Turkey Club Sandwich','🥪',10,'pw11',['S','D']), hasMeal('DINNER','Slow Cooker Pulled Pork Tacos','🌮',360,'pw9',['S','D','N','L'])],
-  4: [hasMeal('BREAKFAST','Cinnamon French Toast Sticks','🍞',25,'pw13',['S','D','M','N','L']), hasMeal('LUNCH','Sesame Noodle Salad','🍜',15,'pw14',['S','M']), hasMeal('DINNER','Pan-Seared Tilapia & Asparagus','🐟',25,'pw12',['S','D','M','N','L'])],
-  5: [noMeal('BREAKFAST'), noMeal('LUNCH'), hasMeal('DINNER','4th of July Backyard Burgers','🍔',30,'pw16',['S','D','M','N','L'])],
-  6: [noMeal('BREAKFAST'), noMeal('LUNCH'), hasMeal('DINNER','Sunday Roast Chicken','🍗',90,'pw17',['S','D','M','N','L'])],
-};
-
-const DAY_IDS   = ['mon','tue','wed','thu','fri','sat','sun'] as const;
-const DAY_NAMES = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] as const;
-
-function buildWeek() {
-  const today = new Date();
-  const dow = today.getDay(); // 0=Sun … 6=Sat
-  const todayIdx = dow === 0 ? 6 : dow - 1; // Convert to Mon-based (0=Mon … 6=Sun)
-
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - todayIdx);
-  monday.setHours(0, 0, 0, 0);
-
-  const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-  const dates = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    return d;
-  });
-
-  const weekHeader = `${fmt(dates[0])} – ${fmt(dates[6])}`;
-
-  const plannerDays: PlannerDay[] = dates.map((date, i) => {
-    const baseMeals = MEALS_BY_DAY_IDX[i] ?? [noMeal('BREAKFAST'), noMeal('LUNCH'), noMeal('DINNER')];
-    // Always put Creamy Tuscan Pasta as tonight's dinner
-    const meals = i === todayIdx
-      ? baseMeals.map((m) => m.type === 'DINNER' ? hasMeal('DINNER','Creamy Tuscan Pasta','🍝',35,'r1',['S','D','M','N','L']) : m)
-      : baseMeals;
-    return {
-      id: DAY_IDS[i],
-      name: DAY_NAMES[i],
-      date: fmt(date),
-      isPast: i < todayIdx,
-      isToday: i === todayIdx,
-      meals,
-    };
-  });
-
-  return {
-    weekHeader,
-    pastDays:    plannerDays.filter((_, i) => i < todayIdx),
-    weekdayDays: plannerDays.filter((_, i) => i >= todayIdx && i <= 4),
-    weekendDays: plannerDays.filter((_, i) => i >= 5),
-  };
-}
 
 const SESSION_KEY = 'planner_past_banner_dismissed';
 
@@ -130,7 +50,15 @@ function SwapIcon() {
   );
 }
 
-function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string; isToday: boolean }) {
+function StarIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M10 1.667L12.575 6.883L18.333 7.725L14.167 11.783L15.15 17.517L10 14.808L4.85 17.517L5.833 11.783L1.667 7.725L7.425 6.883L10 1.667Z" />
+    </svg>
+  );
+}
+
+function MealRow({ meal, isPast, isLast, dayName, isToday, onSwap }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string; isToday: boolean; onSwap?: () => void }) {
   const router = useRouter();
   const borderClass = isLast
     ? ''
@@ -139,32 +67,76 @@ function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPas
       : 'border-b border-neutral-primary';
 
   if (meal.hasMeal) {
-    const cardBg = isPast ? 'bg-neutral-secondary' : 'bg-brand-tertiary';
     const members = meal.family
       ? meal.family.map((id) => FAMILY_BY_INITIAL[id]).filter(Boolean)
       : FAMILY;
+
+    if (isPast) {
+      return (
+        <div className={`flex flex-col gap-2 pt-[4px] pb-[9px] ${borderClass}`}>
+          <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
+            {meal.type}
+          </span>
+          <div className="bg-neutral-secondary border border-neutral-secondary rounded-[8px] flex items-center px-[13px] py-[9px] gap-3">
+            <span className="text-[30px] leading-9 shrink-0">{meal.emoji}</span>
+            <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+              {meal.recipeId ? (
+                <button
+                  onClick={() => {
+                    const ids = (meal.family ?? FAMILY.map((f) => f.initials)).join(',');
+                    router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}&meal=${meal.type}&past=true`);
+                  }}
+                  className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] text-left cursor-pointer break-words"
+                >
+                  {meal.name}
+                </button>
+              ) : (
+                <span className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] break-words">
+                  {meal.name}
+                </span>
+              )}
+              <div className="flex items-center">
+                {members.map((a, i) => (
+                  <Avatar
+                    key={i}
+                    initials={a.initials}
+                    color={a.color}
+                    size={16}
+                    className={`border border-brand-primary ${i > 0 ? '-ml-1' : ''}`}
+                  />
+                ))}
+              </div>
+            </div>
+            <button className="bg-neutral-primary border border-brand-primary text-brand-primary rounded-[8px] px-4 py-2 flex items-center gap-1 font-picky-sans font-semibold text-[12px] leading-[1.4] tracking-[0.02em] cursor-pointer shrink-0">
+              <StarIcon />
+              Rate This Meal
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
-      <div className={`flex flex-col gap-2 pt-1 pb-2 ${borderClass}`}>
+      <div className={`flex flex-col gap-2 pt-[4px] pb-[9px] ${borderClass}`}>
         <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
           {meal.type}
         </span>
-        <div className={`flex items-center rounded-[8px] px-3 py-3 gap-3 ${cardBg}`}>
+        <div className="bg-neutral-primary border border-[#f4f2f5] rounded-[8px] flex items-center px-[13px] py-[9px] gap-3">
           <span className="text-[24px] leading-8 shrink-0">{meal.emoji}</span>
           <div className="flex flex-col gap-1 flex-1 min-w-0">
             {meal.recipeId ? (
               <button
                 onClick={() => {
                   const ids = (meal.family ?? FAMILY.map((f) => f.initials)).join(',');
-                  const swapParam = isPast ? '' : '&mode=swap';
                   const tonightParam = isToday && meal.type === 'DINNER' ? '&tonight=true' : '';
-                  router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}${swapParam}${tonightParam}`);
+                  router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}&meal=${meal.type}&mode=swap${tonightParam}`);
                 }}
-                className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate text-left cursor-pointer"
+                className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] text-left cursor-pointer break-words"
               >
                 {meal.name}
               </button>
             ) : (
-              <span className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] truncate">
+              <span className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] break-words">
                 {meal.name}
               </span>
             )}
@@ -187,7 +159,7 @@ function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPas
           </div>
           <div className="flex items-center gap-3 shrink-0 text-neutral-tertiary">
             <button aria-label="Edit meal" className="cursor-pointer"><EditIcon /></button>
-            <button aria-label="Swap meal" className="cursor-pointer"><SwapIcon /></button>
+            <button aria-label="Swap meal" className="cursor-pointer" onClick={onSwap}><SwapIcon /></button>
           </div>
         </div>
       </div>
@@ -195,25 +167,25 @@ function MealRow({ meal, isPast, isLast, dayName, isToday }: { meal: Meal; isPas
   }
 
   // No meal planned
-  const noMealLabel = isPast ? 'No Meal Planned' : 'Let me suggest something';
-  const noMealColor = isPast ? 'text-neutral-disabled' : 'text-brand-primary';
-
   return (
-    <div className={`flex items-center justify-between pt-2 pb-6 ${borderClass}`}>
-      <div className="flex items-center gap-3">
-        <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
-          {meal.type}
-        </span>
-        
-      </div>
-      <span className={`text-[12px] font-semibold font-picky-sans ${noMealColor} tracking-[0.02em] leading-[1.4] text-right max-w-[40%]`}>
-        {noMealLabel}
+    <div className={`flex items-center justify-between pt-[8px] pb-[17px] ${borderClass}`}>
+      <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
+        {meal.type}
       </span>
+      {isPast ? (
+        <span className="text-[12px] font-medium font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4]">
+          No Meal Planned
+        </span>
+      ) : (
+        <span className="text-[12px] font-semibold font-picky-sans text-brand-primary tracking-[0.02em] leading-[1.4]">
+          Let me suggest something
+        </span>
+      )}
     </div>
   );
 }
 
-function WeekdayCardEl({ day }: { day: PlannerDay }) {
+function WeekdayCardEl({ day, onOpenSwap }: { day: PlannerDay; onOpenSwap: (dayName: string, mealType: MealType, familyIds: string[], recipeId: string) => void }) {
   const router = useRouter();
   const cardBg = day.isPast ? 'bg-neutral-tertiary' : 'bg-neutral-primary';
   return (
@@ -247,6 +219,11 @@ function WeekdayCardEl({ day }: { day: PlannerDay }) {
             isLast={i === day.meals.length - 1}
             dayName={day.name}
             isToday={day.isToday}
+            onSwap={
+              !day.isPast && meal.hasMeal && meal.recipeId
+                ? () => onOpenSwap(day.name, meal.type, meal.family ?? FAMILY.map((f) => f.initials), meal.recipeId!)
+                : undefined
+            }
           />
         ))}
       </div>
@@ -254,12 +231,12 @@ function WeekdayCardEl({ day }: { day: PlannerDay }) {
   );
 }
 
-function WeekendDivider() {
+function SectionDivider({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-3 py-3 px-0">
       <div className="flex-1 h-px bg-neutral-tertiary" />
       <span className="text-[12px] font-semibold font-picky-sans text-neutral-tertiary tracking-[0.02em] leading-[1.4] uppercase">
-        Weekend
+        {label}
       </span>
       <div className="flex-1 h-px bg-neutral-tertiary" />
     </div>
@@ -274,31 +251,43 @@ export default function PlannerPage() {
   const bannerRef = useRef<HTMLDivElement>(null);
   const initialScrollTopRef = useRef<number | null>(null);
 
-  const { weekHeader, pastDays, weekdayDays, weekendDays } = buildWeek();
+  const plannerMeals = usePickyStore((s) => s.plannerMeals);
+  const { weekHeader, pastDays, weekdayDays, weekendDays, nextWeekHeader, nextWeekdayDays, nextWeekendDays } = buildWeek(plannerMeals);
 
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [weekOffset, setWeekOffset] = useState(0); // 0 = this week, 1 = next week
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const todayDayId = DAY_IDS[getTodayIdx()];
+
+  type SwapTarget = { dayName: string; mealType: MealType; familyIds: string[]; recipeId: string };
+  const [swapTarget, setSwapTarget] = useState<SwapTarget | null>(null);
+
+  function openSwap(dayName: string, mealType: MealType, familyIds: string[], recipeId: string) {
+    setSwapTarget({ dayName, mealType, familyIds, recipeId });
+  }
 
   // Hydrate banner dismissed state from sessionStorage
   useEffect(() => {
     setBannerDismissed(sessionStorage.getItem(SESSION_KEY) === 'true');
   }, []);
 
-  // Scroll to banner position on initial load (uses getBoundingClientRect to
-  // compute position relative to the scroll container, not the document)
+  // Scroll to banner position on load / week switch. Resets to top on next week.
   useEffect(() => {
-    if (bannerDismissed) return;
     const frame = requestAnimationFrame(() => {
-      if (scrollRef.current && bannerRef.current) {
-        const containerRect = scrollRef.current.getBoundingClientRect();
-        const bannerRect = bannerRef.current.getBoundingClientRect();
-        const targetScrollTop =
-          scrollRef.current.scrollTop + (bannerRect.top - containerRect.top);
-        scrollRef.current.scrollTop = targetScrollTop;
-        initialScrollTopRef.current = targetScrollTop;
+      if (!scrollRef.current) return;
+      if (weekOffset === 1 || bannerDismissed || !bannerRef.current) {
+        scrollRef.current.scrollTop = 0;
+        initialScrollTopRef.current = null;
+        return;
       }
+      const containerRect = scrollRef.current.getBoundingClientRect();
+      const bannerRect = bannerRef.current.getBoundingClientRect();
+      const targetScrollTop = scrollRef.current.scrollTop + (bannerRect.top - containerRect.top);
+      scrollRef.current.scrollTop = targetScrollTop;
+      initialScrollTopRef.current = targetScrollTop;
     });
     return () => cancelAnimationFrame(frame);
-  }, [bannerDismissed]);
+  }, [bannerDismissed, weekOffset]);
 
   function handleScroll() {
     if (bannerDismissed || initialScrollTopRef.current === null || !scrollRef.current) return;
@@ -313,7 +302,7 @@ export default function PlannerPage() {
       <StatusBar />
 
       {/* Header */}
-      <div className="bg-neutral-primary flex flex-col shrink-0">
+      <div className="bg-neutral-primary flex flex-col shrink-0 relative">
         {/* Row 1: nav + title */}
         <div className="flex items-center justify-between h-[61px] px-4 border-b border-neutral-primary">
           <button
@@ -326,14 +315,21 @@ export default function PlannerPage() {
             </svg>
           </button>
 
-          <div className="flex items-center gap-1">
+          <button
+            onClick={() => setDropdownOpen((o) => !o)}
+            className="flex items-center gap-1 cursor-pointer"
+            aria-expanded={dropdownOpen}
+          >
             <span className="text-[18px] font-semibold font-picky-sans text-neutral-primary leading-[1.5]">
               This Week
             </span>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-neutral-primary">
+            <svg
+              width="16" height="16" viewBox="0 0 16 16" fill="none"
+              className={`text-neutral-primary transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+            >
               <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </div>
+          </button>
 
           <button
             className="flex items-center justify-center size-9 rounded-full text-neutral-secondary cursor-pointer"
@@ -347,17 +343,36 @@ export default function PlannerPage() {
           </button>
         </div>
 
+        {dropdownOpen && (
+          <PlannerViewDropdown
+            currentView="weekly"
+            todayDayId={todayDayId}
+            onNavigate={(path) => router.push(path)}
+            onClose={() => setDropdownOpen(false)}
+          />
+        )}
+
         {/* Row 2: date range nav */}
         <div className="flex items-center justify-center gap-2 h-[45px] px-4 border-b border-neutral-primary">
-          <button className="text-neutral-secondary cursor-pointer" aria-label="Previous week">
+          <button
+            onClick={() => setWeekOffset(0)}
+            disabled={weekOffset === 0}
+            className="text-neutral-secondary cursor-pointer disabled:opacity-30"
+            aria-label="Previous week"
+          >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
           <span className="text-[14px] font-semibold font-picky-sans text-neutral-secondary leading-[1.5]">
-            {weekHeader}
+            {weekOffset === 0 ? weekHeader : nextWeekHeader}
           </span>
-          <button className="text-neutral-secondary cursor-pointer" aria-label="Next week">
+          <button
+            onClick={() => setWeekOffset(1)}
+            disabled={weekOffset === 1}
+            className="text-neutral-secondary cursor-pointer disabled:opacity-30"
+            aria-label="Next week"
+          >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.333" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -375,37 +390,36 @@ export default function PlannerPage() {
       >
         <div className="flex flex-col gap-2 px-4 pt-4 pb-[120px]">
 
-          {/* Past days (scrolled above the fold on first load) */}
-          <div className="flex flex-col gap-3">
-            {pastDays.map((day) => (
-              <WeekdayCardEl key={day.id} day={day} />
-            ))}
-          </div>
+          {/* Past days — only on this week view */}
+          {weekOffset === 0 && pastDays.length > 0 && (
+            <div className="flex flex-col gap-3">
+              {pastDays.map((day) => (
+                <WeekdayCardEl key={day.id} day={day} onOpenSwap={openSwap} />
+              ))}
+            </div>
+          )}
 
-          {/* Past Days Banner — positioned at top of initial viewport */}
-          {!bannerDismissed && (
-            <div
-              ref={bannerRef}
-              className="flex items-center justify-center py-2"
-            >
+          {/* Past Days Banner */}
+          {weekOffset === 0 && !bannerDismissed && pastDays.length > 0 && (
+            <div ref={bannerRef} className="flex items-center justify-center py-2">
               <span className="text-[12px] font-normal font-picky-sans text-neutral-tertiary leading-[1.4]">
                 ↑ Swipe Up to View Past Days
               </span>
             </div>
           )}
 
-          {/* Weekday cards (Mon–Fri from today) */}
+          {/* Weekday cards */}
           <div className="flex flex-col gap-3">
-            {weekdayDays.map((day) => (
-              <WeekdayCardEl key={day.id} day={day} />
+            {(weekOffset === 0 ? weekdayDays : nextWeekdayDays).map((day) => (
+              <WeekdayCardEl key={day.id} day={day} onOpenSwap={openSwap} />
             ))}
           </div>
 
           {/* Weekend divider + weekend cards */}
-          <WeekendDivider />
+          <SectionDivider label="Weekend" />
           <div className="flex flex-col gap-3">
-            {weekendDays.map((day) => (
-              <WeekdayCardEl key={day.id} day={day} />
+            {(weekOffset === 0 ? weekendDays : nextWeekendDays).map((day) => (
+              <WeekdayCardEl key={day.id} day={day} onOpenSwap={openSwap} />
             ))}
           </div>
 
@@ -413,6 +427,16 @@ export default function PlannerPage() {
       </div>
 
       <BottomNav activeTab="planner" />
+
+      {swapTarget && (
+        <SwapMealModal
+          dayName={swapTarget.dayName}
+          mealType={swapTarget.mealType}
+          familyIds={swapTarget.familyIds}
+          currentRecipeId={swapTarget.recipeId}
+          onClose={() => setSwapTarget(null)}
+        />
+      )}
     </div>
   );
 }

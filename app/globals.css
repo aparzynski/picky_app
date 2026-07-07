@@ -92,12 +92,22 @@
 
   /* Brand 2 — yellow family (Recipe Accordion yellow variant) */
   --background\/brand-2\/tertiary: #f7f6eb;
+  --background\/brand-2\/quinary: #fbf8d9;
   --border\/brand-2\/primary: #d4c00f;
   --text\/brand-2\/primary: #665c00;
+
+  /* Semantic backgrounds — grocery list category headers */
+  --background\/semantic\/success\/subtle: #d4fdd0;
+  --background\/semantic\/error\/subtle: #fbdada;
+  --background\/semantic\/info\/subtle: #d9eafa;
 
   /* Semantic text colors */
   --text\/semantic\/success\/primary: #0e9900;
   --text\/semantic\/error\/primary: #bf0000;
+  --text\/semantic\/info\/primary: #0152a5;
+
+  /* Item divider in grocery list (Icon/Neutral Inverse/Primary) */
+  --icon\/neutral-inverse\/primary: #f4f2f5;
 
   /* Gradient */
   --colors\/gradient\/inverse\/m: rgba(75, 54, 81, 0);
@@ -111,6 +121,21 @@
    These classes support all Tailwind variants: hover:, focus-visible:, active:,
    disabled:, etc.
    ─────────────────────────────────────────────────────────────────────────── */
+
+/* Semantic category header backgrounds */
+@utility bg-success-subtle  { background-color: var(--background\/semantic\/success\/subtle); }
+@utility bg-error-subtle    { background-color: var(--background\/semantic\/error\/subtle); }
+@utility bg-info-subtle     { background-color: var(--background\/semantic\/info\/subtle); }
+@utility bg-brand2-quinary  { background-color: var(--background\/brand-2\/quinary); }
+
+/* Semantic category text colors */
+@utility text-success-primary { color: var(--text\/semantic\/success\/primary); }
+@utility text-error-primary   { color: var(--text\/semantic\/error\/primary); }
+@utility text-info-primary    { color: var(--text\/semantic\/info\/primary); }
+@utility text-brand2-primary  { color: var(--text\/brand-2\/primary); }
+
+/* Item divider border */
+@utility border-item-divider  { border-color: var(--icon\/neutral-inverse\/primary); }
 
 /* Background fills */
 @utility bg-brand-primary       { background-color: var(--background\/brand\/primary); }

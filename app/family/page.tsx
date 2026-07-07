@@ -8,6 +8,7 @@ import { Avatar } from "@/components/Avatar";
 import { Tag } from "@/components/Tag";
 import { Button } from "@/components/Button";
 import { RecipeCard } from "@/components/RecipeCard";
+import { ViewAllButton } from "@/components/ViewAllButton";
 import { BottomNav } from "@/components/BottomNav";
 
 function MenuIcon() {
@@ -88,7 +89,7 @@ export default function FamilyPage() {
                       <Tag key={d} label={d} type="inverse2" />
                     ))}
                     {member.preferences.slice(0, 2).map((p) => (
-                      <Tag key={p} label={p} type="inverse2" />
+                      <Tag key={p} label={`❤️ ${p}`} type="inverse2" />
                     ))}
                   </div>
                 )}
@@ -124,13 +125,11 @@ export default function FamilyPage() {
             <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
               Your Family&apos;s Favorites
             </h2>
-            <button className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary cursor-pointer hover:text-brand-secondary transition-colors whitespace-nowrap">
-              View More
-            </button>
+            <ViewAllButton />
           </div>
 
           {/* 2-column recipe grid */}
-          <div className="grid grid-cols-2 gap-4 px-4 pb-6">
+          <div className="grid grid-cols-2 gap-4 items-start px-4 pb-6">
             {familyFavoriteRecipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}

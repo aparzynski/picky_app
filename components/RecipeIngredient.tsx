@@ -9,11 +9,7 @@ type RecipeIngredientProps = {
 export function RecipeIngredient({ name, state }: RecipeIngredientProps) {
   return (
     <div className="flex items-center justify-between min-h-[24px] w-full gap-3">
-      <span
-        className={`font-picky-sans font-normal text-[16px] leading-[1.4] flex-1 min-w-0 ${
-          state === 'added to grocery list' ? 'text-neutral-tertiary line-through' : 'text-neutral-primary'
-        }`}
-      >
+      <span className="font-picky-sans font-normal text-[16px] leading-[1.4] flex-1 min-w-0 text-neutral-primary">
         {name}
       </span>
 
@@ -28,8 +24,8 @@ export function RecipeIngredient({ name, state }: RecipeIngredientProps) {
         </span>
       )}
       {state === 'added to grocery list' && (
-        <span className="font-picky-sans font-bold text-[12px] leading-[1.4] text-brand-primary whitespace-nowrap shrink-0">
-          ✓ In list
+        <span className="font-picky-sans font-bold text-[12px] leading-[1.4] text-blue-80 whitespace-nowrap shrink-0">
+          Added to Grocery List
         </span>
       )}
     </div>

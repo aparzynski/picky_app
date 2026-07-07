@@ -19,6 +19,7 @@ export function WeekdayCard({
 }: WeekdayCardProps) {
   const isEmpty = mealCount === 0;
 
+  // 0 meals — dashed empty state
   if (isEmpty) {
     return (
       <div
@@ -40,28 +41,14 @@ export function WeekdayCard({
     );
   }
 
-  if (currentDay) {
-    return (
-      <div
-        onClick={onClick}
-        className={`relative flex flex-col items-center justify-between min-w-[72px] self-stretch shrink-0 rounded-[var(--l,16px)] border border-brand-primary bg-brand-primary drop-shadow-[0px_4px_7px_rgba(44,2,56,0.15)] px-[5px] py-[13px] cursor-pointer ${className ?? ""}`}
-      >
-        <div className="flex flex-col items-start pb-2">
-          <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-neutral-inverse">
-            {dayLabel}
-          </span>
-        </div>
-        <div className="flex flex-col items-start pb-2">
-          <div className="flex items-center justify-center size-10 rounded-full bg-brand-quarternary drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)]">
-            <span className="text-[20px] leading-7">{emojis[0] ?? "🍽️"}</span>
-          </div>
-        </div>
-        <span className="font-picky-sans font-semibold text-[10px] leading-[1.5] text-neutral-inverse">
-          {mealCount} {mealCount === 1 ? "meal" : "meals"}
-        </span>
-      </div>
-    );
-  }
+  // 1–3 meals — currentDay uses purple bg + purple circles; otherwise white bg + white circles
+  const containerBg = currentDay
+    ? "bg-brand-primary border-brand-primary drop-shadow-[0px_4px_7px_rgba(44,2,56,0.15)]"
+    : "bg-neutral-secondary border-neutral-primary";
+  const px = mealCount >= 3 ? "px-[3px]" : "px-[5px]";
+  const circleBg = currentDay ? "bg-brand-quarternary" : "bg-white";
+  const labelColor = currentDay ? "text-neutral-inverse" : "text-neutral-secondary";
+  const countColor = currentDay ? "text-neutral-inverse font-semibold" : "text-neutral-tertiary font-normal";
 
   const overlapMr = mealCount >= 3 ? "-27px" : "-18px";
   const visibleEmojis = emojis.slice(0, Math.min(mealCount, 3));
@@ -69,10 +56,10 @@ export function WeekdayCard({
   return (
     <div
       onClick={onClick}
-      className={`relative flex flex-col items-center justify-between min-w-[72px] self-stretch shrink-0 rounded-[var(--l,16px)] border border-neutral-primary bg-neutral-secondary px-[3px] py-[13px] cursor-pointer ${className ?? ""}`}
+      className={`relative flex flex-col items-center justify-between min-w-[72px] self-stretch shrink-0 rounded-[var(--l,16px)] border ${containerBg} ${px} py-[13px] cursor-pointer ${className ?? ""}`}
     >
       <div className="flex flex-col items-start pb-2">
-        <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-neutral-secondary">
+        <span className={`font-picky-sans font-semibold text-[14px] leading-[1.5] ${labelColor}`}>
           {dayLabel}
         </span>
       </div>
@@ -80,16 +67,14 @@ export function WeekdayCard({
         {visibleEmojis.map((emoji, i) => (
           <div
             key={i}
-            className="flex items-center justify-center size-10 rounded-full bg-white drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)] shrink-0"
-            style={{
-              marginRight: i < visibleEmojis.length - 1 ? overlapMr : undefined,
-            }}
+            className={`flex items-center justify-center size-10 rounded-full ${circleBg} drop-shadow-[0px_1px_1.5px_rgba(0,0,0,0.1),0px_1px_1px_rgba(0,0,0,0.1)] shrink-0`}
+            style={{ marginRight: i < visibleEmojis.length - 1 ? overlapMr : undefined }}
           >
             <span className="text-[20px] leading-7">{emoji}</span>
           </div>
         ))}
       </div>
-      <span className="font-picky-sans font-normal text-[10px] leading-[1.4] text-neutral-tertiary">
+      <span className={`font-picky-sans text-[10px] leading-[1.4] ${countColor}`}>
         {mealCount} {mealCount === 1 ? "meal" : "meals"}
       </span>
     </div>

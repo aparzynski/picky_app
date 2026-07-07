@@ -57,7 +57,7 @@ export function EarlChatInputBar({ value, onChange, onSend, disabled = false }: 
       <div className="flex items-center gap-3 w-full h-12 px-4 rounded-full bg-neutral-secondary">
         {/* Attach */}
         <button
-          className="flex items-center justify-center text-neutral-tertiary shrink-0 hover:text-neutral-primary focus-visible:text-neutral-primary outline-none"
+          className="flex items-center justify-center text-neutral-tertiary shrink-0 cursor-pointer hover:text-neutral-primary focus-visible:text-neutral-primary outline-none"
           aria-label="Attach file"
           tabIndex={-1}
         >
@@ -82,7 +82,7 @@ export function EarlChatInputBar({ value, onChange, onSend, disabled = false }: 
 
         {/* Mic */}
         <button
-          className="flex items-center justify-center text-neutral-tertiary shrink-0 hover:text-neutral-primary focus-visible:text-neutral-primary outline-none"
+          className="flex items-center justify-center text-neutral-tertiary shrink-0 cursor-pointer hover:text-neutral-primary focus-visible:text-neutral-primary outline-none"
           aria-label="Voice input"
           tabIndex={-1}
         >

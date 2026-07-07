@@ -11,6 +11,8 @@ import { RecipeAccordion } from '@/components/RecipeAccordion';
 import { RecipeIngredient } from '@/components/RecipeIngredient';
 import { Tab } from '@/components/Tab';
 import { TransparentOverlayButton } from '@/components/TransparentOverlayButton';
+import { SwapMealModal } from '@/components/SwapMealModal';
+import { RatingModal, SmallStarRater } from '@/components/RatingModal';
 const FAMILY_INFO: Record<string, { name: string; initials: string }> = {
   S: { name: 'Sarah', initials: 'S' },
   D: { name: 'David', initials: 'D' },
@@ -26,6 +28,20 @@ const EATING_AVATAR_STYLES: Record<string, { bg: string; text: string }> = {
   N: { bg: 'bg-green-10',       text: 'text-green-80' },
   L: { bg: 'bg-brand-secondary', text: 'text-purple-80' },
 };
+
+function StarIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 2l2.887 6.163L22 9.27l-5 4.897 1.18 6.905L12 17.77l-6.18 3.302L7 14.167 2 9.27l7.113-1.107L12 2Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function ShoppingCartIcon() {
   return (
@@ -45,12 +61,16 @@ export default function RecipePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { recipes, savedRecipeIds, familyFavoriteIds, familyMembers } = usePickyStore();
+  const { recipes, savedRecipeIds, familyFavoriteIds, familyMembers, recipeRatings } = usePickyStore();
   const recipe = recipes[id];
 
   const isSwapMode = searchParams.get('mode') === 'swap';
+  const isPastMeal = searchParams.get('past') === 'true';
   const isTonight = searchParams.get('tonight') === 'true';
   const day = searchParams.get('day') ?? '';
+  const mealType = searchParams.get('meal') ?? '';
+  const todayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+  const isToday = day !== '' && day === todayName;
   const familyIds = (searchParams.get('family') ?? '')
     .split(',')
     .map((s) => s.trim())
@@ -64,6 +84,10 @@ export default function RecipePage() {
   );
   const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
   const [accordionsExpanded, setAccordionsExpanded] = useState<Record<number, boolean>>({});
+  const [swapModalOpen, setSwapModalOpen] = useState(false);
+  const [groceriesAdded, setGroceriesAdded] = useState(false);
+  const [ratingModalOpen, setRatingModalOpen] = useState(false);
+  const recipeRating = recipeRatings[id];
 
   const allInPantry = recipe?.ingredients?.every((i) => i.state === 'in pantry') ?? false;
 
@@ -113,38 +137,71 @@ export default function RecipePage() {
             {recipe.description}
           </p>
 
-          {/* Planned day + who's eating — only shown in swap mode with family context */}
-          {isSwapMode && familyIds.length > 0 && (
+          {/* Planned day + who's eating */}
+          {(isSwapMode || isPastMeal) && familyIds.length > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center bg-brand-quinary px-3 py-1 rounded-full shrink-0">
                 <span className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary">
-                  {isTonight ? '🌙 Tonight\'s Dinner' : day ? `🗓️ Planned for ${day}` : '🗓️ Planned for this Week'}
+                  {isPastMeal
+                    ? day
+                      ? `🗓️ ${day}'s ${mealType.charAt(0) + mealType.slice(1).toLowerCase()}`
+                      : '🗓️ Past Meal'
+                    : isTonight || (isToday && mealType === 'DINNER')
+                    ? "🌙 Tonight's Dinner"
+                    : isToday && mealType === 'BREAKFAST'
+                    ? "🌅 Today's Breakfast"
+                    : isToday && mealType === 'LUNCH'
+                    ? "☀️ Today's Lunch"
+                    : day
+                    ? `🗓️ Planned for ${day}`
+                    : '🗓️ Planned for this Week'}
                 </span>
               </div>
-              <div className="flex items-center">
-                {familyIds.map((fid, i) => {
-                  const style = EATING_AVATAR_STYLES[fid];
-                  if (!style) return null;
-                  const isLast = i === familyIds.length - 1;
-                  return (
-                    <div
-                      key={fid}
-                      className={`${style.bg} border border-brand-primary flex items-center justify-center overflow-clip rounded-full shrink-0 size-6 ${isLast ? '' : '-mr-2.5'}`}
-                    >
-                      <span className={`font-picky-hand font-bold text-[10px] leading-[1.4] tracking-[0.1px] ${style.text}`}>
-                        {fid}
-                      </span>
-                    </div>
-                  );
-                })}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center">
+                  {familyIds.map((fid, i) => {
+                    const style = EATING_AVATAR_STYLES[fid];
+                    if (!style) return null;
+                    const isLast = i === familyIds.length - 1;
+                    return (
+                      <div
+                        key={fid}
+                        className={`${style.bg} border border-brand-primary flex items-center justify-center overflow-clip rounded-full shrink-0 size-6 ${isLast ? '' : '-mr-2.5'}`}
+                      >
+                        <span className={`font-picky-hand font-bold text-[10px] leading-[1.4] tracking-[0.1px] ${style.text}`}>
+                          {fid}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                {isPastMeal && recipeRating && (
+                  <SmallStarRater stars={recipeRating} />
+                )}
               </div>
             </div>
           )}
 
-          {/* Primary CTA — "Swap Meal" when opened from planner, "Add to this Week" otherwise */}
-          <Button variant={isSwapMode ? 'secondary' : 'primary'} size="lg" className="w-full">
-            {isSwapMode ? 'Swap Meal' : 'Add to this Week'}
-          </Button>
+          {/* Primary CTA */}
+          {isPastMeal && recipeRating ? (
+            <div className="flex items-center justify-center py-3">
+              <SmallStarRater stars={recipeRating} />
+            </div>
+          ) : (
+            <Button
+              variant={isPastMeal ? 'secondary' : isSwapMode ? 'secondary' : 'primary'}
+              size="lg"
+              className="w-full"
+              iconLeft={isPastMeal ? <StarIcon /> : undefined}
+              onClick={
+                isPastMeal ? () => setRatingModalOpen(true)
+                : isSwapMode ? () => setSwapModalOpen(true)
+                : undefined
+              }
+            >
+              {isPastMeal ? 'Rate This Meal' : isSwapMode ? 'Swap Meal' : 'Add to this Week'}
+            </Button>
+          )}
 
           {/* Recipe Accordions (Figma 675:7439) */}
           {recipe.accordions?.map((acc, i) => (
@@ -181,7 +238,7 @@ export default function RecipePage() {
             {activeTab === 'ingredients' && (
               <div className="flex flex-col gap-5">
                 {/* Serves stepper row */}
-                <div className={`flex items-center gap-3 ${allInPantry ? '' : 'justify-between'}`}>
+                <div className={`flex items-center gap-3 ${allInPantry && !groceriesAdded ? '' : 'justify-between'}`}>
                   {/* Serves stepper pill */}
                   <div className="flex items-center gap-3 px-2 py-1 bg-neutral-secondary rounded-full">
                     <TransparentOverlayButton
@@ -199,15 +256,23 @@ export default function RecipePage() {
                     />
                   </div>
 
-                  {/* Add to Groceries — hidden when all ingredients are in pantry */}
                   {!allInPantry && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      iconLeft={<ShoppingCartIcon />}
-                    >
-                      Add to Groceries
-                    </Button>
+                    groceriesAdded ? (
+                      <div className="bg-[#d4fdd0] rounded-full px-4 py-2 shrink-0">
+                        <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-success-primary whitespace-nowrap">
+                          Added to grocery list
+                        </span>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        iconLeft={<ShoppingCartIcon />}
+                        onClick={() => setGroceriesAdded(true)}
+                      >
+                        Add to Groceries
+                      </Button>
+                    )
                   )}
                 </div>
 
@@ -217,7 +282,11 @@ export default function RecipePage() {
                     <RecipeIngredient
                       key={i}
                       name={ingredient.name}
-                      state={ingredient.state}
+                      state={
+                        groceriesAdded && ingredient.state === 'missing item'
+                          ? 'added to grocery list'
+                          : ingredient.state
+                      }
                     />
                   ))}
                 </div>
@@ -275,6 +344,27 @@ export default function RecipePage() {
       </div>
 
       <BottomNav />
+
+      {swapModalOpen && (
+        <SwapMealModal
+          dayName={day}
+          mealType={(mealType || 'DINNER') as 'BREAKFAST' | 'LUNCH' | 'DINNER'}
+          familyIds={familyIds}
+          currentRecipeId={id}
+          onClose={() => setSwapModalOpen(false)}
+        />
+      )}
+
+      {ratingModalOpen && (
+        <RatingModal
+          recipeId={id}
+          recipeName={recipe.name}
+          day={day}
+          mealType={mealType}
+          familyIds={familyIds}
+          onClose={() => setRatingModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
