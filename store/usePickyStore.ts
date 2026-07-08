@@ -81,6 +81,19 @@ type DiscoverCategoryData = {
   recipeIds: string[]
 }
 
+type OnboardingData = {
+  name: string;
+  age: string;
+  gender: string;
+  addedMembers: { name: string; age: string; gender: string }[];
+  goals: string[];
+  allergiesPerMember: Record<string, string[]>;
+  dislikesPerMember: Record<string, string[]>;
+  cookTime: string;
+  cookStyle: string;
+  nightsPerWeek: number;
+};
+
 type PickyState = {
   kitchenItems: KitchenItem[]
   userName: string
@@ -106,6 +119,12 @@ type PickyState = {
   recipes: Record<string, Recipe>
   recipeRatings: Record<string, number>
   setRecipeRating: (id: string, stars: number) => void
+  onboarding: OnboardingData;
+  hasCompletedOnboarding: boolean;
+  hasSeenFirstWeekModal: boolean;
+  setOnboardingField: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
+  completeOnboarding: () => void;
+  dismissFirstWeekModal: () => void;
 }
 
 const _initialPlannerMeals = buildInitialPlannerMeals();
@@ -2057,4 +2076,22 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
   },
+  onboarding: {
+    name: '',
+    age: '',
+    gender: '',
+    addedMembers: [],
+    goals: [],
+    allergiesPerMember: {},
+    dislikesPerMember: {},
+    cookTime: '',
+    cookStyle: '',
+    nightsPerWeek: 5,
+  },
+  hasCompletedOnboarding: false,
+  hasSeenFirstWeekModal: false,
+  setOnboardingField: (key, value) =>
+    set((state) => ({ onboarding: { ...state.onboarding, [key]: value } })),
+  completeOnboarding: () => set({ hasCompletedOnboarding: true }),
+  dismissFirstWeekModal: () => set({ hasSeenFirstWeekModal: true }),
 }))

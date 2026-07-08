@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from 'react';
+import Link from 'next/link';
 import { usePickyStore, type GroceryItem } from '@/store/usePickyStore';
 import { StatusBar } from '@/components/StatusBar';
 import { BottomNav } from '@/components/BottomNav';
@@ -92,8 +93,10 @@ export default function GroceryPage() {
   const [stillExpanded, setStillExpanded] = useState(true);
   const [purchasedExpanded, setPurchasedExpanded] = useState(true);
   const [earlDismissed, setEarlDismissed] = useState(false);
+  const [doneShoppingDismissed, setDoneShoppingDismissed] = useState(false);
   const [suggestions, setSuggestions] = useState(['Eggs', 'Bread', 'Butter']);
   const [toast, setToast] = useState<string | null>(null);
+  const [toastLink, setToastLink] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const SUGGESTION_MAP: Record<string, { category: GroceryItem['category']; quantity: string }> = {
@@ -102,14 +105,22 @@ export default function GroceryPage() {
     Butter: { category: 'dairy',   quantity: '1 stick' },
   }
 
+  function showToast(message: string, link?: string) {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(message);
+    setToastLink(link ?? null);
+    toastTimer.current = setTimeout(() => {
+      setToast(null);
+      setToastLink(null);
+    }, 3500);
+  }
+
   function handleSuggestion(name: string) {
     const cfg = SUGGESTION_MAP[name]
     if (!cfg) return
     addGroceryItem({ id: `g-earl-${name.toLowerCase()}`, name, quantity: cfg.quantity, category: cfg.category, store: 'Wegmans', recipes: [], purchased: false })
     setSuggestions((prev) => prev.filter((s) => s !== name))
-    if (toastTimer.current) clearTimeout(toastTimer.current)
-    setToast(`${name} has been added to your grocery list.`)
-    toastTimer.current = setTimeout(() => setToast(null), 3500)
+    showToast(`${name} has been added to your grocery list.`)
   }
 
   function handleToggle(id: string) {
@@ -120,9 +131,12 @@ export default function GroceryPage() {
     const message = willBePurchased
       ? `${item.name} has been added to purchased items.`
       : `${item.name} has been removed from purchased items.`;
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    setToast(message);
-    toastTimer.current = setTimeout(() => setToast(null), 3500);
+    showToast(message);
+  }
+
+  function handleUpdateKitchen() {
+    setDoneShoppingDismissed(true);
+    showToast('Your items have been added to your kitchen', '/my-kitchen');
   }
 
   // Filter by active store tab
@@ -133,6 +147,7 @@ export default function GroceryPage() {
 
   const stillNeeded = tabItems.filter((i) => !i.purchased);
   const purchased = tabItems.filter((i) => i.purchased);
+  const allPurchased = stillNeeded.length === 0 && purchased.length > 0;
 
   // Group into ordered category buckets, drop empties
   const groupByCategory = (items: GroceryItem[]) =>
@@ -190,15 +205,22 @@ export default function GroceryPage() {
             </div>
           </div>
 
-          {/* Earl Says Card — buttonCount=3 suggestions variant */}
-          {!earlDismissed && suggestions.length > 0 && (
+          {/* Earl Says Card */}
+          {allPurchased && !doneShoppingDismissed ? (
+            <EarlSaysCard
+              message="Done shopping?"
+              ctaLabel="Update Your Kitchen"
+              onCta={handleUpdateKitchen}
+              onDismiss={() => setDoneShoppingDismissed(true)}
+            />
+          ) : !earlDismissed && suggestions.length > 0 ? (
             <EarlSaysCard
               message="You usually buy these — want to add them?"
               suggestions={suggestions}
               onSuggestion={handleSuggestion}
               onDismiss={() => setEarlDismissed(true)}
             />
-          )}
+          ) : null}
         </div>
 
         {/* Store tabs — Figma: tabs (806:8887) */}
@@ -285,13 +307,26 @@ export default function GroceryPage() {
 
       {/* Success toast pill — Figma: SemanticPill size=medium type=success (658:17784) */}
       {toast && (
-        <div className="fixed bottom-[113px] left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-          <div className="bg-success-subtle rounded-full px-4 py-2">
-            <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-success-primary whitespace-nowrap">
-              {toast}
-            </span>
+        toastLink ? (
+          <Link
+            href={toastLink}
+            className="fixed bottom-[113px] left-1/2 -translate-x-1/2 z-20"
+          >
+            <div className="bg-success-subtle rounded-full px-4 py-2">
+              <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-success-primary whitespace-nowrap">
+                {toast}
+              </span>
+            </div>
+          </Link>
+        ) : (
+          <div className="fixed bottom-[113px] left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+            <div className="bg-success-subtle rounded-full px-4 py-2">
+              <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-success-primary whitespace-nowrap">
+                {toast}
+              </span>
+            </div>
           </div>
-        </div>
+        )
       )}
 
       {/* FAB — Add item (Figma: Button 658:17033, 56×56 brand circle) */}
