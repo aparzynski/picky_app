@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { usePickyStore } from "@/store/usePickyStore";
-import { getTodayIdx } from "@/lib/plannerData";
+import { buildSevenDayTilesFromToday } from "@/lib/plannerData";
 import { Logo } from "@/components/Logo";
 import { NotificationFab } from "@/components/NotificationFab";
 import { StatusBar } from "@/components/StatusBar";
@@ -26,7 +26,7 @@ export default function Home() {
     tonightsMealFamily,
     tonightsMealDay,
     isTonight,
-    weekTiles,
+    plannerMeals,
     familyFavorites,
     earlNudge,
     groceryItemCount,
@@ -34,8 +34,7 @@ export default function Home() {
     expiredItemCount,
   } = usePickyStore();
 
-  const todayTileIdx = getTodayIdx();
-  const orderedTiles = weekTiles.slice(todayTileIdx);
+  const orderedTiles = buildSevenDayTilesFromToday(plannerMeals);
 
   return (
     <div className="relative flex flex-col h-dvh bg-neutral-primary overflow-hidden">
@@ -87,7 +86,7 @@ export default function Home() {
                   emojis={tile.emojis}
                   mealCount={tile.mealCount}
                   currentDay={tile.isToday}
-                  onClick={() => router.push(`/planner/${tile.dayLabel.toLowerCase()}`)}
+                  onClick={() => router.push(`/planner/${tile.dayId}`)}
                 />
               ))}
             </div>

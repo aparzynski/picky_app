@@ -22,6 +22,7 @@ export type PlannerDay = {
 export type DayTile = {
   date: string;
   dayLabel: string;
+  dayId: string;
   emojis: string[];
   mealCount: number;
   isToday: boolean;
@@ -171,6 +172,30 @@ export function buildWeek(plannerMeals: Record<number, PlannerMeal[]>): {
   };
 }
 
+export function buildSevenDayTilesFromToday(plannerMeals: Record<number, PlannerMeal[]>): DayTile[] {
+  const today = new Date();
+  const dow = today.getDay();
+  const todayIdx = dow === 0 ? 6 : dow - 1;
+
+  const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  return Array.from({ length: 7 }, (_, offset) => {
+    const absoluteIdx = todayIdx + offset;
+    const d = new Date(today);
+    d.setDate(today.getDate() + offset);
+    const meals = plannerMeals[absoluteIdx] ?? [noMeal('BREAKFAST'), noMeal('LUNCH'), noMeal('DINNER')];
+    const planned = meals.filter((m) => m.hasMeal);
+    return {
+      date: fmt(d),
+      dayLabel: DAY_LABELS_SHORT[absoluteIdx % 7],
+      dayId: absoluteIdx < 7 ? DAY_IDS[absoluteIdx] : NEXT_WEEK_DAY_IDS[absoluteIdx - 7],
+      emojis: planned.map((m) => m.emoji),
+      mealCount: planned.length,
+      isToday: offset === 0,
+    };
+  });
+}
+
 export function buildWeekTiles(plannerMeals: Record<number, PlannerMeal[]>): DayTile[] {
   const today = new Date();
   const dow = today.getDay();
@@ -190,6 +215,7 @@ export function buildWeekTiles(plannerMeals: Record<number, PlannerMeal[]>): Day
     return {
       date: fmt(d),
       dayLabel: DAY_LABELS_SHORT[i],
+      dayId: DAY_IDS[i],
       emojis: planned.map((m) => m.emoji),
       mealCount: planned.length,
       isToday: i === todayIdx,

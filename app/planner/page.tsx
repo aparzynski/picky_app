@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { StatusBar } from '@/components/StatusBar';
 import { BottomNav } from '@/components/BottomNav';
@@ -28,7 +28,6 @@ const FAMILY: { initials: string; color: AvatarColor }[] = [
 
 const FAMILY_BY_INITIAL = Object.fromEntries(FAMILY.map((f) => [f.initials, f]));
 
-const SESSION_KEY = 'planner_past_banner_dismissed';
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -259,6 +258,8 @@ export default function PlannerPage() {
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [weekOffset, setWeekOffset] = useState(0); // 0 = this week, 1 = next week
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
+  const initialPositionedRef = useRef(false);
   const todayDayId = DAY_IDS[getTodayIdx()];
 
   type SwapTarget = { dayName: string; mealType: MealType; familyIds: string[]; recipeId: string };
@@ -268,34 +269,30 @@ export default function PlannerPage() {
     setSwapTarget({ dayName, mealType, familyIds, recipeId });
   }
 
-  // Hydrate banner dismissed state from sessionStorage
-  useEffect(() => {
-    setBannerDismissed(sessionStorage.getItem(SESSION_KEY) === 'true');
-  }, []);
-
-  // Scroll to banner position on load / week switch. Resets to top on next week.
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      if (!scrollRef.current) return;
-      if (weekOffset === 1 || bannerDismissed || !bannerRef.current) {
-        scrollRef.current.scrollTop = 0;
-        initialScrollTopRef.current = null;
-        return;
-      }
+  // Position scroll before first paint, then reveal. React flushes layout-effect state
+  // updates synchronously, so contentVisible: true lands in the same paint as the scroll.
+  useLayoutEffect(() => {
+    if (!scrollRef.current) return;
+    if (weekOffset === 1 || bannerDismissed || !bannerRef.current) {
+      scrollRef.current.scrollTop = 0;
+      initialScrollTopRef.current = null;
+    } else {
       const containerRect = scrollRef.current.getBoundingClientRect();
       const bannerRect = bannerRef.current.getBoundingClientRect();
       const targetScrollTop = scrollRef.current.scrollTop + (bannerRect.top - containerRect.top);
       scrollRef.current.scrollTop = targetScrollTop;
       initialScrollTopRef.current = targetScrollTop;
-    });
-    return () => cancelAnimationFrame(frame);
+    }
+    if (!initialPositionedRef.current) {
+      initialPositionedRef.current = true;
+      setContentVisible(true);
+    }
   }, [bannerDismissed, weekOffset]);
 
   function handleScroll() {
     if (bannerDismissed || initialScrollTopRef.current === null || !scrollRef.current) return;
     if (scrollRef.current.scrollTop < initialScrollTopRef.current - 20) {
       setBannerDismissed(true);
-      sessionStorage.setItem(SESSION_KEY, 'true');
     }
   }
 
@@ -384,11 +381,12 @@ export default function PlannerPage() {
         
       </div>
 
-      {/* Scrollable body */}
+      {/* Scrollable body — invisible until scroll position is set to avoid jump */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto bg-neutral-disabled"
+        style={contentVisible ? undefined : { visibility: 'hidden' }}
       >
         <div className="flex flex-col gap-2 px-4 pt-4 pb-[120px]">
 
@@ -403,7 +401,7 @@ export default function PlannerPage() {
 
           {/* Past Days Banner */}
           {weekOffset === 0 && !bannerDismissed && pastDays.length > 0 && (
-            <div ref={bannerRef} className="flex items-center justify-center py-2">
+            <div ref={bannerRef} className="flex items-center py-2">
               <span className="text-[12px] font-normal font-picky-sans text-neutral-tertiary leading-[1.4]">
                 ↑ Swipe Up to View Past Days
               </span>
