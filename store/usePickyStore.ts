@@ -947,7 +947,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw2: {
-      id: 'pw2', name: 'Turkey & Avocado Wrap', cookTime: 10, serves: 2, imageUrl: '/mock/d9.jpg',
+      id: 'pw2', name: 'Turkey & Avocado Wrap', cookTime: 10, serves: 2, imageUrl: '/mock/pw2.jpg',
       description: 'Sliced turkey, creamy avocado, crisp romaine, and tomato rolled in a whole-wheat tortilla with a swipe of Dijon.',
       tags: ['🥑 Fresh', 'High Protein', 'Quick Lunch'],
       ingredients: [
@@ -967,7 +967,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw3: {
-      id: 'pw3', name: 'Lemon Herb Sheet Pan Chicken', cookTime: 35, serves: 4, imageUrl: '/mock/d19.jpg',
+      id: 'pw3', name: 'Lemon Herb Sheet Pan Chicken', cookTime: 35, serves: 4, imageUrl: '/mock/pw3.jpg',
       description: 'Juicy chicken thighs roasted alongside baby potatoes and cherry tomatoes with fresh thyme and lemon.',
       tags: ['🍋 One Pan', 'Weeknight', 'Family Favorite'],
       ingredients: [
@@ -990,7 +990,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw4: {
-      id: 'pw4', name: 'Blueberry Smoothie Bowl', cookTime: 10, serves: 2, imageUrl: '/mock/d3.jpg',
+      id: 'pw4', name: 'Blueberry Smoothie Bowl', cookTime: 10, serves: 2, imageUrl: '/mock/pw4.jpg',
       description: 'Thick blended blueberry and banana base topped with granola, coconut flakes, and a drizzle of honey.',
       tags: ['🫐 Breakfast', 'Quick', 'Kid Friendly'],
       ingredients: [
@@ -1057,7 +1057,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw7: {
-      id: 'pw7', name: 'Cheesy Egg Muffins', cookTime: 25, serves: 6, imageUrl: '/mock/d12.jpg',
+      id: 'pw7', name: 'Cheesy Egg Muffins', cookTime: 25, serves: 6, imageUrl: '/mock/pw7.jpg',
       description: 'Mini frittata muffins packed with spinach, roasted red pepper, and melted cheddar — great for batch prep.',
       tags: ['🧀 Breakfast', 'Meal Prep', 'High Protein'],
       ingredients: [
@@ -1079,7 +1079,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw8: {
-      id: 'pw8', name: 'Rainbow Sushi Bowl', cookTime: 15, serves: 2, imageUrl: '/mock/r5.jpg',
+      id: 'pw8', name: 'Rainbow Sushi Bowl', cookTime: 15, serves: 2, imageUrl: '/mock/pw8.jpg',
       description: 'Seasoned sushi rice topped with cucumber, edamame, mango, shredded carrots, avocado, and sesame seeds.',
       tags: ['🍱 Japanese', 'Vegan', 'Quick'],
       ingredients: [
@@ -1101,7 +1101,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw9: {
-      id: 'pw9', name: 'Slow Cooker Pulled Pork Tacos', cookTime: 360, serves: 8, imageUrl: '/mock/d6.jpg',
+      id: 'pw9', name: 'Slow Cooker Pulled Pork Tacos', cookTime: 360, serves: 8, imageUrl: '/mock/pw9.jpg',
       description: 'Fall-apart tender pork shoulder slow-cooked in a smoky sauce — pile into warm tortillas with all the fixings.',
       tags: ['🌮 Slow Cook', 'Crowd Pleaser', 'Weekend'],
       ingredients: [
@@ -1127,7 +1127,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw10: {
-      id: 'pw10', name: 'Coconut Granola Parfait', cookTime: 5, serves: 2, imageUrl: '/mock/lily3.jpg',
+      id: 'pw10', name: 'Coconut Granola Parfait', cookTime: 5, serves: 2, imageUrl: '/mock/pw10.jpg',
       description: 'Layers of creamy Greek yogurt, toasted coconut granola, fresh mango, and a drizzle of honey in a mason jar.',
       tags: ['🥥 Breakfast', 'Quick', 'No Cook'],
       ingredients: [
@@ -1145,7 +1145,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw11: {
-      id: 'pw11', name: 'Turkey Club Sandwich', cookTime: 10, serves: 2, imageUrl: '/mock/d8.jpg',
+      id: 'pw11', name: 'Turkey Club Sandwich', cookTime: 10, serves: 2, imageUrl: '/mock/pw11.jpg',
       description: 'Triple-decker turkey, crispy bacon, romaine, tomato, and avocado on toasted sourdough with herb mayo.',
       tags: ['🥪 Sandwich', 'High Protein', 'Quick Lunch'],
       ingredients: [
@@ -1191,7 +1191,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw13: {
-      id: 'pw13', name: 'Cinnamon French Toast Sticks', cookTime: 25, serves: 4, imageUrl: '/mock/d20.jpg',
+      id: 'pw13', name: 'Cinnamon French Toast Sticks', cookTime: 25, serves: 4, imageUrl: '/mock/pw13.jpg',
       description: 'Thick brioche fingers dunked in cinnamon-vanilla custard and pan-fried golden — perfect for dipping in maple syrup.',
       tags: ['🍞 Breakfast', 'Kid Favorite', 'Weekend'],
       ingredients: [
@@ -1214,7 +1214,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw14: {
-      id: 'pw14', name: 'Sesame Noodle Salad', cookTime: 15, serves: 4, imageUrl: '/mock/d16.jpg',
+      id: 'pw14', name: 'Sesame Noodle Salad', cookTime: 15, serves: 4, imageUrl: '/mock/pw14.jpg',
       description: 'Chilled soba noodles tossed in a sesame-ginger dressing with edamame, shredded carrots, and cucumber ribbons.',
       tags: ['🍜 Asian', 'Vegan', 'Meal Prep'],
       ingredients: [
@@ -1239,7 +1239,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw15: {
-      id: 'pw15', name: 'Weeknight Beef Tacos', cookTime: 25, serves: 4, imageUrl: '/mock/r4.jpg',
+      id: 'pw15', name: 'Weeknight Beef Tacos', cookTime: 25, serves: 4, imageUrl: '/mock/pw15.jpg',
       description: 'Seasoned ground beef in warm corn tortillas with shredded lettuce, diced tomato, cheese, and a squeeze of lime.',
       tags: ['🌮 Mexican', 'Kid Favorite', 'Quick Weeknight'],
       ingredients: [
@@ -1262,7 +1262,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw16: {
-      id: 'pw16', name: "David's Birthday Burgers", cookTime: 30, serves: 6, imageUrl: '/mock/d7.jpg',
+      id: 'pw16', name: "David's Birthday Burgers", cookTime: 30, serves: 6, imageUrl: '/mock/pw16.jpg',
       description: "Juicy smash burgers with American cheese, crisp lettuce, and special sauce — David's birthday tradition.",
       tags: ['🍔 BBQ', 'Summer', 'Crowd Pleaser'],
       ingredients: [
@@ -1308,7 +1308,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw19: {
-      id: 'pw19', name: 'BLT Wrap', cookTime: 10, serves: 2, imageUrl: '/mock/d9.jpg',
+      id: 'pw19', name: 'BLT Wrap', cookTime: 10, serves: 2, imageUrl: '/mock/pw19.jpg',
       description: 'Crispy bacon, ripe tomato, and crunchy romaine wrapped in a soft flour tortilla with a swipe of herb mayo.',
       tags: ['🥓 Sandwich', 'Quick Lunch', 'High Protein'],
       ingredients: [
@@ -1328,7 +1328,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       ],
     },
     pw17: {
-      id: 'pw17', name: 'Sunday Roast Chicken', cookTime: 90, serves: 6, imageUrl: '/mock/d5.jpg',
+      id: 'pw17', name: 'Sunday Roast Chicken', cookTime: 90, serves: 6, imageUrl: '/mock/pw17.jpg',
       description: 'Herb-butter whole chicken roasted until the skin shatters and the meat falls off the bone — the ultimate Sunday ritual.',
       tags: ['🍗 Comfort', 'Weekend Project', 'Family Favorite'],
       ingredients: [
