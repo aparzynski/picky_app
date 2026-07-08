@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePickyStore } from "@/store/usePickyStore";
 import { StatusBar } from "@/components/StatusBar";
 import { BottomNav } from "@/components/BottomNav";
@@ -24,6 +25,7 @@ function FilterIcon() {
 }
 
 export default function DiscoverPage() {
+  const router = useRouter();
   const { discoverCategories, recipes, savedRecipeIds } = usePickyStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -85,6 +87,9 @@ export default function DiscoverPage() {
             title={category.title}
             recipes={category.recipeIds.map((id) => recipes[id]).filter(Boolean)}
             savedRecipeIds={savedRecipeIds}
+            onViewMore={() =>
+              router.push(`/recipe-category?title=${encodeURIComponent(category.title)}&ids=${category.recipeIds.join(',')}`)
+            }
           />
         ))}
 

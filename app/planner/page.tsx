@@ -58,7 +58,7 @@ function StarIcon() {
   );
 }
 
-function MealRow({ meal, isPast, isLast, dayName, isToday, onSwap }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string; isToday: boolean; onSwap?: () => void }) {
+function MealRow({ meal, isPast, isLast, dayName, isToday, isNextWeek, onSwap }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string; isToday: boolean; isNextWeek: boolean; onSwap?: () => void }) {
   const router = useRouter();
   const borderClass = isLast
     ? ''
@@ -129,7 +129,8 @@ function MealRow({ meal, isPast, isLast, dayName, isToday, onSwap }: { meal: Mea
                 onClick={() => {
                   const ids = (meal.family ?? FAMILY.map((f) => f.initials)).join(',');
                   const tonightParam = isToday && meal.type === 'DINNER' ? '&tonight=true' : '';
-                  router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}&meal=${meal.type}&mode=swap${tonightParam}`);
+                  const nwParam = isNextWeek ? '&nextWeek=1' : '';
+                  router.push(`/recipe/${meal.recipeId}?family=${ids}&day=${dayName}&meal=${meal.type}&mode=swap${tonightParam}${nwParam}`);
                 }}
                 className="text-[14px] font-semibold font-picky-sans text-neutral-primary leading-[1.5] text-left cursor-pointer break-words"
               >
@@ -185,7 +186,7 @@ function MealRow({ meal, isPast, isLast, dayName, isToday, onSwap }: { meal: Mea
   );
 }
 
-function WeekdayCardEl({ day, onOpenSwap }: { day: PlannerDay; onOpenSwap: (dayName: string, mealType: MealType, familyIds: string[], recipeId: string) => void }) {
+function WeekdayCardEl({ day, isNextWeek, onOpenSwap }: { day: PlannerDay; isNextWeek: boolean; onOpenSwap: (dayName: string, mealType: MealType, familyIds: string[], recipeId: string) => void }) {
   const router = useRouter();
   const cardBg = day.isPast ? 'bg-neutral-tertiary' : 'bg-neutral-primary';
   return (
@@ -219,6 +220,7 @@ function WeekdayCardEl({ day, onOpenSwap }: { day: PlannerDay; onOpenSwap: (dayN
             isLast={i === day.meals.length - 1}
             dayName={day.name}
             isToday={day.isToday}
+            isNextWeek={isNextWeek}
             onSwap={
               !day.isPast && meal.hasMeal && meal.recipeId
                 ? () => onOpenSwap(day.name, meal.type, meal.family ?? FAMILY.map((f) => f.initials), meal.recipeId!)
@@ -394,7 +396,7 @@ export default function PlannerPage() {
           {weekOffset === 0 && pastDays.length > 0 && (
             <div className="flex flex-col gap-3">
               {pastDays.map((day) => (
-                <WeekdayCardEl key={day.id} day={day} onOpenSwap={openSwap} />
+                <WeekdayCardEl key={day.id} day={day} isNextWeek={false} onOpenSwap={openSwap} />
               ))}
             </div>
           )}
@@ -411,7 +413,7 @@ export default function PlannerPage() {
           {/* Weekday cards */}
           <div className="flex flex-col gap-3">
             {(weekOffset === 0 ? weekdayDays : nextWeekdayDays).map((day) => (
-              <WeekdayCardEl key={day.id} day={day} onOpenSwap={openSwap} />
+              <WeekdayCardEl key={day.id} day={day} isNextWeek={weekOffset === 1} onOpenSwap={openSwap} />
             ))}
           </div>
 
@@ -419,7 +421,7 @@ export default function PlannerPage() {
           <SectionDivider label="Weekend" />
           <div className="flex flex-col gap-3">
             {(weekOffset === 0 ? weekendDays : nextWeekendDays).map((day) => (
-              <WeekdayCardEl key={day.id} day={day} onOpenSwap={openSwap} />
+              <WeekdayCardEl key={day.id} day={day} isNextWeek={weekOffset === 1} onOpenSwap={openSwap} />
             ))}
           </div>
 

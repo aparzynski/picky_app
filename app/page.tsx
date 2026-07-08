@@ -107,6 +107,7 @@ export default function Home() {
             title="My Recipes"
             subtitle={`${recipesCount} items`}
             iconSize={16}
+            href="/my-recipes"
           />
           <QuickActionCard
             iconSrc="/assets/icon-kitchen.svg"
@@ -122,7 +123,7 @@ export default function Home() {
             <h3 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
               Your Family Favorites
             </h3>
-            <ViewAllButton />
+            <ViewAllButton onClick={() => router.push('/my-recipes')} />
           </div>
           <div className="pt-4 overflow-hidden pr-5 rounded-xl">
             <div className="flex gap-4 items-start overflow-x-auto w-full pb-4 overflow-hidden pl-5 ">

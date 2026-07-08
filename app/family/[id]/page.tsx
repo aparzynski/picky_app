@@ -174,7 +174,7 @@ export default function FamilyMemberPage() {
               <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
                 Earl&apos;s Picks
               </h2>
-              <ViewAllButton />
+              <ViewAllButton onClick={() => router.push(`/recipe-category?title=${encodeURIComponent("Earl's Picks")}&ids=${member.favoriteRecipeIds.join(',')}&allSaved=1`)} />
             </div>
             <div className="grid grid-cols-2 gap-4 items-start px-4 pb-4">
               {favoriteRecipes.map((recipe) => (
@@ -198,7 +198,7 @@ export default function FamilyMemberPage() {
               <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
                 Saved
               </h2>
-              <ViewAllButton />
+              <ViewAllButton onClick={() => router.push('/my-recipes')} />
             </div>
             <div className="grid grid-cols-2 gap-4 items-start px-4 pb-6">
               {savedRecipes.map((recipe) => (

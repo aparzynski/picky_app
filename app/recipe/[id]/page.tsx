@@ -67,10 +67,33 @@ export default function RecipePage() {
   const isSwapMode = searchParams.get('mode') === 'swap';
   const isPastMeal = searchParams.get('past') === 'true';
   const isTonight = searchParams.get('tonight') === 'true';
+  const isNextWeek = searchParams.get('nextWeek') === '1';
   const day = searchParams.get('day') ?? '';
   const mealType = searchParams.get('meal') ?? '';
   const todayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
-  const isToday = day !== '' && day === todayName;
+  const isToday = !isNextWeek && day !== '' && day === todayName;
+
+  // For next-week planned meals, compute the real calendar date ("July 8th")
+  const plannedDateLabel = (() => {
+    if (!isNextWeek || !day) return null;
+    const DAY_NAME_TO_IDX: Record<string, number> = {
+      Monday: 0, Tuesday: 1, Wednesday: 2, Thursday: 3, Friday: 4, Saturday: 5, Sunday: 6,
+    };
+    const dayOffset = DAY_NAME_TO_IDX[day];
+    if (dayOffset === undefined) return null;
+    const today = new Date();
+    const dow = today.getDay();
+    const todayIdx = dow === 0 ? 6 : dow - 1;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - todayIdx + 7); // next Monday
+    monday.setHours(0, 0, 0, 0);
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + dayOffset);
+    const month = d.toLocaleDateString('en-US', { month: 'long' });
+    const n = d.getDate();
+    const suffix = n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th','st','nd','rd'][n % 10] ?? 'th';
+    return `${month} ${n}${suffix}`;
+  })();
   const familyIds = (searchParams.get('family') ?? '')
     .split(',')
     .map((s) => s.trim())
@@ -139,7 +162,7 @@ export default function RecipePage() {
 
           {/* Planned day + who's eating */}
           {(isSwapMode || isPastMeal) && familyIds.length > 0 && (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
               <div className="flex items-center bg-brand-quinary px-3 py-1 rounded-full shrink-0">
                 <span className="font-picky-sans font-normal text-[14px] leading-[1.5] text-brand-primary">
                   {isPastMeal
@@ -152,6 +175,8 @@ export default function RecipePage() {
                     ? "🌅 Today's Breakfast"
                     : isToday && mealType === 'LUNCH'
                     ? "☀️ Today's Lunch"
+                    : plannedDateLabel
+                    ? `🗓️ Planned for ${plannedDateLabel}`
                     : day
                     ? `🗓️ Planned for ${day}`
                     : '🗓️ Planned for this Week'}
@@ -183,11 +208,7 @@ export default function RecipePage() {
           )}
 
           {/* Primary CTA */}
-          {isPastMeal && recipeRating ? (
-            <div className="flex items-center justify-center py-3">
-              <SmallStarRater stars={recipeRating} />
-            </div>
-          ) : (
+          {!(isPastMeal && recipeRating) && (
             <Button
               variant={isPastMeal ? 'secondary' : isSwapMode ? 'secondary' : 'primary'}
               size="lg"

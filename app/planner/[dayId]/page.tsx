@@ -266,7 +266,8 @@ export default function PlannerDayPage() {
                   ? () => {
                       const family = (meal.family ?? []).join(',');
                       const tonight = isToday && meal.type === 'DINNER' ? '&tonight=true' : '';
-                      router.push(`/recipe/${meal.recipeId}?family=${family}&day=${dayName}&meal=${meal.type}&mode=swap${tonight}`);
+                      const nw = dayIdx >= 7 ? '&nextWeek=1' : '';
+                      router.push(`/recipe/${meal.recipeId}?family=${family}&day=${dayName}&meal=${meal.type}&mode=swap${tonight}${nw}`);
                     }
                   : undefined
               }

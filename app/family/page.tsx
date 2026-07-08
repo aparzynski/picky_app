@@ -125,7 +125,7 @@ export default function FamilyPage() {
             <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
               Your Family&apos;s Favorites
             </h2>
-            <ViewAllButton />
+            <ViewAllButton onClick={() => router.push('/my-recipes')} />
           </div>
 
           {/* 2-column recipe grid */}
