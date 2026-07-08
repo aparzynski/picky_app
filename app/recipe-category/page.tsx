@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { usePickyStore } from '@/store/usePickyStore';
 import { StatusBar } from '@/components/StatusBar';
@@ -22,7 +23,7 @@ function FilterIcon() {
   );
 }
 
-export default function RecipeCategoryPage() {
+function RecipeCategoryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { recipes, savedRecipeIds } = usePickyStore();
@@ -82,5 +83,13 @@ export default function RecipeCategoryPage() {
 
       <BottomNav />
     </div>
+  );
+}
+
+export default function RecipeCategoryPage() {
+  return (
+    <Suspense fallback={null}>
+      <RecipeCategoryContent />
+    </Suspense>
   );
 }
