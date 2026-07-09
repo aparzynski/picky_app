@@ -143,7 +143,7 @@ function StepHeader({
   onClose: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between px-5 pt-5 pb-3">
+    <div className="flex items-start justify-between px-5 pt-5 pb-3">
       {onBack ? (
         <button onClick={onBack} className="p-1 text-neutral-secondary cursor-pointer" aria-label="Back">
           <BackIcon />
@@ -214,17 +214,17 @@ function Step1({
       <StepHeader onClose={onClose} />
       <div className="flex flex-col gap-5 px-5 pb-6">
         {/* Title */}
-        <div className="flex flex-col items-center gap-1">
-          <h2 className="font-picky-hand font-semibold text-[22px] leading-[1.2] text-neutral-primary text-center">
-            Who&apos;s Eating?
-          </h2>
-          <p className="font-picky-sans font-normal text-[14px] leading-[1.5] text-neutral-tertiary text-center">
+        <h2 className="font-picky-hand font-semibold text-[22px] leading-[1.2] text-neutral-primary text-center">
+          Who&apos;s Eating?
+        </h2>
+
+        {/* Subtitle + family grid */}
+        <div className="flex flex-col gap-2">
+          <p className="font-picky-sans font-normal text-[14px] leading-[1.5] text-neutral-tertiary">
             Select family members
           </p>
-        </div>
-
-        {/* Family member circles */}
-        <div className="flex flex-wrap gap-x-3 gap-y-4">
+          {/* Family member circles */}
+          <div className="flex flex-wrap gap-x-3 gap-y-4">
           {FAMILY_OPTIONS.map((member) => {
             const isSelected = selected.includes(member.initials);
             return (
@@ -247,6 +247,7 @@ function Step1({
               </button>
             );
           })}
+          </div>
         </div>
 
         <Button variant="primary" size="lg" pill onClick={onContinue} className="w-full">

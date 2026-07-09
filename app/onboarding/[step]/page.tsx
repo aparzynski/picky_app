@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { usePickyStore } from '@/store/usePickyStore';
 import { OnboardingLayout } from '@/components/OnboardingLayout';
+import { OnionRingsBackground, WELCOME_GRADIENT } from '@/components/WelcomeBackground';
 import { SelectionCard } from '@/components/SelectionCard';
 import { MultiSelectChip } from '@/components/MultiSelectChip';
 import { Button } from '@/components/Button';
@@ -16,10 +17,11 @@ const EARL_MESSAGES: Record<string, string> = {
   '2': 'Hi {name}! Please enter your age and gender.',
   '3': "Great! Now, who else are we feeding? Add your family members so I can personalize your meal plans.",
   '4': 'What are you hoping to get some help with? Select all that apply.',
-  '5': "Does anyone have allergies or dietary restrictions? I'll make sure to avoid those ingredients.",
-  '6': "Are there any foods that family members don't like?",
-  '7': 'How much time do you usually have to cook on a weeknight?',
-  '8': 'Almost done! How do you like to cook?',
+  '5': "What are everyone's favorite foods?",
+  '6': "Does anyone have allergies or dietary restrictions? I'll make sure to avoid those ingredients.",
+  '7': "Are there any foods that family members don't like?",
+  '8': 'How much time do you usually have to cook on a weeknight?',
+  '9': 'Almost done! How do you like to cook?',
 };
 
 const GOALS = [
@@ -32,9 +34,15 @@ const GOALS = [
   'Getting out of a meal rut',
 ];
 
+const FAVORITE_FOODS = [
+  'Pizza', 'Pasta', 'Chicken', 'Tacos', 'Burgers', 'Salmon',
+  'Steak', 'Soup', 'Salads', 'Stir Fry', 'Sandwiches', 'Sushi',
+];
+
 const ALLERGIES = [
-  'Dairy', 'Eggs', 'Peanuts', 'Tree Nuts', 'Soy',
-  'Wheat', 'Fish', 'Shellfish', 'Gluten', 'Sesame',
+  'Vegan', 'Vegetarian', 'Kosher', 'Halal', 'Pescatarian',
+  'Dairy-Free', 'Gluten-Free', 'Peanuts', 'Tree Nuts', 'Soy',
+  'Shellfish', 'Sesame',
 ];
 
 const DISLIKES = [
@@ -56,7 +64,7 @@ const COOK_STYLES = [
   { label: 'A mix of both' },
 ];
 
-const GENDERS = ['Man', 'Woman', 'Prefer not to say'];
+const GENDERS = ['Male', 'Female'];
 
 // ─── Step 1: Name ─────────────────────────────────────────────────────────────
 
@@ -68,6 +76,7 @@ function Step1() {
     <OnboardingLayout
       step={1}
       earlMessage={EARL_MESSAGES['1']}
+      onSwipeNext={() => { if (onboarding.name.trim()) router.push('/onboarding/2'); }}
       footer={
         <Button
           variant="primary"
@@ -105,6 +114,7 @@ function Step2() {
       step={2}
       earlMessage={EARL_MESSAGES['2'].replace('{name}', onboarding.name || 'there')}
       onBack={() => router.push('/onboarding/1')}
+      onSwipeNext={() => { if (canProceed) router.push('/onboarding/3'); }}
       footer={
         <Button
           variant="primary"
@@ -186,6 +196,7 @@ function Step3() {
       step={3}
       earlMessage={EARL_MESSAGES['3']}
       onBack={() => router.push('/onboarding/2')}
+      onSwipeNext={() => router.push('/onboarding/4')}
       footer={
         <>
           <Button
@@ -200,7 +211,12 @@ function Step3() {
           </Button>
           <button
             onClick={() => router.push('/onboarding/4')}
-            className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-brand-primary text-center cursor-pointer py-1"
+            disabled={onboarding.addedMembers.length > 0}
+            className={`font-picky-sans font-semibold text-[14px] leading-[1.5] text-center py-1 transition-colors ${
+              onboarding.addedMembers.length > 0
+                ? 'text-neutral-disabled pointer-events-none'
+                : 'text-brand-primary cursor-pointer'
+            }`}
           >
             It&apos;s Just Me
           </button>
@@ -263,35 +279,32 @@ function Step3() {
           Add
         </Button>
 
-        {/* Added members list */}
+        {/* Added members — pill chips */}
         {onboarding.addedMembers.length > 0 && (
-          <div className="flex flex-col gap-2 mt-1">
-            {onboarding.addedMembers.map((m, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between px-4 py-3 rounded-[12px] border border-neutral-primary bg-neutral-primary"
-              >
-                <div>
-                  <span className="font-picky-sans font-semibold text-[14px] text-neutral-primary">
-                    {m.name}
-                  </span>
-                  {(m.age || m.gender) && (
-                    <span className="font-picky-sans font-normal text-[13px] text-neutral-tertiary ml-2">
-                      {[m.age && `Age ${m.age}`, m.gender].filter(Boolean).join(' · ')}
-                    </span>
-                  )}
-                </div>
-                <button
-                  onClick={() => removeMember(i)}
-                  aria-label={`Remove ${m.name}`}
-                  className="text-neutral-tertiary hover:text-neutral-primary cursor-pointer p-1"
+          <div className="flex flex-wrap gap-2 mt-1">
+            {onboarding.addedMembers.map((m, i) => {
+              const genderSymbol = m.gender === 'Female' ? '♀ ' : m.gender === 'Male' ? '♂ ' : '';
+              const label = `${genderSymbol}${m.name}${m.age ? `, ${m.age}` : ''}`;
+              return (
+                <div
+                  key={i}
+                  className="flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full bg-brand-quinary"
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                </button>
-              </div>
-            ))}
+                  <span className="font-picky-sans font-normal text-[13px] leading-[1.4] text-brand-primary">
+                    {label}
+                  </span>
+                  <button
+                    onClick={() => removeMember(i)}
+                    aria-label={`Remove ${m.name}`}
+                    className="text-brand-primary cursor-pointer flex items-center"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -317,6 +330,7 @@ function Step4() {
       step={4}
       earlMessage={EARL_MESSAGES['4']}
       onBack={() => router.push('/onboarding/3')}
+      onSwipeNext={() => { if (onboarding.goals.length > 0) router.push('/onboarding/5'); }}
       footer={
         <Button
           variant="primary"
@@ -339,6 +353,136 @@ function Step4() {
             onClick={() => toggle(goal)}
           />
         ))}
+      </div>
+    </OnboardingLayout>
+  );
+}
+
+// ─── Step 5: Favorite foods ───────────────────────────────────────────────────
+
+function StepFavoriteFoods() {
+  const router = useRouter();
+  const { onboarding, setOnboardingField } = usePickyStore();
+  const allMembers = [onboarding.name || 'Me', ...onboarding.addedMembers.map((m) => m.name)];
+  const [activeTab, setActiveTab] = useState(0);
+  const [customInput, setCustomInput] = useState('');
+
+  const activeMember = allMembers[activeTab] ?? '';
+  const selected: string[] = onboarding.favoriteFoodsPerMember[activeMember] ?? [];
+
+  function toggle(item: string) {
+    const next = selected.includes(item) ? selected.filter((x) => x !== item) : [...selected, item];
+    setOnboardingField('favoriteFoodsPerMember', { ...onboarding.favoriteFoodsPerMember, [activeMember]: next });
+  }
+
+  function addCustom() {
+    const val = customInput.trim();
+    if (!val) return;
+    if (!selected.includes(val)) {
+      setOnboardingField('favoriteFoodsPerMember', {
+        ...onboarding.favoriteFoodsPerMember,
+        [activeMember]: [...selected, val],
+      });
+    }
+    setCustomInput('');
+  }
+
+  return (
+    <OnboardingLayout
+      step={5}
+      earlMessage={EARL_MESSAGES['5']}
+      onBack={() => router.push('/onboarding/4')}
+      onSwipeNext={() => router.push('/onboarding/6')}
+      footer={
+        <>
+          <Button
+            variant="primary"
+            size="lg"
+            pill
+            onClick={() => router.push('/onboarding/6')}
+            className="w-full"
+          >
+            Next
+          </Button>
+          <button
+            onClick={() => router.push('/onboarding/6')}
+            className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-brand-primary text-center cursor-pointer py-1"
+          >
+            Skip
+          </button>
+        </>
+      }
+    >
+      <div className="flex flex-col gap-4">
+        {/* Member tab bar */}
+        <div className="flex border-b border-neutral-primary -mx-5 px-5 overflow-x-auto">
+          {allMembers.map((name, i) => (
+            <Tab
+              key={name}
+              label={name}
+              selected={activeTab === i}
+              selectionCount={(onboarding.favoriteFoodsPerMember[name] ?? []).length}
+              onClick={() => setActiveTab(i)}
+            />
+          ))}
+        </div>
+
+        {/* Food chips */}
+        <div className="flex flex-wrap gap-2">
+          {FAVORITE_FOODS.map((item) => (
+            <MultiSelectChip
+              key={item}
+              label={item}
+              selected={selected.includes(item)}
+              onClick={() => toggle(item)}
+            />
+          ))}
+        </div>
+
+        {/* Custom input */}
+        <div className="flex flex-col gap-2">
+          <span className="font-picky-sans font-semibold text-[13px] text-neutral-primary">
+            Add other favorites
+          </span>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="e.g., dumplings"
+              value={customInput}
+              onChange={(e) => setCustomInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') addCustom(); }}
+              className="flex-1 px-4 py-2.5 rounded-[12px] border border-neutral-primary bg-neutral-primary font-picky-sans font-normal text-[14px] text-neutral-primary placeholder:text-neutral-tertiary outline-none focus:border-brand-primary transition-colors"
+            />
+            <Button
+              variant="secondary"
+              size="md"
+              pill={false}
+              disabled={!customInput.trim()}
+              onClick={addCustom}
+              className="rounded-[12px]"
+            >
+              Add
+            </Button>
+          </div>
+          {selected.filter((s) => !FAVORITE_FOODS.includes(s)).length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selected.filter((s) => !FAVORITE_FOODS.includes(s)).map((s) => (
+                <div key={s} className="flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full bg-brand-quinary">
+                  <span className="font-picky-sans font-normal text-[13px] leading-[1.4] text-brand-primary">{s}</span>
+                  <button
+                    onClick={() => toggle(s)}
+                    aria-label={`Remove ${s}`}
+                    className="text-brand-primary cursor-pointer flex items-center"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </OnboardingLayout>
   );
@@ -375,22 +519,23 @@ function Step5() {
 
   return (
     <OnboardingLayout
-      step={5}
-      earlMessage={EARL_MESSAGES['5']}
-      onBack={() => router.push('/onboarding/4')}
+      step={6}
+      earlMessage={EARL_MESSAGES['6']}
+      onBack={() => router.push('/onboarding/5')}
+      onSwipeNext={() => router.push('/onboarding/7')}
       footer={
         <>
           <Button
             variant="primary"
             size="lg"
             pill
-            onClick={() => router.push('/onboarding/6')}
+            onClick={() => router.push('/onboarding/7')}
             className="w-full"
           >
             Next
           </Button>
           <button
-            onClick={() => router.push('/onboarding/6')}
+            onClick={() => router.push('/onboarding/7')}
             className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-brand-primary text-center cursor-pointer py-1"
           >
             Skip
@@ -406,6 +551,7 @@ function Step5() {
               key={name}
               label={name}
               selected={activeTab === i}
+              selectionCount={(onboarding.allergiesPerMember[name] ?? []).length}
               onClick={() => setActiveTab(i)}
             />
           ))}
@@ -448,21 +594,25 @@ function Step5() {
               Add
             </Button>
           </div>
-          {/* Custom items added */}
-          {selected.filter((s) => !ALLERGIES.includes(s)).map((s) => (
-            <div key={s} className="flex items-center justify-between px-3 py-2 rounded-[12px] bg-brand-quinary">
-              <span className="font-picky-sans font-normal text-[14px] text-neutral-primary">{s}</span>
-              <button
-                onClick={() => toggle(s)}
-                aria-label={`Remove ${s}`}
-                className="text-neutral-tertiary cursor-pointer p-1"
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </button>
+          {/* Custom items added — pill chips */}
+          {selected.filter((s) => !ALLERGIES.includes(s)).length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selected.filter((s) => !ALLERGIES.includes(s)).map((s) => (
+                <div key={s} className="flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full bg-brand-quinary">
+                  <span className="font-picky-sans font-normal text-[13px] leading-[1.4] text-brand-primary">{s}</span>
+                  <button
+                    onClick={() => toggle(s)}
+                    aria-label={`Remove ${s}`}
+                    className="text-brand-primary cursor-pointer flex items-center"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </OnboardingLayout>
@@ -500,22 +650,23 @@ function Step6() {
 
   return (
     <OnboardingLayout
-      step={5}
-      earlMessage={EARL_MESSAGES['6']}
-      onBack={() => router.push('/onboarding/5')}
+      step={7}
+      earlMessage={EARL_MESSAGES['7']}
+      onBack={() => router.push('/onboarding/6')}
+      onSwipeNext={() => router.push('/onboarding/8')}
       footer={
         <>
           <Button
             variant="primary"
             size="lg"
             pill
-            onClick={() => router.push('/onboarding/7')}
+            onClick={() => router.push('/onboarding/8')}
             className="w-full"
           >
             Next
           </Button>
           <button
-            onClick={() => router.push('/onboarding/7')}
+            onClick={() => router.push('/onboarding/8')}
             className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-brand-primary text-center cursor-pointer py-1"
           >
             Skip
@@ -531,6 +682,7 @@ function Step6() {
               key={name}
               label={name}
               selected={activeTab === i}
+              selectionCount={(onboarding.dislikesPerMember[name] ?? []).length}
               onClick={() => setActiveTab(i)}
             />
           ))}
@@ -573,20 +725,24 @@ function Step6() {
               Add
             </Button>
           </div>
-          {selected.filter((s) => !DISLIKES.includes(s)).map((s) => (
-            <div key={s} className="flex items-center justify-between px-3 py-2 rounded-[12px] bg-brand-quinary">
-              <span className="font-picky-sans font-normal text-[14px] text-neutral-primary">{s}</span>
-              <button
-                onClick={() => toggle(s)}
-                aria-label={`Remove ${s}`}
-                className="text-neutral-tertiary cursor-pointer p-1"
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                  <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </button>
+          {selected.filter((s) => !DISLIKES.includes(s)).length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selected.filter((s) => !DISLIKES.includes(s)).map((s) => (
+                <div key={s} className="flex items-center gap-1.5 pl-3 pr-2 py-1.5 rounded-full bg-brand-quinary">
+                  <span className="font-picky-sans font-normal text-[13px] leading-[1.4] text-brand-primary">{s}</span>
+                  <button
+                    onClick={() => toggle(s)}
+                    aria-label={`Remove ${s}`}
+                    className="text-brand-primary cursor-pointer flex items-center"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                      <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </OnboardingLayout>
@@ -601,16 +757,17 @@ function Step7() {
 
   return (
     <OnboardingLayout
-      step={6}
-      earlMessage={EARL_MESSAGES['7']}
-      onBack={() => router.push('/onboarding/6')}
+      step={8}
+      earlMessage={EARL_MESSAGES['8']}
+      onBack={() => router.push('/onboarding/7')}
+      onSwipeNext={() => { if (onboarding.cookTime) router.push('/onboarding/9'); }}
       footer={
         <Button
           variant="primary"
           size="lg"
           pill
           disabled={!onboarding.cookTime}
-          onClick={() => router.push('/onboarding/8')}
+          onClick={() => router.push('/onboarding/9')}
           className="w-full"
         >
           Next
@@ -646,16 +803,17 @@ function Step8() {
 
   return (
     <OnboardingLayout
-      step={7}
-      earlMessage={EARL_MESSAGES['8']}
-      onBack={() => router.push('/onboarding/7')}
+      step={9}
+      earlMessage={EARL_MESSAGES['9']}
+      onBack={() => router.push('/onboarding/8')}
+      onSwipeNext={() => { if (onboarding.cookStyle) router.push('/onboarding/10'); }}
       footer={
         <Button
           variant="primary"
           size="lg"
           pill
           disabled={!onboarding.cookStyle}
-          onClick={() => router.push('/onboarding/9')}
+          onClick={() => router.push('/onboarding/10')}
           className="w-full"
         >
           Let&apos;s Get Cooking!
@@ -719,11 +877,15 @@ function Step9() {
 
   function handlePlan() {
     completeOnboarding();
-    router.push('/');
+    router.push('/home');
   }
 
   return (
-    <div className="flex flex-col h-dvh bg-brand-quinary overflow-hidden items-center justify-center px-8 gap-6">
+    <div
+      className="relative flex flex-col h-dvh overflow-hidden items-center justify-center px-8 gap-6"
+      style={{ background: WELCOME_GRADIENT }}
+    >
+      <OnionRingsBackground />
       {/* Large Earl illustration */}
       <div
         className="flex items-center justify-center rounded-full bg-brand-primary shrink-0"
@@ -770,7 +932,7 @@ function Step9() {
           Plan My Meals!
         </Button>
         <button
-          onClick={() => router.push('/onboarding/8')}
+          onClick={() => router.push('/onboarding/9')}
           className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-brand-primary text-center cursor-pointer py-2"
         >
           Go Back
@@ -787,11 +949,12 @@ const STEPS: Record<string, React.ComponentType> = {
   '2': Step2,
   '3': Step3,
   '4': Step4,
-  '5': Step5,
-  '6': Step6,
-  '7': Step7,
-  '8': Step8,
-  '9': Step9,
+  '5': StepFavoriteFoods,
+  '6': Step5,
+  '7': Step6,
+  '8': Step7,
+  '9': Step8,
+  '10': Step9,
 };
 
 export default function OnboardingStepPage() {

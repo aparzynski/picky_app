@@ -1,170 +1,85 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { usePickyStore } from "@/store/usePickyStore";
-import { buildSevenDayTilesFromToday } from "@/lib/plannerData";
-import { Logo } from "@/components/Logo";
-import { NotificationFab } from "@/components/NotificationFab";
-import { StatusBar } from "@/components/StatusBar";
-import { RecipeHero } from "@/components/RecipeHero";
-import { WeekdayCard } from "@/components/WeekdayCard";
-import { QuickActionCard } from "@/components/QuickActionCard";
-import { RecipeCard } from "@/components/RecipeCard";
-import { BottomNav } from "@/components/BottomNav";
-import { ViewAllButton } from "@/components/ViewAllButton";
-import { EarlSaysCard } from "@/components/EarlSaysCard";
-import { SwapMealModal } from "@/components/SwapMealModal";
+import Link from 'next/link';
+import { StatusBar } from '@/components/StatusBar';
+import { OnionRingsBackground, WELCOME_GRADIENT } from '@/components/WelcomeBackground';
 
-export default function Home() {
-  const router = useRouter();
-  const [earlDismissed, setEarlDismissed] = useState(false);
-  const [swapModalOpen, setSwapModalOpen] = useState(false);
-  const {
-    userName,
-    tonightsMeal,
-    tonightsMealFamily,
-    tonightsMealDay,
-    isTonight,
-    plannerMeals,
-    familyFavorites,
-    earlNudge,
-    groceryItemCount,
-    recipesCount,
-    expiredItemCount,
-  } = usePickyStore();
-
-  const orderedTiles = buildSevenDayTilesFromToday(plannerMeals);
-
+function EarlIllustration() {
   return (
-    <div className="relative flex flex-col h-dvh bg-neutral-primary overflow-hidden">
+    <div className="relative" style={{ width: '101px', height: '112px' }}>
+      <div className="absolute inset-[2.49%_44.71%_15.81%_2.69%]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-highlight.svg" />
+      </div>
+      <div className="absolute inset-[3.9%_10.71%_7.81%_6.81%]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-facee.svg" />
+      </div>
+      <div className="absolute inset-[36.57%_2.6%_2.45%_5.54%]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-shadow.svg" />
+      </div>
+      <div className="absolute inset-[53.54%_24.84%_23.27%_25.09%]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-face.svg" />
+      </div>
+      <div className="absolute inset-[23.04%_21.85%_54.89%_58.91%]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-crease.svg" />
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" className="absolute inset-0 size-full" src="/assets/earl-logo.svg" />
+    </div>
+  );
+}
 
-      {/* Status bar */}
+export default function WelcomePage() {
+  return (
+    <div
+      className="relative flex flex-col h-dvh overflow-hidden"
+      style={{
+        background: WELCOME_GRADIENT,
+      }}
+    >
+      <OnionRingsBackground />
       <StatusBar />
 
-      {/* App header */}
-      <div className="flex items-center justify-between px-5 pb-4 shrink-0 bg-neutral-primary">
-        <Logo type="mark and word" />
-        <NotificationFab alerts count={99} />
+      <div className="relative flex-1 flex flex-col items-center justify-center gap-6 px-8 pb-16">
+        <div className="flex items-center justify-center h-[112px]">
+          <EarlIllustration />
+        </div>
+
+        <div className="flex flex-col gap-4 items-center text-center w-[320px]">
+          <h1 className="font-picky-hand font-normal text-[32px] leading-[1.2] tracking-[-0.03em] text-[#7c019d]">
+            Welcome to Picky!
+          </h1>
+          <p className="font-picky-sans font-normal text-[18px] leading-[1.5] text-neutral-secondary">
+            Picky is a prototype created by Ariel Parzynski. To get the full effect, start with the onboarding flow!
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center gap-5 w-full">
+          {/* Primary CTA — matches Button variant="primary" interaction states */}
+          <Link
+            href="/onboarding/1"
+            className="w-full flex items-center justify-center bg-brand-primary text-brand-inverse rounded-full px-5 py-3 shadow-[0px_10px_30px_-4px_rgba(44,2,56,0.11),0px_4px_14px_-6px_rgba(44,2,56,0.15)] outline-none transition-colors hover:bg-brand-secondary hover:text-brand-primary focus-visible:bg-brand-secondary focus-visible:border-2 focus-visible:border-brand-primary focus-visible:text-brand-primary active:bg-brand-quarternary"
+          >
+            <span className="font-picky-sans font-semibold text-[18px] leading-[1.5] whitespace-nowrap">
+              Start Onboarding
+            </span>
+          </Link>
+
+          {/* Secondary CTA — matches Button variant="no-bg" interaction states */}
+          <Link
+            href="/home"
+            className="flex items-center justify-center px-5 py-3 text-brand-primary outline-none transition-colors hover:text-brand-secondary focus-visible:text-brand-secondary active:text-brand-quarternary"
+          >
+            <span className="font-picky-sans font-semibold text-[18px] leading-[1.5] whitespace-nowrap">
+              Skip to the Home Screen
+            </span>
+          </Link>
+        </div>
       </div>
-
-      {/* Scrollable body */}
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-24">
-
-        {/* RecipeHero — Tonight's Pick */}
-        <RecipeHero
-          imageUrl={tonightsMeal.imageUrl}
-          title={tonightsMeal.name}
-          tags={tonightsMeal.tags}
-          isTonight={isTonight}
-          onViewRecipe={() => router.push(`/recipe/${tonightsMeal.id}?mode=swap&family=${tonightsMealFamily.join(',')}&day=${tonightsMealDay}&tonight=true`)}
-          onSwapMeal={() => setSwapModalOpen(true)}
-        />
-
-        {/* Greeting */}
-        <div className="border-b border-neutral-primary px-5 pt-4 pb-[17px]">
-          <h2 className="font-picky-hand font-semibold text-[24px] leading-[1.2] text-neutral-primary">
-            Good evening, {userName}! 👋
-          </h2>
-        </div>
-
-        {/* This Week */}
-        <div className="flex flex-col pt-4">
-          <div className="flex items-baseline justify-between px-5">
-            <h3 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
-              This Week
-            </h3>
-            <ViewAllButton onClick={() => router.push('/planner')} />
-          </div>
-          {/* TilesWrapper: pt-8 pb-16 wraps the inner tiles row (py-12) — matches Figma nesting */}
-         <div className="pt-2 pb-4 overflow-hidden w-full pr-5">
-<div className="flex gap-3 items-stretch overflow-x-auto overflow-y-clip pl-5 py-3">
-              {orderedTiles.map((tile) => (
-                <WeekdayCard
-                  key={tile.date}
-                  dayLabel={tile.dayLabel}
-                  emojis={tile.emojis}
-                  mealCount={tile.mealCount}
-                  currentDay={tile.isToday}
-                  onClick={() => router.push(`/planner/${tile.dayId}`)}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="flex gap-3 px-5 pt-2 pb-4">
-          <QuickActionCard
-            iconSrc="/assets/icon-grocery.svg"
-            title="Grocery List"
-            subtitle={`${groceryItemCount} items`}
-            href="/grocery"
-          />
-          <QuickActionCard
-            iconSrc="/assets/icon-recipes.svg"
-            title="My Recipes"
-            subtitle={`${recipesCount} items`}
-            iconSize={16}
-            href="/my-recipes"
-          />
-          <QuickActionCard
-            iconSrc="/assets/icon-kitchen.svg"
-            title="My Kitchen"
-            subtitle={`${expiredItemCount} Expired Items`}
-            href="/my-kitchen"
-          />
-        </div>
-
-        {/* Family Favorites — section pt-16, inner pt-16 between header and cards */}
-        <div className="flex flex-col pt-4">
-          <div className="flex items-baseline justify-between px-5">
-            <h3 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
-              Your Family Favorites
-            </h3>
-            <ViewAllButton onClick={() => router.push('/my-recipes')} />
-          </div>
-          <div className="pt-4 overflow-hidden pr-5 rounded-xl">
-            <div className="flex gap-4 items-start overflow-x-auto w-full pb-4 overflow-hidden pl-5 ">
-              {familyFavorites.map((recipe) => (
-                <RecipeCard
-                  key={recipe.id}
-                  id={recipe.id}
-                  imageUrl={recipe.imageUrl}
-                  name={recipe.name}
-                  cookTime={recipe.cookTime}
-                  tags={recipe.tags}
-                  saved
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-{/* Earl Says */}
-{!earlDismissed && (
-  <div className="px-5 pb-6">
-    <EarlSaysCard
-      message={earlNudge.message}
-      ctaLabel={earlNudge.ctaLabel}
-      variant={earlNudge.variant}
-      onDismiss={() => setEarlDismissed(true)}
-    />
-  </div>
-)}
-      </div>
-
-      {/* Bottom nav */}
-      <BottomNav activeTab="home" />
-
-      {swapModalOpen && (
-        <SwapMealModal
-          dayName={tonightsMealDay}
-          mealType="DINNER"
-          familyIds={tonightsMealFamily}
-          currentRecipeId={tonightsMeal.id}
-          onClose={() => setSwapModalOpen(false)}
-        />
-      )}
     </div>
   );
 }

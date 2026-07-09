@@ -116,6 +116,17 @@
   /* Semantic warning */
   --background\/semantic\/warning\/subtle: #fae9d5;
   --text\/semantic\/warning\/primary: #ab6005;
+
+  /* Semantic bold backgrounds — Background/Semantic/{type}/Bold */
+  --background\/semantic\/success\/bold: #0e9900;
+  --background\/semantic\/warning\/bold: #ab6005;
+  --background\/semantic\/info\/bold: #0152a5;
+
+  /* Semantic inverse text — Text/Semantic/{type}/Inverse */
+  --text\/semantic\/success\/inverse: #d4fdd0;
+  --text\/semantic\/warning\/inverse: #fae9d5;
+  --text\/semantic\/error\/inverse: #fbdada;
+  --text\/semantic\/info\/inverse: #d9eafa;
 }
 
 /* ─── Phase A: Token → Tailwind utilities ────────────────────────────────────
@@ -216,6 +227,17 @@
 @utility text-error-primary     { color: var(--text\/semantic\/error\/primary); }
 @utility bg-warning-subtle      { background-color: var(--background\/semantic\/warning\/subtle); }
 @utility text-warning-primary   { color: var(--text\/semantic\/warning\/primary); }
+
+/* Semantic bold backgrounds */
+@utility bg-success-bold { background-color: var(--background\/semantic\/success\/bold); }
+@utility bg-warning-bold { background-color: var(--background\/semantic\/warning\/bold); }
+@utility bg-info-bold    { background-color: var(--background\/semantic\/info\/bold); }
+
+/* Semantic inverse text (for use on bold backgrounds) */
+@utility text-success-inverse { color: var(--text\/semantic\/success\/inverse); }
+@utility text-warning-inverse { color: var(--text\/semantic\/warning\/inverse); }
+@utility text-error-inverse   { color: var(--text\/semantic\/error\/inverse); }
+@utility text-info-inverse    { color: var(--text\/semantic\/info\/inverse); }
 
 /* Border colors */
 @utility border-neutral-primary { border-color: var(--border\/neutral\/primary); }

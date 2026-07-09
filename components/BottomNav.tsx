@@ -47,7 +47,7 @@ export function BottomNav({ activeTab, className }: BottomNavProps) {
     <div
       className={`fixed bottom-0 left-0 right-0 flex h-[93px] items-start border-t border-neutral-primary bg-neutral-primary pb-4 ${className ?? ""}`}
     >
-      <NavButton icon={<HomeIcon />} label="Home" isActive={activeTab === "home"} href="/" />
+      <NavButton icon={<HomeIcon />} label="Home" isActive={activeTab === "home"} href="/home" />
       <NavButton icon={<PlannerIcon />} label="Planner" isActive={activeTab === "planner"} href="/planner" />
 
       {/* Ask Earl — center FAB column; label pinned to bottom matching NavButton baseline */}

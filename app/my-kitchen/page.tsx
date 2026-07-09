@@ -23,17 +23,35 @@ function ChevronLeftIcon() {
 
 function SearchIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <path d="M21 21l-4.35-4.35" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" />
+      <path d="M16.5 16.5L21 21" />
     </svg>
   );
 }
 
-function MenuIcon() {
+function FilterIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 6H20M8 12H16M11 18H13" />
+    </svg>
+  );
+}
+
+function HamburgerIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <path d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
+
+function ScanIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 44 44" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8l-2.5 4H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h32a2 2 0 0 0 2-2V14a2 2 0 0 0-2-2h-7.5L28 8H16Z" />
+      <circle cx="22" cy="22" r="6" />
+      <path d="M34 10v6M31 13h6" />
     </svg>
   );
 }
@@ -54,15 +72,6 @@ function PlusSmallIcon() {
   );
 }
 
-function KebabIcon() {
-  return (
-    <svg width="4" height="16" viewBox="0 0 4 16" fill="none" aria-hidden="true">
-      <circle cx="2" cy="2"  r="1.5" fill="currentColor" />
-      <circle cx="2" cy="8"  r="1.5" fill="currentColor" />
-      <circle cx="2" cy="14" r="1.5" fill="currentColor" />
-    </svg>
-  );
-}
 
 function CameraPlusIcon() {
   return (
@@ -86,7 +95,7 @@ export default function MyKitchenPage() {
   const fridgeProduce = fridgeItems.filter((i) => i.category === 'produce');
   const fridgeProtein = fridgeItems.filter((i) => i.category === 'protein');
   const fridgeDairy = fridgeItems.filter((i) => i.category === 'dairy');
-  const expiringCount = fridgeItems.filter((i) => i.expiry?.type === 'danger').length;
+  const expiringCount = fridgeItems.filter((i) => i.expiry?.type === 'warning' || i.expiry?.type === 'danger').length;
 
   // ── Freezer groupings ─────────────────────────────────────────────────────
   const freezerItems = kitchenItems.filter((i) => i.location === 'freezer');
@@ -114,7 +123,7 @@ export default function MyKitchenPage() {
             <SearchIcon />
           </button>
           <button className="flex items-center justify-center size-9 rounded-full text-neutral-primary cursor-pointer hover:bg-neutral-secondary outline-none transition-colors">
-            <MenuIcon />
+            <FilterIcon />
           </button>
         </div>
       </div>
@@ -146,22 +155,27 @@ export default function MyKitchenPage() {
       {/* ── Fridge Content ──────────────────────────────────────────────────── */}
       {activeTab === 'fridge' && (
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-[170px]">
-          {/* Expiry warning banner — Figma: category menu bar (432x61) */}
+          {/* Fridge menu row — Figma: category menu bar */}
           <div className="flex items-center justify-between px-4 py-[10px]">
-            {expiringCount > 0 && (
-              <div className="bg-warning-subtle rounded-full px-3 py-1.5 flex items-center gap-1.5">
+            <button className="flex items-center gap-2 text-brand-primary cursor-pointer outline-none">
+              <HamburgerIcon />
+              <span className="font-picky-sans font-semibold text-[14px] leading-[1.5]">Fridge Menu</span>
+            </button>
+            <Button variant="primary" size="sm" pill iconLeft={<ScanIcon />}>
+              Scan Fridge
+            </Button>
+          </div>
+
+          {/* Expiry warning badge */}
+          {expiringCount > 0 && (
+            <div className="px-4 pb-2">
+              <div className="bg-warning-subtle rounded-full px-3 py-1.5 inline-flex items-center gap-1.5">
                 <span className="font-picky-sans font-semibold text-[13px] leading-[1.4] text-warning-primary whitespace-nowrap">
                   ⚠️ {expiringCount} item{expiringCount !== 1 ? 's' : ''} expiring soon
                 </span>
               </div>
-            )}
-            <button
-              className="ml-auto flex items-center justify-center size-8 text-neutral-tertiary cursor-pointer outline-none hover:text-neutral-secondary"
-              aria-label="More options"
-            >
-              <KebabIcon />
-            </button>
-          </div>
+            </div>
+          )}
 
           {/* Earl Says Card — Figma: Earl Says Card (595:12331) buttonCount=2 */}
           {!earlDismissed && (
@@ -193,14 +207,15 @@ export default function MyKitchenPage() {
       {/* ── Freezer Content ─────────────────────────────────────────────────── */}
       {activeTab === 'freezer' && (
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-[170px]">
-          {/* Top row — just the kebab menu (Figma: Container 432x44) */}
-          <div className="flex items-center justify-end px-4 py-2">
-            <button
-              className="flex items-center justify-center size-8 text-neutral-tertiary cursor-pointer outline-none hover:text-neutral-secondary"
-              aria-label="More options"
-            >
-              <KebabIcon />
+          {/* Freezer menu row */}
+          <div className="flex items-center justify-between px-4 py-[10px]">
+            <button className="flex items-center gap-2 text-brand-primary cursor-pointer outline-none">
+              <HamburgerIcon />
+              <span className="font-picky-sans font-semibold text-[14px] leading-[1.5]">Freezer Menu</span>
             </button>
+            <Button variant="primary" size="sm" pill iconLeft={<ScanIcon />}>
+              Scan Freezer
+            </Button>
           </div>
 
           {/* Inventory category sections */}

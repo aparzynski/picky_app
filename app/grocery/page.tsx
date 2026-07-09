@@ -8,6 +8,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { EarlSaysCard } from '@/components/EarlSaysCard';
 import { Tab } from '@/components/Tab';
 import { GroceryListCategoryCard } from '@/components/GroceryListCategoryCard';
+import { SemanticPill } from '@/components/SemanticPill';
 
 const CATEGORY_ORDER: GroceryItem['category'][] = ['produce', 'protein', 'dairy', 'pantry'];
 const STORES = ['Walmart', 'Wegmans', 'Costco'] as const;
@@ -27,8 +28,8 @@ function ShareIcon() {
 
 function FilterIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 6H20M8 12H16M11 18H13" />
     </svg>
   );
 }
@@ -305,26 +306,18 @@ export default function GroceryPage() {
         </div>
       </div>
 
-      {/* Success toast pill — Figma: SemanticPill size=medium type=success (658:17784) */}
+      {/* Success toast pill — Figma: SemanticPill size=medium type=success variant=bold (658:17784) */}
       {toast && (
         toastLink ? (
           <Link
             href={toastLink}
             className="fixed bottom-[113px] left-1/2 -translate-x-1/2 z-20"
           >
-            <div className="bg-success-subtle rounded-full px-4 py-2">
-              <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-success-primary whitespace-nowrap">
-                {toast}
-              </span>
-            </div>
+            <SemanticPill label={toast} type="success" variant="bold" size="medium" />
           </Link>
         ) : (
           <div className="fixed bottom-[113px] left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-            <div className="bg-success-subtle rounded-full px-4 py-2">
-              <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-success-primary whitespace-nowrap">
-                {toast}
-              </span>
-            </div>
+            <SemanticPill label={toast} type="success" variant="bold" size="medium" />
           </div>
         )
       )}

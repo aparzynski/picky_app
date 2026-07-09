@@ -1,8 +1,7 @@
 // Figma: Inventory Category Section (602:13207)
 // Variants: type: produce | protein | Dairy | breast milk
 //
-// Renders: category label + white rounded card containing InventoryItem rows.
-// Breast milk category also shows a storage-duration note below the label.
+// Each InventoryItem is its own card — no shared wrapper card.
 
 import type { KitchenItem } from '@/store/usePickyStore';
 import { InventoryItem } from './InventoryItem';
@@ -40,26 +39,21 @@ export function InventoryCategorySection({ type, items }: InventoryCategorySecti
         )}
       </div>
 
-      {/* Items card */}
+      {/* Individual item cards */}
       {items.length > 0 && (
-        <div className="w-full rounded-[16px] overflow-hidden shadow-[0px_10px_30px_-4px_rgba(44,2,56,0.11),0px_4px_14px_-6px_rgba(44,2,56,0.15)]">
-          <div className="flex flex-col bg-white">
-            {items.map((item, idx) => (
-              <div
-                key={item.id}
-                className={idx < items.length - 1 ? 'border-b border-item-divider' : ''}
-              >
-                <InventoryItem
-                  emoji={item.emoji}
-                  name={item.name}
-                  quantity={item.quantity}
-                  frozenDate={item.frozenDate}
-                  recipeLink={item.recipeLink}
-                  expiry={item.expiry}
-                />
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-col gap-2">
+          {items.map((item) => (
+            <InventoryItem
+              key={item.id}
+              emoji={item.emoji}
+              name={item.name}
+              quantity={item.quantity}
+              frozenDate={item.frozenDate}
+              recipeLink={item.recipeLink}
+              expiry={item.expiry}
+              expiryDate={item.expiryDate}
+            />
+          ))}
         </div>
       )}
     </div>
