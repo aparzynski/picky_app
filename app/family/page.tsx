@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { usePickyStore } from "@/store/usePickyStore";
 import { StatusBar } from "@/components/StatusBar";
@@ -45,10 +44,10 @@ export default function FamilyPage() {
     .filter(Boolean);
 
   return (
-    <div className="relative flex flex-col h-dvh bg-neutral-primary overflow-hidden">
+    <div className="relative flex flex-col h-dvh overflow-hidden">
       <StatusBar />
 
-      {/* Section Header — My Family variant */}
+      {/* Section Header — My Family */}
       <div className="flex items-center justify-between px-4 py-3 bg-neutral-primary border-b border-neutral-primary shrink-0">
         <h1 className="font-picky-hand font-semibold text-[24px] leading-[1.2] text-neutral-primary">
           My Family
@@ -58,60 +57,49 @@ export default function FamilyPage() {
         </button>
       </div>
 
-      {/* Scrollable body */}
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-24">
+      {/* Scrollable content */}
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-neutral-tertiary p-4 flex flex-col gap-6">
 
-        {/* Family member list */}
-        <div className="flex flex-col divide-y divide-neutral-primary">
-          {familyMembers.map((member) => (
-            <button
-              key={member.id}
-              onClick={() => router.push(`/family/${member.id}`)}
-              className="flex items-center gap-3 px-4 py-3 w-full text-left cursor-pointer hover:bg-neutral-secondary transition-colors"
-            >
-              <Avatar
-                initials={member.initials}
-                color={member.avatarColor}
-                size={48}
-              />
-              <div className="flex-1 min-w-0 flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-picky-sans font-semibold text-[14px] leading-[1.5] text-neutral-primary">
+        {/* Family members + Add button */}
+        <div className="flex flex-col gap-3">
+          {familyMembers.map((member) => {
+            const badges = [...member.dislikes, ...member.preferences].slice(0, 2);
+            return (
+              <div
+                key={member.id}
+                onClick={() => router.push(`/family/${member.id}`)}
+                className="bg-neutral-primary border border-neutral-primary rounded-2xl shadow-[0px_4px_14px_-6px_rgba(44,2,56,0.15)] flex items-center gap-3 px-4 py-[14px] w-full overflow-hidden cursor-pointer"
+              >
+                <Avatar initials={member.initials} color={member.avatarColor} size={48} />
+                <div className="flex-1 min-w-0 flex flex-col gap-1 overflow-hidden">
+                  <span className="font-picky-sans font-bold text-[12px] leading-[1.4] text-neutral-primary whitespace-nowrap">
                     {member.name}
                   </span>
-                  <span className="font-picky-sans font-normal text-[12px] leading-[1.4] text-neutral-tertiary">
+                  <span className="font-picky-sans font-bold text-[10px] leading-[1.4] text-neutral-secondary tracking-[0.1px] whitespace-nowrap">
                     {member.role} · {member.age}
                   </span>
+                  {badges.length > 0 && (
+                    <div className="flex flex-wrap gap-x-[6px] gap-y-0 overflow-hidden">
+                      {badges.map((tag) => (
+                        <Tag key={tag} label={tag} type="inverse2" />
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {(member.dislikes.length > 0 || member.preferences.length > 0) && (
-                  <div className="flex flex-wrap gap-1">
-                    {member.dislikes.slice(0, 2).map((d) => (
-                      <Tag key={d} label={d} type="inverse2" />
-                    ))}
-                    {member.preferences.slice(0, 2).map((p) => (
-                      <Tag key={p} label={`❤️ ${p}`} type="inverse2" />
-                    ))}
-                  </div>
-                )}
+                <button
+                  onClick={(e) => e.stopPropagation()}
+                  className="shrink-0 size-9 rounded-full bg-brand-tertiary flex items-center justify-center text-neutral-secondary cursor-pointer hover:bg-brand-secondary transition-colors outline-none"
+                >
+                  <EditIcon />
+                </button>
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                className="shrink-0 p-2 rounded-full text-neutral-tertiary cursor-pointer hover:text-brand-primary transition-colors"
-              >
-                <EditIcon />
-              </button>
-            </button>
-          ))}
-        </div>
+            );
+          })}
 
-        {/* Add family member */}
-        <div className="px-4 py-4 border-b border-neutral-primary">
           <Button
             variant="secondary"
-            size="md"
-            pill={false}
+            size="sm"
+            pill={true}
             iconLeft={<PlusIcon />}
             className="w-full"
           >
@@ -120,16 +108,15 @@ export default function FamilyPage() {
         </div>
 
         {/* Your Family's Favorites */}
-        <div className="flex flex-col pt-4 ">
-          <div className="flex items-baseline justify-between px-4 pb-3">
-            <h2 className="font-picky-hand font-semibold text-[20px] leading-[1.2] text-neutral-primary">
+        <div className="flex flex-col w-full">
+          <div className="flex items-baseline justify-between w-full">
+            <h2 className="font-picky-sans font-semibold text-[18px] leading-[1.5] text-neutral-primary">
               Your Family&apos;s Favorites
             </h2>
-            <ViewAllButton onClick={() => router.push('/my-recipes')} />
+            <ViewAllButton label="View More" onClick={() => router.push('/my-recipes')} />
           </div>
 
-          {/* 2-column recipe grid */}
-          <div className="grid grid-cols-2 gap-4 items-start px-4 pb-6">
+          <div className="pt-3 grid grid-cols-2 gap-3 items-start">
             {familyFavoriteRecipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}
