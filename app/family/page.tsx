@@ -58,12 +58,12 @@ export default function FamilyPage() {
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-neutral-tertiary p-4 flex flex-col gap-6">
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-neutral-tertiary p-4 pb-24 flex flex-col gap-6">
 
         {/* Family members + Add button */}
         <div className="flex flex-col gap-3">
           {familyMembers.map((member) => {
-            const badges = [...member.dislikes, ...member.preferences].slice(0, 2);
+            const badges = [...member.allergies, ...member.dislikes, ...member.preferences].slice(0, 2);
             return (
               <div
                 key={member.id}

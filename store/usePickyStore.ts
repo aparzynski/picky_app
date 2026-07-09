@@ -22,6 +22,7 @@ export type FamilyMember = {
   initials: string
   avatarColor: 'purple' | 'blue' | 'orange' | 'green'
   dislikes: string[]
+  allergies: string[]
   preferences: string[]
   goals: string[]
   favoriteRecipeIds: string[]
@@ -236,8 +237,9 @@ export const usePickyStore = create<PickyState>((set) => ({
       age: '38',
       initials: 'S',
       avatarColor: 'purple',
-      dislikes: ['🚫 Onions'],
-      preferences: ['❤️ Sushi'],
+      dislikes: ['🚫 Onions', '🚫 Cilantro'],
+      allergies: [],
+      preferences: ['❤️ Sushi', '🥑 Avocado'],
       goals: ['🥗 Balanced Diet', '💪 High Protein'],
       favoriteRecipeIds: ['r1', 'r5', 'd2', 'd4'],
       savedRecipeIds: ['d9', 'd10', 'd13', 'd16'],
@@ -249,8 +251,9 @@ export const usePickyStore = create<PickyState>((set) => ({
       age: '41',
       initials: 'D',
       avatarColor: 'blue',
-      dislikes: [],
-      preferences: [],
+      dislikes: ['🚫 Mushrooms'],
+      allergies: [],
+      preferences: ['🥩 Red Meat', '🍺 BBQ'],
       goals: ['💪 High Protein', '🥩 Meat Lover'],
       favoriteRecipeIds: ['r4', 'd5', 'd6', 'd8'],
       savedRecipeIds: ['d7', 'd11', 'd4', 'd13'],
@@ -262,8 +265,9 @@ export const usePickyStore = create<PickyState>((set) => ({
       age: '14',
       initials: 'M',
       avatarColor: 'orange',
-      dislikes: [],
-      preferences: ['🥗 Vegan'],
+      dislikes: ['🚫 Meat', '🚫 Dairy'],
+      allergies: [],
+      preferences: ['🥗 Vegan', '🌾 Whole Grains'],
       goals: ['🌱 Plant-Based', '🥗 More Veggies'],
       favoriteRecipeIds: ['r3', 'd16', 'd10', 'd3'],
       savedRecipeIds: ['d2', 'd9', 'd15', 'd14'],
@@ -275,8 +279,9 @@ export const usePickyStore = create<PickyState>((set) => ({
       age: '6',
       initials: 'N',
       avatarColor: 'green',
-      dislikes: ['🚫 Peanuts'],
-      preferences: ['❤️ Ketchup'],
+      dislikes: ['🚫 Broccoli', '🚫 Peas'],
+      allergies: ['⚠️ Peanuts'],
+      preferences: ['❤️ Ketchup', '🍕 Pizza', '🌽 Corn'],
       goals: ['🌟 Try new foods', '🥦 Eat more veggies'],
       favoriteRecipeIds: ['r5', 'd1', 'd17', 'd19'],
       savedRecipeIds: ['d18', 'd20', 'r2', 'd7'],
@@ -289,7 +294,8 @@ export const usePickyStore = create<PickyState>((set) => ({
       initials: 'L',
       avatarColor: 'orange',
       dislikes: ['🚫 Broccoli', '🚫 Onions'],
-      preferences: ['❤️ Plain Pasta', '🧀 Cheese', '🌾 Soft foods', '🚫 Nut-Free', '🌾 Gluten-Free', '🌶️ No spicy', '🥛 Dairy-Free', '🍬 Low sugar', '🫘 No beans'],
+      allergies: [],
+      preferences: ['❤️ Plain Pasta', '🧀 Cheese', '🌾 Soft foods', '🌶️ No spicy'],
       goals: ['🌟 Try new foods', '🥗 More vegetables'],
       favoriteRecipeIds: ['d18', 'd19', 'd20', 'lily1', 'lily2', 'lily3'],
       savedRecipeIds: ['d17', 'lily4', 'lily5', 'lily6', 'lily7', 'lily8'],
@@ -302,6 +308,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       initials: 'E',
       avatarColor: 'purple',
       dislikes: [],
+      allergies: [],
       preferences: ['🍼 Breast-fed'],
       goals: [],
       favoriteRecipeIds: [],
