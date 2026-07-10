@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fira_Sans, Playpen_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { ScaleManager } from "@/components/ScaleManager";
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
         <div className="app-frame">
           {children}
         </div>
+        <Analytics />
       </body>
     </html>
   );
