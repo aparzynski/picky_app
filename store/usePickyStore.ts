@@ -154,19 +154,19 @@ export const usePickyStore = create<PickyState>((set) => ({
     // ── Fridge — Produce ──────────────────────────────────────────────────────
     { id: 'k-f1', name: 'Broccoli',       quantity: '1 head',   emoji: '🥦', category: 'produce', location: 'fridge', recipeLink: { name: 'Tuscan Pasta',       id: 'r1'  }, expiry: { label: '⚠️ Expires in 2 days', type: 'warning' } },
     { id: 'k-f2', name: 'Lemons',         quantity: '3',        emoji: '🍋', category: 'produce', location: 'fridge', recipeLink: { name: 'Lemon Herb Chicken', id: 'pw3' }, expiry: { label: '⚠️ Expires tomorrow',  type: 'danger'  } },
-    { id: 'k-f3', name: 'Carrots',        quantity: '1 bag',    emoji: '🥕', category: 'produce', location: 'fridge',                                                         expiry: { label: 'Expires in 5 days',    type: 'success' } },
+    { id: 'k-f3', name: 'Carrots',        quantity: '1 bag',    emoji: '🥕', category: 'produce', location: 'fridge',                                                         expiry: null, expiryDate: 'Expires in 5 days' },
     // ── Fridge — Protein ─────────────────────────────────────────────────────
     { id: 'k-f4', name: 'Chicken Thighs', quantity: '1.5 lbs',  emoji: '🍗', category: 'protein', location: 'fridge', recipeLink: { name: 'Lemon Herb Chicken', id: 'pw3' }, expiry: { label: '⚠️ Expires tomorrow',  type: 'danger'  } },
     { id: 'k-f5', name: 'Eggs',           quantity: '6',        emoji: '🥚', category: 'protein', location: 'fridge',                                                         expiry: null, expiryDate: 'Expires in 10 days' },
     // ── Fridge — Dairy ───────────────────────────────────────────────────────
-    { id: 'k-f6', name: 'Greek Yogurt',   quantity: '2 cups',   emoji: '🥛', category: 'dairy',   location: 'fridge',                                                         expiry: { label: 'Expires in 5 days',    type: 'success' } },
+    { id: 'k-f6', name: 'Greek Yogurt',   quantity: '2 cups',   emoji: '🥛', category: 'dairy',   location: 'fridge',                                                         expiry: null, expiryDate: 'Expires in 5 days' },
     { id: 'k-f7', name: 'Cheddar',        quantity: '8 oz',     emoji: '🧀', category: 'dairy',   location: 'fridge',                                                         expiry: null, expiryDate: 'Expires in 3 weeks' },
     // ── Freezer — Frozen Meals ───────────────────────────────────────────────
     { id: 'k-z1', name: 'Crockpot Chicken Stew', quantity: '3 portions', emoji: '🍲', category: 'frozen meals', location: 'freezer', frozenDate: 'Frozen May 15',                                                         expiry: { label: '⚠️ Expires tomorrow', type: 'danger'  } },
     { id: 'k-z2', name: 'Broccoli',       quantity: '1 head',   emoji: '🥦', category: 'frozen meals', location: 'freezer', frozenDate: 'Frozen May 15', recipeLink: { name: 'Tuscan Pasta', id: 'r1' },                    expiry: { label: '⚠️ Expires tomorrow', type: 'danger'  } },
     { id: 'k-z3', name: 'Carrots',        quantity: '1 bag',    emoji: '🥕', category: 'frozen meals', location: 'freezer', frozenDate: 'Frozen May 15',                                                                   expiry: { label: '⚠️ Expires tomorrow', type: 'danger'  } },
     // ── Freezer — Protein ────────────────────────────────────────────────────
-    { id: 'k-z4', name: 'Ground beef',    quantity: '2 lbs',    emoji: '🥩', category: 'protein', location: 'freezer', frozenDate: 'Frozen April 28',                                                                      expiry: { label: '⚠️ Best by Jun 28',   type: 'warning' } },
+    { id: 'k-z4', name: 'Ground beef',    quantity: '2 lbs',    emoji: '🥩', category: 'protein', location: 'freezer', frozenDate: 'Frozen April 28',                                                                      expiry: { label: '⚠️ Expires in 3 weeks', type: 'warning' } },
     { id: 'k-z5', name: 'Chicken Breasts', quantity: '4',       emoji: '🍗', category: 'protein', location: 'freezer', frozenDate: 'Frozen May 1',                                                                         expiry: { label: '⚠️ Expires tomorrow', type: 'danger'  } },
     // ── Freezer — Breast Milk ────────────────────────────────────────────────
     { id: 'k-bm1', name: 'Bag 1', quantity: '4 oz', emoji: '🍼', category: 'breast milk', location: 'freezer', frozenDate: 'Pumped May 20', isBreastMilk: true, expiry: { label: '⚠️ Expires in 2 months', type: 'warning' } },
