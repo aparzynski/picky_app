@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { StatusBar } from '@/components/StatusBar';
 import { BottomNav } from '@/components/BottomNav';
 import { Avatar } from '@/components/Avatar';
+import { usePickyStore } from '@/store/usePickyStore';
+import { SmallStarRater } from '@/components/RatingModal';
+import { MealRatingModal } from '@/components/MealRatingModal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -19,6 +22,7 @@ type DayMeal = {
   imageSrc: string;
   isPast: boolean;
   showAvatars: boolean;
+  recipeId?: string;
 };
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -44,6 +48,7 @@ const PAST_MEALS: DayMeal[] = [
     imageSrc: 'https://www.figma.com/api/mcp/asset/8a560681-f639-4017-8e23-500d1e5286a5',
     isPast: true,
     showAvatars: true,
+    recipeId: 'd9',
   },
 ];
 
@@ -161,7 +166,7 @@ function ArrowRightIcon() {
 
 // ─── MealCard ─────────────────────────────────────────────────────────────────
 
-function MealCard({ meal }: { meal: DayMeal }) {
+function MealCard({ meal, onRate, starRating }: { meal: DayMeal; onRate?: () => void; starRating?: number }) {
   const cardBg = meal.isPast ? 'bg-neutral-tertiary' : 'bg-neutral-primary';
   const recipeBg = meal.isPast ? 'bg-neutral-tertiary' : 'bg-white';
   const recipeBorder = meal.isPast ? 'border-neutral-secondary' : 'border-neutral-primary';
@@ -240,12 +245,21 @@ function MealCard({ meal }: { meal: DayMeal }) {
 
           {/* CTA */}
           {meal.isPast ? (
-            <button className="w-full border border-brand-primary bg-white rounded-[12px] py-2 px-5 flex items-center justify-center gap-2">
-              <span className="text-brand-primary flex items-center"><StarIcon /></span>
-              <span className="text-[14px] font-semibold font-picky-sans text-brand-primary leading-[1.5]">
-                Rate this meal
-              </span>
-            </button>
+            starRating ? (
+              <div className="flex justify-center">
+                <SmallStarRater stars={starRating} />
+              </div>
+            ) : (
+              <button
+                onClick={onRate}
+                className="w-full border border-brand-primary bg-white rounded-[12px] py-2 px-5 flex items-center justify-center gap-2"
+              >
+                <span className="text-brand-primary flex items-center"><StarIcon /></span>
+                <span className="text-[14px] font-semibold font-picky-sans text-brand-primary leading-[1.5]">
+                  Rate this meal
+                </span>
+              </button>
+            )
           ) : (
             <button className="w-full bg-brand-primary rounded-[12px] py-2 px-5 flex items-center justify-center gap-2">
               <span className="text-[14px] font-semibold font-picky-sans text-brand-inverse leading-[1.5]">
@@ -268,6 +282,8 @@ export default function PlannerDayPage() {
   const bannerRef = useRef<HTMLDivElement>(null);
   const initialScrollTopRef = useRef<number | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [rateRecipeId, setRateRecipeId] = useState<string | null>(null);
+  const { recipeRatings } = usePickyStore();
 
   useEffect(() => {
     setBannerDismissed(sessionStorage.getItem(SESSION_KEY) === 'true');
@@ -348,14 +364,19 @@ export default function PlannerDayPage() {
         <div className="flex flex-col gap-4 px-4 pt-4 pb-[110px]">
           {/* Past meals — scrolled above fold on first load */}
           {PAST_MEALS.map((meal) => (
-            <MealCard key={meal.id} meal={meal} />
+            <MealCard
+              key={meal.id}
+              meal={meal}
+              starRating={meal.recipeId ? recipeRatings[meal.recipeId] : undefined}
+              onRate={meal.recipeId ? () => setRateRecipeId(meal.recipeId!) : undefined}
+            />
           ))}
 
           {/* Swipe-up banner between past and future meals */}
           {!bannerDismissed && (
             <div
               ref={bannerRef}
-              className="flex items-center justify-center py-2"
+              className="flex items-center py-2"
             >
               <span className="text-[12px] font-normal font-picky-sans text-neutral-tertiary leading-[1.4]">
                 ↑ Swipe Up to View Past Meals
@@ -371,6 +392,15 @@ export default function PlannerDayPage() {
       </div>
 
       <BottomNav activeTab="planner" />
+
+      {rateRecipeId && (
+        <MealRatingModal
+          recipeId={rateRecipeId}
+          dayName="Today"
+          mealType="Breakfast"
+          onClose={() => setRateRecipeId(null)}
+        />
+      )}
     </div>
   );
 }

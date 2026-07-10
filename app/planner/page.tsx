@@ -9,6 +9,8 @@ import { buildWeek, getTodayIdx, DAY_IDS, type MealType, type PlannerMeal, type 
 import { usePickyStore } from '@/store/usePickyStore';
 import { SwapMealModal } from '@/components/SwapMealModal';
 import { PlannerViewDropdown } from '@/components/PlannerViewDropdown';
+import { SmallStarRater } from '@/components/RatingModal'
+import { MealRatingModal } from '@/components/MealRatingModal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -57,8 +59,10 @@ function StarIcon() {
   );
 }
 
-function MealRow({ meal, isPast, isLast, dayName, isToday, isNextWeek, onSwap }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string; isToday: boolean; isNextWeek: boolean; onSwap?: () => void }) {
+function MealRow({ meal, isPast, isLast, dayName, isToday, isNextWeek, onSwap, onRate }: { meal: Meal; isPast: boolean; isLast: boolean; dayName: string; isToday: boolean; isNextWeek: boolean; onSwap?: () => void; onRate?: () => void }) {
   const router = useRouter();
+  const { recipeRatings } = usePickyStore();
+  const rating = meal.recipeId ? recipeRatings[meal.recipeId] : undefined;
   const borderClass = isLast
     ? ''
     : isPast
@@ -106,10 +110,17 @@ function MealRow({ meal, isPast, isLast, dayName, isToday, isNextWeek, onSwap }:
                 ))}
               </div>
             </div>
-            <button className="bg-neutral-primary border border-brand-primary text-brand-primary rounded-[8px] px-4 py-2 flex items-center gap-1 font-picky-sans font-semibold text-[12px] leading-[1.4] tracking-[0.02em] cursor-pointer shrink-0">
-              <StarIcon />
-              Rate This Meal
-            </button>
+            {rating ? (
+              <SmallStarRater stars={rating} />
+            ) : (
+              <button
+                onClick={onRate}
+                className="bg-neutral-primary border border-brand-primary text-brand-primary rounded-[8px] px-4 py-2 flex items-center gap-1 font-picky-sans font-semibold text-[12px] leading-[1.4] tracking-[0.02em] cursor-pointer shrink-0"
+              >
+                <StarIcon />
+                Rate This Meal
+              </button>
+            )}
           </div>
         </div>
       );
@@ -185,7 +196,7 @@ function MealRow({ meal, isPast, isLast, dayName, isToday, isNextWeek, onSwap }:
   );
 }
 
-function WeekdayCardEl({ day, isNextWeek, onOpenSwap }: { day: PlannerDay; isNextWeek: boolean; onOpenSwap: (dayName: string, mealType: MealType, familyIds: string[], recipeId: string) => void }) {
+function WeekdayCardEl({ day, isNextWeek, onOpenSwap, onOpenRate }: { day: PlannerDay; isNextWeek: boolean; onOpenSwap: (dayName: string, mealType: MealType, familyIds: string[], recipeId: string) => void; onOpenRate: (dayName: string, mealType: MealType, familyIds: string[], recipeId: string, recipeName: string) => void }) {
   const router = useRouter();
   const cardBg = day.isPast ? 'bg-neutral-tertiary' : 'bg-neutral-primary';
   return (
@@ -223,6 +234,11 @@ function WeekdayCardEl({ day, isNextWeek, onOpenSwap }: { day: PlannerDay; isNex
             onSwap={
               !day.isPast && meal.hasMeal && meal.recipeId
                 ? () => onOpenSwap(day.name, meal.type, meal.family ?? FAMILY.map((f) => f.initials), meal.recipeId!)
+                : undefined
+            }
+            onRate={
+              day.isPast && meal.hasMeal && meal.recipeId
+                ? () => onOpenRate(day.name, meal.type, meal.family ?? FAMILY.map((f) => f.initials), meal.recipeId!, meal.name)
                 : undefined
             }
           />
@@ -269,11 +285,18 @@ export default function PlannerPage() {
     setSwapTarget({ dayName, mealType, familyIds, recipeId });
   }
 
+  type RateTarget = { dayName: string; mealType: MealType; familyIds: string[]; recipeId: string };
+  const [rateTarget, setRateTarget] = useState<RateTarget | null>(null);
+
+  function openRate(dayName: string, mealType: MealType, familyIds: string[], recipeId: string, _recipeName: string) {
+    setRateTarget({ dayName, mealType, familyIds, recipeId });
+  }
+
   // Position scroll before first paint, then reveal. React flushes layout-effect state
   // updates synchronously, so contentVisible: true lands in the same paint as the scroll.
   useLayoutEffect(() => {
     if (!scrollRef.current) return;
-    if (weekOffset === 1 || bannerDismissed || !bannerRef.current) {
+    if (weekOffset === 1 || !bannerRef.current) {
       scrollRef.current.scrollTop = 0;
       initialScrollTopRef.current = null;
     } else {
@@ -287,7 +310,7 @@ export default function PlannerPage() {
       initialPositionedRef.current = true;
       setContentVisible(true);
     }
-  }, [bannerDismissed, weekOffset]);
+  }, [weekOffset]);
 
   function handleScroll() {
     if (bannerDismissed || initialScrollTopRef.current === null || !scrollRef.current) return;
@@ -394,7 +417,7 @@ export default function PlannerPage() {
           {weekOffset === 0 && pastDays.length > 0 && (
             <div className="flex flex-col gap-3">
               {pastDays.map((day) => (
-                <WeekdayCardEl key={day.id} day={day} isNextWeek={false} onOpenSwap={openSwap} />
+                <WeekdayCardEl key={day.id} day={day} isNextWeek={false} onOpenSwap={openSwap} onOpenRate={openRate} />
               ))}
             </div>
           )}
@@ -411,7 +434,7 @@ export default function PlannerPage() {
           {/* Weekday cards */}
           <div className="flex flex-col gap-3">
             {(weekOffset === 0 ? weekdayDays : nextWeekdayDays).map((day) => (
-              <WeekdayCardEl key={day.id} day={day} isNextWeek={weekOffset === 1} onOpenSwap={openSwap} />
+              <WeekdayCardEl key={day.id} day={day} isNextWeek={weekOffset === 1} onOpenSwap={openSwap} onOpenRate={openRate} />
             ))}
           </div>
 
@@ -419,7 +442,7 @@ export default function PlannerPage() {
           <SectionDivider label="Weekend" />
           <div className="flex flex-col gap-3">
             {(weekOffset === 0 ? weekendDays : nextWeekendDays).map((day) => (
-              <WeekdayCardEl key={day.id} day={day} isNextWeek={weekOffset === 1} onOpenSwap={openSwap} />
+              <WeekdayCardEl key={day.id} day={day} isNextWeek={weekOffset === 1} onOpenSwap={openSwap} onOpenRate={openRate} />
             ))}
           </div>
 
@@ -435,6 +458,15 @@ export default function PlannerPage() {
           familyIds={swapTarget.familyIds}
           currentRecipeId={swapTarget.recipeId}
           onClose={() => setSwapTarget(null)}
+        />
+      )}
+
+      {rateTarget && (
+        <MealRatingModal
+          recipeId={rateTarget.recipeId}
+          dayName={rateTarget.dayName}
+          mealType={rateTarget.mealType}
+          onClose={() => setRateTarget(null)}
         />
       )}
     </div>

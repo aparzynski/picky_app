@@ -86,7 +86,7 @@ export default function FamilyMemberPage() {
               {firstName}
             </h2>
             <p className="font-picky-sans font-normal text-[14px] leading-[1.5] text-neutral-tertiary">
-              {member.role} · {ageDisplay}
+              {member.role} · {ageDisplay}{member.gender === 'female' || member.gender === 'male' || member.gender === 'nonbinary' ? <span className="font-bold"> · {member.gender === 'female' ? '♀' : member.gender === 'male' ? '♂' : '⚧'}</span> : ''}
             </p>
           </div>
         </div>

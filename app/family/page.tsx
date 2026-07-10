@@ -76,7 +76,7 @@ export default function FamilyPage() {
                     {member.name}
                   </span>
                   <span className="font-picky-sans font-bold text-[10px] leading-[1.4] text-neutral-secondary tracking-[0.1px] whitespace-nowrap">
-                    {member.role} · {member.age}
+                    {member.role} · {member.age}{member.gender === 'female' || member.gender === 'male' || member.gender === 'nonbinary' ? <span className="text-[9px] font-black"> · {member.gender === 'female' ? '♀' : member.gender === 'male' ? '♂' : '⚧'}</span> : ''}
                   </span>
                   {badges.length > 0 && (
                     <div className="flex flex-wrap gap-x-[6px] gap-y-0 overflow-hidden">

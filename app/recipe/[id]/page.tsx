@@ -12,7 +12,8 @@ import { RecipeIngredient } from '@/components/RecipeIngredient';
 import { Tab } from '@/components/Tab';
 import { TransparentOverlayButton } from '@/components/TransparentOverlayButton';
 import { SwapMealModal } from '@/components/SwapMealModal';
-import { RatingModal, SmallStarRater } from '@/components/RatingModal';
+import { SmallStarRater } from '@/components/RatingModal';
+import { MealRatingModal } from '@/components/MealRatingModal';
 const FAMILY_INFO: Record<string, { name: string; initials: string }> = {
   S: { name: 'Sarah', initials: 'S' },
   D: { name: 'David', initials: 'D' },
@@ -377,12 +378,10 @@ export default function RecipePage() {
       )}
 
       {ratingModalOpen && (
-        <RatingModal
+        <MealRatingModal
           recipeId={id}
-          recipeName={recipe.name}
-          day={day}
+          dayName={day}
           mealType={mealType}
-          familyIds={familyIds}
           onClose={() => setRatingModalOpen(false)}
         />
       )}

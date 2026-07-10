@@ -7,7 +7,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { MealCard } from '@/components/MealCard';
 import { PlannerViewDropdown } from '@/components/PlannerViewDropdown';
 import { SwapMealModal } from '@/components/SwapMealModal';
-import { RatingModal } from '@/components/RatingModal';
+import { MealRatingModal } from '@/components/MealRatingModal';
 import { usePickyStore } from '@/store/usePickyStore';
 import {
   DAY_IDS,
@@ -70,7 +70,7 @@ export default function PlannerDayPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   type SwapTarget = { mealType: MealType; familyIds: string[]; recipeId: string };
   const [swapTarget, setSwapTarget] = useState<SwapTarget | null>(null);
-  type RatingTarget = { recipeId: string; recipeName: string; familyIds: string[] };
+  type RatingTarget = { recipeId: string; mealType: MealType };
   const [ratingTarget, setRatingTarget] = useState<RatingTarget | null>(null);
   const todayDayId = DAY_IDS[todayIdx];
 
@@ -242,6 +242,11 @@ export default function PlannerDayPage() {
                   ? () => router.push(`/recipe/${meal.recipeId}?day=${dayName}&meal=${meal.type}&family=${(meal.family ?? []).join(',')}&past=true`)
                   : undefined
               }
+              onRate={
+                meal.recipeId
+                  ? () => setRatingTarget({ recipeId: meal.recipeId!, mealType: meal.type })
+                  : undefined
+              }
             />
           ))}
 
@@ -296,6 +301,15 @@ export default function PlannerDayPage() {
           familyIds={swapTarget.familyIds}
           currentRecipeId={swapTarget.recipeId}
           onClose={() => setSwapTarget(null)}
+        />
+      )}
+
+      {ratingTarget && (
+        <MealRatingModal
+          recipeId={ratingTarget.recipeId}
+          dayName={dayName}
+          mealType={ratingTarget.mealType}
+          onClose={() => setRatingTarget(null)}
         />
       )}
     </div>

@@ -6,7 +6,6 @@ import { Avatar } from './Avatar';
 import { Button } from './Button';
 import { TransparentOverlayButton } from './TransparentOverlayButton';
 import { usePickyStore } from '@/store/usePickyStore';
-import { SmallStarRater } from './RatingModal';
 import type { Recipe } from '@/store/usePickyStore';
 import type { PlannerMeal, MealType } from '@/lib/plannerData';
 
@@ -74,11 +73,11 @@ function SwapIcon() {
 
 function StarIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
       <path
-        d="M12 2l2.887 6.163L22 9.27l-5 4.897 1.18 6.905L12 17.77l-6.18 3.302L7 14.167 2 9.27l7.113-1.107L12 2Z"
+        d="M10 1.667l2.575 5.216 5.758.838-4.167 4.059.984 5.737L10 14.833l-5.15 2.684.984-5.737-4.167-4.059 5.758-.838L10 1.667Z"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.667"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -128,7 +127,7 @@ export function MealCard({ meal, recipe, isPast, onViewRecipe, onSwap, onRate }:
   if (!meal.hasMeal) {
     if (isPast) {
       return (
-        <div className="bg-neutral-secondary rounded-[16px] px-4 py-3 flex items-center gap-3 drop-shadow-[0px_4px_14px_rgba(44,2,56,0.15)]">
+        <div className="bg-neutral-secondary rounded-[16px] px-4 py-3 flex items-center gap-3 drop-shadow-[0px_4px_7px_rgba(44,2,56,0.15)]">
           <span className="font-picky-sans font-semibold text-[16px] text-neutral-primary leading-[1.5] flex-1">
             {MEAL_LABEL[meal.type]}
           </span>
@@ -142,7 +141,7 @@ export function MealCard({ meal, recipe, isPast, onViewRecipe, onSwap, onRate }:
       );
     } else {
       return (
-        <div className="bg-neutral-primary rounded-[16px] px-4 py-3 flex items-center gap-3 drop-shadow-[0px_4px_14px_rgba(44,2,56,0.15)]">
+        <div className="bg-neutral-primary rounded-[16px] px-4 py-3 flex items-center gap-3 drop-shadow-[0px_4px_7px_rgba(44,2,56,0.15)]">
           <span className="font-picky-sans font-semibold text-[16px] text-neutral-primary leading-[1.5] flex-1">
             {MEAL_LABEL[meal.type]}
           </span>
@@ -168,7 +167,7 @@ export function MealCard({ meal, recipe, isPast, onViewRecipe, onSwap, onRate }:
 
   return (
     <div
-      className={`${cardBg} rounded-[16px] p-4 flex flex-col gap-2 drop-shadow-[0px_4px_14px_rgba(44,2,56,0.15)]`}
+      className={`${cardBg} rounded-[16px] p-4 flex flex-col gap-2 drop-shadow-[0px_4px_7px_rgba(44,2,56,0.15)]`}
     >
       {/* Header row */}
       <div className="flex items-center gap-3">
@@ -217,52 +216,58 @@ export function MealCard({ meal, recipe, isPast, onViewRecipe, onSwap, onRate }:
 
           {/* Info */}
           <div className="p-4 flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              {onViewRecipe ? (
-                <button
-                  onClick={onViewRecipe}
-                  className="font-picky-sans font-semibold text-[18px] text-neutral-primary leading-[1.5] text-left cursor-pointer"
-                >
-                  {recipe.name}
-                </button>
-              ) : (
-                <span className="font-picky-sans font-semibold text-[18px] text-neutral-primary leading-[1.5]">
-                  {recipe.name}
-                </span>
-              )}
-              <span className="font-picky-sans font-normal text-[12px] text-neutral-secondary leading-[1.4]">
-                {recipe.cookTime} min
-                {recipe.serves ? ` · Serves ${recipe.serves}` : ''}
-                {recipe.rating ? ` · ⭐ ${recipe.rating}` : ''}
-                {recipe.calories ? ` · ${recipe.calories} calories` : ''}
-              </span>
-            </div>
-
-            {recipe.tags && recipe.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {recipe.tags.slice(0, 2).map((tag) => (
-                  <span
-                    key={tag}
-                    className={`${tagBg} ${tagText} rounded-full px-2 py-0.5 font-picky-sans font-normal text-[12px] leading-[1.4] whitespace-nowrap`}
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
+                {onViewRecipe ? (
+                  <button
+                    onClick={onViewRecipe}
+                    className="font-picky-sans font-semibold text-[18px] text-neutral-primary leading-[1.5] text-left cursor-pointer"
                   >
-                    {tag}
+                    {recipe.name}
+                  </button>
+                ) : (
+                  <span className="font-picky-sans font-semibold text-[18px] text-neutral-primary leading-[1.5]">
+                    {recipe.name}
                   </span>
-                ))}
+                )}
+                <span className="font-picky-sans font-normal text-[12px] text-neutral-primary leading-[1.4]">
+                  {recipe.cookTime} min
+                  {recipe.serves ? ` · Serves ${recipe.serves}` : ''}
+                  {recipe.rating ? ` · ⭐ ${recipe.rating}` : ''}
+                  {recipe.calories ? ` · ${recipe.calories} calories` : ''}
+                </span>
               </div>
-            )}
+
+              {recipe.tags && recipe.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {recipe.tags.slice(0, 2).map((tag) => (
+                    <span
+                      key={tag}
+                      className={`${tagBg} ${tagText} rounded-full px-2 py-0.5 font-picky-sans font-normal text-[12px] leading-[1.4] whitespace-nowrap`}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {isPast ? (
               rating ? (
-                <div className="flex items-center justify-center py-2">
-                  <SmallStarRater stars={rating} />
+                <div className="flex items-center justify-center gap-4">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <svg key={n} width="36" height="36" viewBox="0 0 20 20" fill={n <= rating ? '#a104cc' : '#f5d1ff'}>
+                      <path d="M10 1.667l2.575 5.216 5.758.838-4.167 4.059.984 5.737L10 14.833l-5.15 2.684.984-5.737-4.167-4.059 5.758-.838L10 1.667Z" />
+                    </svg>
+                  ))}
                 </div>
               ) : (
                 <Button
                   variant="secondary"
-                  size="lg"
-                  pill
+                  size="md"
+                  pill={false}
                   iconLeft={<StarIcon />}
-                  className="w-full"
+                  className="w-full !rounded-[12px]"
                   onClick={onRate}
                 >
                   Rate This Meal
@@ -275,7 +280,7 @@ export function MealCard({ meal, recipe, isPast, onViewRecipe, onSwap, onRate }:
                 pill={false}
                 iconRight={<ArrowRightIcon />}
                 onClick={onViewRecipe}
-                className="w-full"
+                className="w-full !rounded-[12px]"
               >
                 View Recipe
               </Button>

@@ -19,6 +19,7 @@ export type FamilyMember = {
   name: string
   role: 'Parent' | 'Teen' | 'Kid' | 'Baby'
   age: string
+  gender?: 'male' | 'female' | 'nonbinary'
   initials: string
   avatarColor: 'purple' | 'blue' | 'orange' | 'green'
   dislikes: string[]
@@ -27,6 +28,20 @@ export type FamilyMember = {
   goals: string[]
   favoriteRecipeIds: string[]
   savedRecipeIds: string[]
+}
+
+export type MealRating = {
+  mealId: string
+  date: string
+  stars: number
+  presentMemberIds: string[]
+  likedMemberIds: string[]
+  dislikedMemberIds: string[]
+  wentWrongReasons: string[]
+  perMemberReasons: Record<string, string[]>
+  perMemberComments: Record<string, string>
+  positiveComment: string
+  negativeComment: string
 }
 
 export type KitchenItem = {
@@ -122,6 +137,8 @@ type PickyState = {
   recipes: Record<string, Recipe>
   recipeRatings: Record<string, number>
   setRecipeRating: (id: string, stars: number) => void
+  mealRatings: Record<string, MealRating>
+  setMealRating: (recipeId: string, rating: MealRating) => void
   onboarding: OnboardingData;
   hasCompletedOnboarding: boolean;
   hasSeenFirstWeekModal: boolean;
@@ -237,6 +254,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       name: 'Sarah (You)',
       role: 'Parent',
       age: '38',
+      gender: 'female',
       initials: 'S',
       avatarColor: 'purple',
       dislikes: ['🚫 Onions', '🚫 Cilantro'],
@@ -251,6 +269,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       name: 'David',
       role: 'Parent',
       age: '41',
+      gender: 'male',
       initials: 'D',
       avatarColor: 'blue',
       dislikes: ['🚫 Mushrooms'],
@@ -265,6 +284,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       name: 'Mia',
       role: 'Teen',
       age: '14',
+      gender: 'female',
       initials: 'M',
       avatarColor: 'orange',
       dislikes: ['🚫 Meat', '🚫 Dairy'],
@@ -279,6 +299,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       name: 'Noah',
       role: 'Kid',
       age: '6',
+      gender: 'male',
       initials: 'N',
       avatarColor: 'green',
       dislikes: ['🚫 Broccoli', '🚫 Peas'],
@@ -293,6 +314,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       name: 'Lily',
       role: 'Kid',
       age: '3',
+      gender: 'female',
       initials: 'L',
       avatarColor: 'orange',
       dislikes: ['🚫 Broccoli', '🚫 Onions'],
@@ -307,6 +329,7 @@ export const usePickyStore = create<PickyState>((set) => ({
       name: 'Ethan',
       role: 'Baby',
       age: '4 months',
+      gender: 'male',
       initials: 'E',
       avatarColor: 'purple',
       dislikes: [],
@@ -367,6 +390,12 @@ export const usePickyStore = create<PickyState>((set) => ({
   recipeRatings: {},
   setRecipeRating: (id, stars) =>
     set((state) => ({ recipeRatings: { ...state.recipeRatings, [id]: stars } })),
+  mealRatings: {},
+  setMealRating: (recipeId, rating) =>
+    set((state) => ({
+      mealRatings: { ...state.mealRatings, [recipeId]: rating },
+      recipeRatings: { ...state.recipeRatings, [recipeId]: rating.stars },
+    })),
   recipes: {
     r1: {
       id: 'r1',
