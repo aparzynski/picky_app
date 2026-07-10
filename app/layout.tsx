@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fira_Sans, Playpen_Sans } from "next/font/google";
 import { ScaleManager } from "@/components/ScaleManager";
+import { Analytics } from '@vercel/analytics/next';
 import "./globals.css";
 
 const firaSans = Fira_Sans({
@@ -40,6 +41,7 @@ export default function RootLayout({
         <div className="app-frame">
           {children}
         </div>
+        <Analytics />
       </body>
     </html>
   );
