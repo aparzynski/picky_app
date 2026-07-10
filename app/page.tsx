@@ -1,84 +1,129 @@
-"use client";
+'use client';
 
-import Link from 'next/link';
-import { StatusBar } from '@/components/StatusBar';
-import { OnionRingsBackground, WELCOME_GRADIENT } from '@/components/WelcomeBackground';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
-function EarlIllustration() {
-  return (
-    <div className="relative" style={{ width: '101px', height: '112px' }}>
-      <div className="absolute inset-[2.49%_44.71%_15.81%_2.69%]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-highlight.svg" />
-      </div>
-      <div className="absolute inset-[3.9%_10.71%_7.81%_6.81%]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-facee.svg" />
-      </div>
-      <div className="absolute inset-[36.57%_2.6%_2.45%_5.54%]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-shadow.svg" />
-      </div>
-      <div className="absolute inset-[53.54%_24.84%_23.27%_25.09%]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-face.svg" />
-      </div>
-      <div className="absolute inset-[23.04%_21.85%_54.89%_58.91%]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" className="absolute inset-0 size-full" src="/assets/earl-crease.svg" />
-      </div>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img alt="" className="absolute inset-0 size-full" src="/assets/earl-logo.svg" />
-    </div>
-  );
-}
+const SLIDES = [
+  {
+    illustration: '/assets/intro-slide-1.png',
+    alt: 'Earl the onion with chef hat, vegetables, and a meal plans clipboard',
+    title: 'Dinner, sorted',
+    subtitle: 'Meal plans that actually work for everyone at your table.',
+  },
+  {
+    illustration: '/assets/intro-slide-2.png',
+    alt: 'Earl the onion surrounded by Kid-Friendly and Dairy-Free recipe cards and hearts',
+    title: 'Every meal, everyone happy',
+    subtitle: "Picky learns what your family loves — and what they won't touch.",
+  },
+  {
+    illustration: '/assets/intro-slide-3.png',
+    alt: 'Earl the onion with chef hat reading a recipe book with mushrooms and tomatoes',
+    title: 'Your family cookbook',
+    subtitle: 'Save recipes, build your collection, come back to the good ones.',
+  },
+  {
+    illustration: '/assets/intro-slide-4.png',
+    alt: 'Earl the onion peeking out from behind an open fridge full of food',
+    title: 'Use what you have',
+    subtitle: 'Track your fridge, freezer, and pantry — and never waste food again.',
+  },
+] as const;
 
-export default function WelcomePage() {
+export default function IntroPage() {
+  const router = useRouter();
+  const [current, setCurrent] = useState(0);
+  const touchStartX = useRef(0);
+
+  function advance() {
+    if (current < SLIDES.length - 1) {
+      setCurrent((c) => c + 1);
+    } else {
+      router.push('/welcome');
+    }
+  }
+
+  function skip() {
+    router.push('/welcome');
+  }
+
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function onTouchEnd(e: React.TouchEvent) {
+    const delta = touchStartX.current - e.changedTouches[0].clientX;
+    if (delta > 40 && current < SLIDES.length - 1) setCurrent((c) => c + 1);
+    if (delta < -40 && current > 0) setCurrent((c) => c - 1);
+  }
+
+  const slide = SLIDES[current];
+
   return (
     <div
-      className="relative flex flex-col h-dvh overflow-hidden"
-      style={{
-        background: WELCOME_GRADIENT,
-      }}
+      className="h-dvh flex flex-col overflow-hidden"
+      style={{ background: 'linear-gradient(180deg, #FAF5FF 0%, #FFFFFF 100%)' }}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
-      <OnionRingsBackground />
-      <StatusBar />
+      <div className="flex-1 flex flex-col px-8 pt-16 pb-16 gap-16">
 
-      <div className="relative flex-1 flex flex-col items-center justify-center gap-6 px-8 pb-16">
-        <div className="flex items-center justify-center h-[112px]">
-          <EarlIllustration />
+        {/* Progress dots */}
+        <div className="flex items-center justify-center gap-2">
+          {SLIDES.map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === current
+                  ? 'w-8 bg-brand-quarternary'
+                  : 'w-2 bg-neutral-disabled'
+              }`}
+            />
+          ))}
         </div>
 
-        <div className="flex flex-col gap-4 items-center text-center w-[320px]">
-          <h1 className="font-picky-hand font-normal text-[32px] leading-[1.2] tracking-[-0.03em] text-[#7c019d]">
-            Welcome to Picky!
-          </h1>
-          <p className="font-picky-sans font-normal text-[18px] leading-[1.5] text-neutral-secondary">
-            Picky is a prototype created by Ariel Parzynski. To get the full effect, start with the onboarding flow!
-          </p>
+        {/* Illustration + text — fills remaining space */}
+        <div className="flex-1 flex items-center justify-center min-h-0">
+          <div className="flex flex-col items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={slide.illustration}
+              alt={slide.alt}
+              width={300}
+              height={300}
+              className="w-[300px] h-[300px] object-contain"
+              draggable={false}
+            />
+            <div className="w-[300px] flex flex-col items-center gap-3">
+              <h1
+                className="font-picky-hand font-semibold text-[32px] leading-[120%] text-center text-neutral-primary"
+                style={{ letterSpacing: '-0.03em' }}
+              >
+                {slide.title}
+              </h1>
+              <p className="font-picky-sans font-normal text-base leading-[150%] text-center text-neutral-secondary">
+                {slide.subtitle}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center gap-5 w-full">
-          {/* Primary CTA — matches Button variant="primary" interaction states */}
-          <Link
-            href="/onboarding/1"
-            className="w-full flex items-center justify-center bg-brand-primary text-brand-inverse rounded-full px-5 py-3 shadow-[0px_10px_30px_-4px_rgba(44,2,56,0.11),0px_4px_14px_-6px_rgba(44,2,56,0.15)] outline-none transition-colors hover:bg-brand-secondary hover:text-brand-primary focus-visible:bg-brand-secondary focus-visible:border-2 focus-visible:border-brand-primary focus-visible:text-brand-primary active:bg-brand-quarternary"
+        {/* CTAs */}
+        <div className="flex flex-col items-center gap-6">
+          <button
+            onClick={advance}
+            className="w-full bg-brand-primary text-brand-inverse font-picky-sans font-semibold text-lg rounded-full py-3 px-5"
           >
-            <span className="font-picky-sans font-semibold text-[18px] leading-[1.5] whitespace-nowrap">
-              Start Onboarding
-            </span>
-          </Link>
-
-          {/* Secondary CTA — matches Button variant="no-bg" interaction states */}
-          <Link
-            href="/home"
-            className="flex items-center justify-center px-5 py-3 text-brand-primary outline-none transition-colors hover:text-brand-secondary focus-visible:text-brand-secondary active:text-brand-quarternary"
+            {current < SLIDES.length - 1 ? 'Next →' : 'Get started →'}
+          </button>
+          <button
+            onClick={skip}
+            className="font-picky-sans font-semibold text-lg text-brand-primary"
           >
-            <span className="font-picky-sans font-semibold text-[18px] leading-[1.5] whitespace-nowrap">
-              Skip to the Home Screen
-            </span>
-          </Link>
+            Skip
+          </button>
         </div>
+
       </div>
     </div>
   );
